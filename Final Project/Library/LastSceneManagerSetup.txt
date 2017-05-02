@@ -1,1 +1,4 @@
-sceneSetups: []
+sceneSetups:
+- path: Assets/majoUpload/prototypeW1.unity
+  isLoaded: 1
+  isActive: 1
