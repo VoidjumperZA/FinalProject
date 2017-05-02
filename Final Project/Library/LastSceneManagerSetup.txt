@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/Testbench - Voidjumper.unity
+- path: Assets/Scenes/Testbench - Majo.unity
   isLoaded: 1
   isActive: 1

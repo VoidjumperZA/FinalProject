@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class InputTimer : MonoBehaviour
 {
@@ -19,11 +20,12 @@ public class InputTimer : MonoBehaviour
         if (timeLeft < 0)
         {
             Debug.Log("Time up");
+            SceneManager.LoadScene(0);
         }
         else
         {
             timeLeft -= Time.deltaTime;
-            Debug.Log("time: " + timeLeft);
+            Debug.Log("time: " + timeLeft);            
         }
 	}
 
