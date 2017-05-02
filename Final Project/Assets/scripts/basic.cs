@@ -3,7 +3,50 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class basic : MonoBehaviour {
-    [SerializeField] private boat _boat;
+    [SerializeField] private GameObject _boatPrefab;
+    [SerializeField] private Transform _boatSpawn;
+
+    private general _selected = null;
+    private List<general> _generals = new List<general>();
+
+    void Start()
+    {
+        SpawnBoat();
+        Debug.Log(_generals.Count + " generals");
+    }
+    void Update()
+    {
+        SelectNewGeneral();
+        DeselectPreviousGeneral();
+    }
+    private void SelectNewGeneral()
+    {
+        // On Left mouse button click
+        if (!Input.GetMouseButtonDown(0)) return;
+        // Deselect() previously selected object
+        if (_selected)
+        {
+            _selected.Deselect();
+            _selected = null;
+        }
+        // Raycast to get new object with general component
+        _selected = mouse.Instance.GetGeneral();
+        // Select() new object
+        if (_selected)
+        {
+            _selected.Select();
+        }
+    }
+    private void DeselectPreviousGeneral()
+    {
+        if (Input.GetMouseButtonUp(0) && _selected) _selected.Deselect();
+    }
+    private void SpawnBoat()
+    {
+        _generals.Add(Instantiate(_boatPrefab, _boatSpawn.position, Quaternion.identity).GetComponent<boat>());
+        _generals.Add(((boat)_generals[0]).SpawnHook());
+    }
+    /*[SerializeField] private boat _boat;
     [SerializeField] private hook _hook;
     [SerializeField] private Camera _cam;
     private RaycastHit _hitInfo;
@@ -19,14 +62,41 @@ public class basic : MonoBehaviour {
     [SerializeField] private float _holdTime;
     private float _passedHoldTime = 0;
 
-	void Start () {
-
-	}
-	void Update () {
-        HandleBoat();
-        HandleHook();
+	void Start ()
+    {
     }
-    private void HandleBoat()
+	void Update ()
+    {
+        _selectedBoat = Select("Boat");
+        _selectedHook = Select("Hook");
+        // ---
+
+
+        // ---
+        Deselect(ref _selectedBoat);
+        Deselect(ref _selectedHook);
+    }
+
+    private bool Select(string pTag)
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (Physics.Raycast(new Ray(Camera.main.ScreenToWorldPoint(Input.mousePosition), gameObject.transform.forward), out _hitInfo))
+            {
+                return _hitInfo.collider.gameObject.CompareTag(pTag);
+            }
+        }
+        return false;
+    }
+    private void Deselect(ref bool pSelectedObject)
+    {
+        if (Input.GetMouseButtonUp(0) && pSelectedObject)
+        {
+            pSelectedObject = false;
+        }
+    }
+
+    /*private void HandleBoat()
     {
         SelectBoat();
         if (_selectedBoat)
@@ -98,6 +168,8 @@ public class basic : MonoBehaviour {
     }
     private void DropHook()
     {
+        Debug.Log("Dropping hook");
+        _dropHook = false;
         _hook.Appear();
     }
     private void SelectHook()
@@ -117,7 +189,7 @@ public class basic : MonoBehaviour {
         {
             if (Physics.Raycast(new Ray(Camera.main.ScreenToWorldPoint(Input.mousePosition), gameObject.transform.forward), out _hitInfo))
             {
-                _hook.SetDestination(new Vector3(_hitInfo.point.x, _hitInfo.point.y,  _hook.gameObject.transform.position.z));
+                _hook.SetDestination(new Vector3(_hitInfo.point.x, 0,  _hook.gameObject.transform.position.z));
             }
         }
     }
@@ -127,5 +199,5 @@ public class basic : MonoBehaviour {
         {
             _selectedHook = false;
         }
-    }
+    }*/
 }
