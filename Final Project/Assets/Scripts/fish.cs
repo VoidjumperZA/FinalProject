@@ -6,6 +6,8 @@ public class fish : general {
     [SerializeField]
     private float _speed;
     private GameObject _hook = null;
+    public enum FishType { Small, Medium, Large, Hunted };
+    public FishType fishType;
 
     private bool _caught = false;
 	// Use this for initialization
@@ -34,6 +36,21 @@ public class fish : general {
         _hook = pHook;
         _caught = true;
         GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(10, true);
+    }
+
+    public void SetFishType(FishType pType)
+    {
+        fishType = pType;
+    }
+
+    public void SetFishType(int pType)
+    {
+        fishType = (FishType)pType;
+    }
+
+    public FishType GetFishType()
+    {
+        return fishType;
     }
 
     public void SetDirection(float pPolarity)

@@ -31,6 +31,7 @@ public class ScoreHandler : MonoBehaviour {
     {
         UIPosition = UISpawnPosition.transform;
         playerCurrentScore = 0;
+        totalScore.text = playerCurrentScore + "";
         timeColourHasBeenFlashing = 0.0f;
         originalTotalScoreColour = totalScore.color;
         colourFlashing = false;

@@ -14,6 +14,9 @@ public class hook : general
     [SerializeField] private float _fallSpeed;
     private Vector3 _xyOffset;
     private Vector3 _velocity;
+    private float hookRotationAmount;
+    private float maxHookRotation;
+    private float currentHookRotation;
     // X Velocity damping
     [SerializeField] private float _xOffsetDamping;
     // States
@@ -22,10 +25,13 @@ public class hook : general
     public override void Start()
     {
         base.Start();
+        hookRotationAmount = 1.0f;
+        currentHookRotation = 0.0f;
+        maxHookRotation = 15.0f;
     }
     public override void Update()
     {
-        Debug.Log(_hookState + " Hook");
+        //Debug.Log(_hookState + " Hook");
         if (_selected)
         {
             StateNoneUpdate();
@@ -81,6 +87,25 @@ public class hook : general
 
         _velocity = new Vector3(_xyOffset.x * _speed, Mathf.Min(_xyOffset.y * _speed / 2, -_fallSpeed), 0);
         gameObject.transform.Translate(_velocity);
+        if (_xyOffset.x < 0)
+        {
+            if (currentHookRotation < maxHookRotation)
+            {
+                currentHookRotation += hookRotationAmount;
+                gameObject.transform.Rotate(0.0f, 0.0f, hookRotationAmount);
+                Camera.main.transform.Rotate(0.0f, 0.0f, -hookRotationAmount);
+            }
+        }
+        else if (_xyOffset.x > 0)
+        {
+            if (currentHookRotation > -maxHookRotation)
+            {
+                currentHookRotation -= hookRotationAmount;
+                gameObject.transform.Rotate(0.0f, 0.0f, -hookRotationAmount);
+                Camera.main.transform.Rotate(0.0f, 0.0f, hookRotationAmount);
+            }
+        }
+       
     }
     private void SetXYAxisOffset(Vector3 pPosition)
     {
@@ -115,6 +140,28 @@ public class hook : general
             {
                 _hookState = HookState.Reel;
                 _fishing = false;
+            }
+            if (other.gameObject.CompareTag("Fish"))
+            {
+                Debug.Log("Detecting Fish");
+                fish.FishType type = other.gameObject.GetComponent<fish>().GetFishType();
+                if (type == fish.FishType.Small)
+                {
+                    GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(10, true);
+                }
+                if (type == fish.FishType.Medium)
+                {
+                    GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(50, true);
+                }
+                if (type == fish.FishType.Large)
+                {
+                    GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(150, true);
+                }
+                if (type == fish.FishType.Hunted)
+                {
+                    GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(500, true);
+                }
+                
             }
         }
     }

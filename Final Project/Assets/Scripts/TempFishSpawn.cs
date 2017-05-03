@@ -51,15 +51,19 @@ public class TempFishSpawn : MonoBehaviour
                 //LEFT
                 if (polarity == 0)
                 {
-                    newFish = Instantiate(fishPrefabs[randomFish], leftSpawns[randomFish].transform);
+                    newFish = Instantiate(fishPrefabs[randomFish]);
+                    newFish.transform.position = leftSpawns[randomFish].transform.position;
                     newFish.GetComponent<fish>().SetDirection(1.0f);
+                    newFish.GetComponent<fish>().SetFishType(randomFish);
                     //Debug.Log("Fish Pos (Left): " + newFish.transform.position);
                 }
                 //RIGHT
                 else
                 {
-                    newFish = Instantiate(fishPrefabs[randomFish], rightSpawns[randomFish].transform);
+                    newFish = Instantiate(fishPrefabs[randomFish]);
+                    newFish.transform.position = rightSpawns[randomFish].transform.position;
                     newFish.GetComponent<fish>().SetDirection(-1.0f);
+                    newFish.GetComponent<fish>().SetFishType(randomFish);
                     //Debug.Log("Fish Pos (Right): " + newFish.transform.position);
                 }   
                 //Set our time back to max            
