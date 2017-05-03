@@ -17,7 +17,7 @@ public class fish : general {
 	void Update () {
         if (!_caught) gameObject.transform.Translate(Vector3.forward*_speed);
         else FollowHook();
-        if (gameObject.transform.position.x < -9) Destroy(gameObject);
+        //if (gameObject.transform.position.x < -9) Destroy(gameObject);
 	}
     private void FollowHook()
     {
@@ -33,5 +33,19 @@ public class fish : general {
     {
         _hook = pHook;
         _caught = true;
+        GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(10, true);
+    }
+
+    public void SetDirection(float pPolarity)
+    {
+        _speed *= pPolarity;
+    }
+
+    public void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.name == "Fish Despawner")
+        {
+            Destroy(gameObject);
+        }
     }
 }
