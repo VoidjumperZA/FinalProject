@@ -19,7 +19,11 @@ public class TempFishSpawn : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        //Max our time to start
         timePassed = timeBetweenSpawns;
+
+        //Is our game valid, if there is disparity between how many fish types we have and the levels of spawning
+        //then mark that as invalid.
         valid = true;
         if (fishPrefabs.Length != leftSpawns.Length || fishPrefabs.Length != rightSpawns.Length)
         {
@@ -33,25 +37,32 @@ public class TempFishSpawn : MonoBehaviour
     {
         if (valid == true)
         {
+            //Always count down time
             timePassed -= Time.deltaTime;
+            //Once our spawn timer is up
             if (timePassed <= 0)
             {
+                //Choose a random fish and direction
                 int randomFish = Random.Range(0, fishPrefabs.Length);
                 int polarity = Random.Range(0, 2);
                 GameObject newFish;
                 //Debug.Log("Spawning fish. ID: " + randomFish + ". Polarity: " + polarity);
+
+                //LEFT
                 if (polarity == 0)
                 {
                     newFish = Instantiate(fishPrefabs[randomFish], leftSpawns[randomFish].transform);
                     newFish.GetComponent<fish>().SetDirection(1.0f);
                     //Debug.Log("Fish Pos (Left): " + newFish.transform.position);
                 }
+                //RIGHT
                 else
                 {
                     newFish = Instantiate(fishPrefabs[randomFish], rightSpawns[randomFish].transform);
                     newFish.GetComponent<fish>().SetDirection(-1.0f);
                     //Debug.Log("Fish Pos (Right): " + newFish.transform.position);
-                }               
+                }   
+                //Set our time back to max            
                 timePassed = timeBetweenSpawns;
             }
         } 
