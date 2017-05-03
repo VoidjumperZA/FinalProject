@@ -39,18 +39,18 @@ public class TempFishSpawn : MonoBehaviour
                 int randomFish = Random.Range(0, fishPrefabs.Length);
                 int polarity = Random.Range(0, 2);
                 GameObject newFish;
-                Debug.Log("Spawning fish. ID: " + randomFish + ". Polarity: " + polarity);
+                //Debug.Log("Spawning fish. ID: " + randomFish + ". Polarity: " + polarity);
                 if (polarity == 0)
                 {
                     newFish = Instantiate(fishPrefabs[randomFish], leftSpawns[randomFish].transform);
                     newFish.GetComponent<fish>().SetDirection(1.0f);
-                    Debug.Log("Fish Pos (Left): " + newFish.transform.position);
+                    //Debug.Log("Fish Pos (Left): " + newFish.transform.position);
                 }
                 else
                 {
                     newFish = Instantiate(fishPrefabs[randomFish], rightSpawns[randomFish].transform);
                     newFish.GetComponent<fish>().SetDirection(-1.0f);
-                    Debug.Log("Fish Pos (Right): " + newFish.transform.position);
+                    //Debug.Log("Fish Pos (Right): " + newFish.transform.position);
                 }               
                 timePassed = timeBetweenSpawns;
             }
