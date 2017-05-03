@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class boat : general {
     // Fishing
-    [SerializeField] private GameObject _hookPrefab;
     private hook _hook = null;
     // Movement
     [SerializeField] private float _speed;
@@ -25,17 +24,13 @@ public class boat : general {
     }
     public override void Update()
     {
+        Debug.Log(_boatState + " Boat");
         if (_selected)
         {
             StateNoneUpdate();
             StateMoveUpdate();
             StateFishUpdate();
         }
-    }
-    public general SpawnHook()
-    {
-        _hook = Instantiate(_hookPrefab, gameObject.transform.position, Quaternion.identity).GetComponent<hook>();
-        return _hook;
     }
     // -------- State Machine --------
     private void StateNoneUpdate()
@@ -69,7 +64,6 @@ public class boat : general {
         if (_boatState == BoatState.Fish)
         {
             _hook.DeployHook();
-            Debug.Log("Fishing");
         }
     }
     // -------- Action Recognizion --------
@@ -100,16 +94,23 @@ public class boat : general {
     public override void Select()
     {
         base.Select();
-        Debug.Log("boat - Select() " + _selected);
-        _boatState = BoatState.None;
+        //Debug.Log("boat - Select() " + _selected);
         _counter.Reset();
 
     }
     public override void Deselect()
     {
         base.Deselect();
-        Debug.Log("boat - Deselect() " + _selected);
+        //Debug.Log("boat - Deselect() " + _selected);
         _boatState = BoatState.None;
         _counter.SetActive(false);
+    }
+    public void AssignHook(hook pHook)
+    {
+        _hook = pHook;
+    }
+    public void SetState(BoatState pState)
+    {
+        _boatState = pState;
     }
 }
