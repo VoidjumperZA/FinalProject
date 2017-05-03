@@ -55,7 +55,11 @@ public class boat : general {
     {
         if (_boatState == BoatState.Move)
         {
-            if (Input.GetMouseButton(0)) SetDestination(mouse.Instance.GetWorldPoint());
+            if (Input.GetMouseButton(0))
+            {
+                SetDestination(mouse.Instance.GetWorldPoint());
+                GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock();
+            }
             MoveToDestination();
         }
     }

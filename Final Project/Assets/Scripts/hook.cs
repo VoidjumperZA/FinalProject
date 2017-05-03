@@ -27,7 +27,7 @@ public class hook : general
         base.Start();
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
-        maxHookRotation = 15.0f;
+        maxHookRotation = 25.0f;
     }
     public override void Update()
     {
@@ -54,7 +54,11 @@ public class hook : general
     {
         if (_hookState == HookState.Fish)
         {
-            if (Input.GetMouseButton(0)) SetXYAxisOffset(mouse.Instance.GetWorldPoint());
+            if (Input.GetMouseButton(0))
+            {
+                 SetXYAxisOffset(mouse.Instance.GetWorldPoint());
+                GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock();
+            }
         }
     }
     private void StateReelUpdate()

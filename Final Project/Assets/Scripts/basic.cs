@@ -30,6 +30,7 @@ public class basic : MonoBehaviour
     {
         // On Left mouse button click
         if (!Input.GetMouseButtonDown(0)) return;
+        GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock();
         // Deselect() previously selected object
         if (_selected)
         {
@@ -46,7 +47,11 @@ public class basic : MonoBehaviour
     }
     private void DeselectPreviousGeneral()
     {
-        if (Input.GetMouseButtonUp(0) && _selected) _selected.Deselect();
+        if (Input.GetMouseButtonUp(0) && _selected)
+        {
+            _selected.Deselect();
+            GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock();
+        }
     }
     private boat SpawnBoat()
     {

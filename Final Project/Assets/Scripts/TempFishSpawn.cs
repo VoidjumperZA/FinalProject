@@ -27,7 +27,7 @@ public class TempFishSpawn : MonoBehaviour
         valid = true;
         if (fishPrefabs.Length != leftSpawns.Length || fishPrefabs.Length != rightSpawns.Length)
         {
-            Debug.Log("WARNING: Inconsistent number of fish to spawn levels.");
+            Debug.Log("WARNING: Inconsistent number of fish to spawn levels.\n\tMARKING SCRIPT AS INVALID");
             valid = false;
         }
     }
