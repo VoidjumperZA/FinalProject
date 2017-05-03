@@ -120,6 +120,7 @@ public class hook : general
     // -------- General Script Override --------
     public override void Select()
     {
+        if (!_fishing) return;
         base.Select();
         //Debug.Log("hook - Select() " + _selected);
         _hookState = HookState.Fish;
