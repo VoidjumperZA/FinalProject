@@ -25,13 +25,17 @@ public class boat : general {
     }
     public override void Update()
     {
-        Debug.Log(_boatState);
         if (_selected)
         {
             StateNoneUpdate();
             StateMoveUpdate();
             StateFishUpdate();
         }
+    }
+    public general SpawnHook()
+    {
+        _hook = Instantiate(_hookPrefab, gameObject.transform.position, Quaternion.identity).GetComponent<hook>();
+        return _hook;
     }
     // -------- State Machine --------
     private void StateNoneUpdate()
@@ -65,6 +69,7 @@ public class boat : general {
         if (_boatState == BoatState.Fish)
         {
             _hook.DeployHook();
+            Debug.Log("Fishing");
         }
     }
     // -------- Action Recognizion --------
@@ -87,6 +92,7 @@ public class boat : general {
     }
     private void SetDestination(Vector3 pPosition)
     { 
+        // Debug.Log(pPosition.ToString() + " mouseWorldPoint");
         _destination = new Vector3(pPosition.x, gameObject.transform.position.y, gameObject.transform.position.z);
     }
     // -------- Fishing --------
@@ -94,23 +100,16 @@ public class boat : general {
     public override void Select()
     {
         base.Select();
-        //Debug.Log("boat - Select() " + _selected);
-        if (_boatState != BoatState.Fish) _boatState = BoatState.None;
+        Debug.Log("boat - Select() " + _selected);
+        _boatState = BoatState.None;
         _counter.Reset();
 
     }
     public override void Deselect()
     {
         base.Deselect();
-        //Debug.Log("boat - Deselect() " + _selected);
+        Debug.Log("boat - Deselect() " + _selected);
+        _boatState = BoatState.None;
         _counter.SetActive(false);
-    }
-    public void AssignHook(hook pHook)
-    {
-        _hook = pHook;
-    }
-    public void SetState(BoatState pState)
-    {
-        _boatState = pState;
     }
 }
