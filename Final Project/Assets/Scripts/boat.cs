@@ -24,7 +24,7 @@ public class boat : general {
     }
     public override void Update()
     {
-        Debug.Log(_boatState + " Boat");
+       // Debug.Log(_boatState + " Boat");
         if (_selected)
         {
             StateNoneUpdate();
@@ -44,9 +44,9 @@ public class boat : general {
                 if (_boatState == BoatState.Fish)
                 {
                     //Debug.Log("Switching cam parent to hook.");
-                    //GameObject hookCam = GameObject.FindGameObjectWithTag("HookCamHolder");
+                    GameObject hookCam = GameObject.FindGameObjectWithTag("HookCamHolder");
                     //mainCam.transform.position = hookCam.transform.position;
-                    //mainCam.transform.SetParent(hookCam.transform);
+                    mainCam.transform.SetParent(hookCam.transform);
                 }
             }
         }
