@@ -19,21 +19,50 @@ public class hook : general
     private float hookRotationAmount;
     private float maxHookRotation;
     private float currentHookRotation;
+    private Vector2 shakePolarities;
     // X Velocity damping
     [SerializeField] private float _xOffsetDamping;
     // States
     public enum HookState { None, Fish, Reel, SetFree }
     private HookState _hookState = HookState.None;
+
+    //Screen shake
+    private bool camShaking;
+    private float screenShakeIntensity;
+    private int screenShakeDuration;
+    private int screenShakeCounter;
+    private GameObject manager;
     public override void Start()
     {
+        if (!GameObject.Find("Manager"))
+        {
+            Debug.Log("WARNING: Manager not found.");
+        }
+        manager = GameObject.Find("Manager");
         base.Start();
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
         maxHookRotation = 25.0f;
+
+        camShaking = false;
+        screenShakeCounter = 0;
+        screenShakeDuration = manager.GetComponent<GameplayValues>().GetScreenShakeDuration();
+        screenShakeIntensity = manager.GetComponent<GameplayValues>().GetScreenShakeIntensity();
     }
     public override void Update()
     {
-        Debug.Log(_hookState + " Hook");
+        if (camShaking == true)
+        {
+            screenShakeCounter++;
+            if (screenShakeCounter >= screenShakeDuration)
+            {
+                camShaking = false;
+                screenShakeCounter = 0;
+                Camera.main.gameObject.transform.position = new Vector3(Camera.main.gameObject.transform.position.x + (-1 * screenShakeIntensity * (float)shakePolarities.x), Camera.main.gameObject.transform.position.y + (-1 * screenShakeIntensity * (float)shakePolarities.y), Camera.main.gameObject.transform.position.z);
+                Debug.Log("Plusing screen " + (-1 * screenShakeIntensity * (float)shakePolarities.x) + " unit on the x-axis and plussing " + (-1 * screenShakeIntensity * (float)shakePolarities.y) + " on the y-axis.");
+            }
+        }
+        //Debug.Log(_hookState + " Hook");
         if (_selected)
         {
             StateNoneUpdate();
@@ -105,7 +134,7 @@ public class hook : general
     }
     private void CameraFollowHook()
     {
-        Camera.main.gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, Camera.main.gameObject.transform.position.z);
+        //Camera.main.gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, Camera.main.gameObject.transform.position.z);
     }
     // -------- Fishing --------
     public void DeployHook()
@@ -129,6 +158,7 @@ public class hook : general
             {
                 currentHookRotation += hookRotationAmount;
                 gameObject.transform.Rotate(0.0f, 0.0f, hookRotationAmount);
+                Camera.main.transform.Rotate(0.0f, 0.0f, -hookRotationAmount);
             }
         }
         else if (_xyOffset.x > 0)
@@ -137,6 +167,7 @@ public class hook : general
             {
                 currentHookRotation -= hookRotationAmount;
                 gameObject.transform.Rotate(0.0f, 0.0f, -hookRotationAmount);
+                Camera.main.transform.Rotate(0.0f, 0.0f, hookRotationAmount);
             }
         }
         CameraFollowHook();
@@ -179,6 +210,28 @@ public class hook : general
             }
             if (other.gameObject.CompareTag("Fish"))
             {
+                //Begin screen shake
+                int yPolarity = Random.Range(0, 2);
+                Debug.Log("yPol: " + yPolarity);
+                if (yPolarity == 0)
+                {
+                    yPolarity = -1;
+                }
+                Debug.Log("yPol has been corrected to: " + yPolarity);
+                int xPolarity = Random.Range(0, 2);
+                Debug.Log("xPol: " + xPolarity);
+                if (xPolarity == 0)
+                {
+                    xPolarity = -1;
+                }
+                Debug.Log("xPol has been corrected to: " + xPolarity);
+                shakePolarities.x = xPolarity;
+                shakePolarities.y = yPolarity;
+                Debug.Log("Moving screen " + (screenShakeIntensity * (float)shakePolarities.x) + " unit on the x-axis and " + (screenShakeIntensity * (float)shakePolarities.y) + " on the y-axis.");
+                Camera.main.gameObject.transform.position = new Vector3(Camera.main.gameObject.transform.position.x - (screenShakeIntensity * (float)shakePolarities.x), Camera.main.gameObject.transform.position.y - (screenShakeIntensity * (float)shakePolarities.y), Camera.main.gameObject.transform.position.z);
+                camShaking = true;
+                //Debug.Log("Offsetting camera by " + screenShakeIntensity + " units.");
+
                 float fishAngle = Random.Range(-fishRotationAngle, fishRotationAngle);
                 other.gameObject.transform.Rotate(fishAngle, 0.0f, 0.0f);
 
