@@ -54,7 +54,9 @@ public class TempFishSpawn : MonoBehaviour
                 //LEFT
                 if (polarity == 0)
                 {
-                    newFish = Instantiate(fishPrefabs[randomFish]);
+                    newFish = Instantiate(fishPrefabs[randomFish], leftSpawns[randomFish].transform.position, leftSpawns[randomFish].transform.rotation);
+
+                    //newFish = Instantiate(fishPrefabs[randomFish]);
                     Vector3 spawnPosition = leftSpawns[randomFish].transform.position;
                     spawnPosition.y += verticalOffset;
                     newFish.transform.position = spawnPosition;//leftSpawns[randomFish].transform.position;
@@ -65,11 +67,12 @@ public class TempFishSpawn : MonoBehaviour
                 //RIGHT
                 else
                 {
-                    newFish = Instantiate(fishPrefabs[randomFish]);
+                    newFish = Instantiate(fishPrefabs[randomFish], rightSpawns[randomFish].transform.position, rightSpawns[randomFish].transform.rotation);
+                    //newFish = Instantiate(fishPrefabs[randomFish]);
                     Vector3 spawnPosition = rightSpawns[randomFish].transform.position;
                     spawnPosition.y += verticalOffset;
                     newFish.transform.position = spawnPosition;//rightSpawns[randomFish].transform.position;
-                    newFish.GetComponent<fish>().SetDirection(-1.0f);
+                    newFish.GetComponent<fish>().SetDirection(1.0f);
                     newFish.GetComponent<fish>().SetFishType(randomFish);
                     //Debug.Log("Fish Pos (Right): " + newFish.transform.position);
                 }   

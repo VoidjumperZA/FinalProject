@@ -181,6 +181,7 @@ public class hook : general
             {
                 float fishAngle = Random.Range(-fishRotationAngle, fishRotationAngle);
                 other.gameObject.transform.Rotate(fishAngle, 0.0f, 0.0f);
+                other.gameObject.GetComponent<BoxCollider>().enabled = false;
 
                 other.gameObject.GetComponent<fish>().Catch(gameObject);
                 fishAttachedToHook.Add(other.gameObject);
