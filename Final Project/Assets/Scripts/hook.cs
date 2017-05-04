@@ -168,14 +168,18 @@ public class hook : general
         //Debug.Log("hook - Deselect() " + _selected);
         if (_fishing) _hookState = HookState.Fish;
     }
+    private void ReelUpTheHook()
+    {
+        _hookState = HookState.Reel;
+        _fishing = false;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (_hookState == HookState.Fish)
         {                        
             if (other.gameObject.CompareTag("Floor"))
             {
-                _hookState = HookState.Reel;
-                _fishing = false;
+                ReelUpTheHook();
             }
             if (other.gameObject.CompareTag("Fish"))
             {
@@ -199,6 +203,7 @@ public class hook : general
                 if (type == fish.FishType.Large)
                 {
                     GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(150, true);
+                    ReelUpTheHook();
                 }
                 if (type == fish.FishType.Hunted)
                 {
