@@ -24,7 +24,7 @@ public class boat : general {
     }
     public override void Update()
     {
-        //Debug.Log(_boatState + " Boat");
+        Debug.Log(_boatState + " Boat");
         if (_selected)
         {
             StateNoneUpdate();
@@ -43,10 +43,10 @@ public class boat : general {
                 _boatState = SidewaysOrDownwards() ? BoatState.Move : BoatState.Fish;
                 if (_boatState == BoatState.Fish)
                 {
-                    Debug.Log("Switching cam parent to hook.");
-                    GameObject hookCam = GameObject.FindGameObjectWithTag("HookCamHolder");
+                    //Debug.Log("Switching cam parent to hook.");
+                    //GameObject hookCam = GameObject.FindGameObjectWithTag("HookCamHolder");
                     //mainCam.transform.position = hookCam.transform.position;
-                    mainCam.transform.SetParent(hookCam.transform);
+                    //mainCam.transform.SetParent(hookCam.transform);
                 }
             }
         }
@@ -74,7 +74,7 @@ public class boat : general {
     private bool SidewaysOrDownwards()
     {
         Vector3 mouseWorldPoint = mouse.Instance.GetWorldPoint();
-        return Mathf.Abs(mouseWorldPoint.x - gameObject.transform.position.x) >= Mathf.Abs(mouseWorldPoint.y - gameObject.transform.position.y);
+        return Mathf.Abs(mouseWorldPoint.x - gameObject.transform.position.x) > Mathf.Abs(mouseWorldPoint.y - gameObject.transform.position.y);
     }
     // -------- Movement --------
     private void MoveToDestination()
@@ -84,7 +84,7 @@ public class boat : general {
         if (differenceVector.magnitude >= _speed)
         {
             gameObject.transform.Translate(differenceVector.normalized * _speed);
-            _hook.gameObject.transform.Translate(differenceVector.normalized * _speed);
+            _hook.gameObject.transform.position = gameObject.transform.position;
         }
 
     }
@@ -106,7 +106,7 @@ public class boat : general {
     {
         base.Deselect();
         //Debug.Log("boat - Deselect() " + _selected);
-        _boatState = BoatState.None;
+        if (_boatState != BoatState.Fish) _boatState = BoatState.None;
         _counter.SetActive(false);
     }
     public void AssignHook(hook pHook)

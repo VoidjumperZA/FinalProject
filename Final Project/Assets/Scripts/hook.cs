@@ -33,7 +33,7 @@ public class hook : general
     }
     public override void Update()
     {
-        //Debug.Log(_hookState + " Hook");
+        Debug.Log(_hookState + " Hook");
         if (_selected)
         {
             StateNoneUpdate();
@@ -85,6 +85,7 @@ public class hook : general
             _boat.GetComponent<BoxCollider>().isTrigger = false;
             gameObject.GetComponent<Rigidbody>().detectCollisions = true;
             _hookState = HookState.None;
+            _boat.SetState(boat.BoatState.None);
         }          
     }
 
@@ -98,9 +99,13 @@ public class hook : general
             {
                 gameObject.transform.position = _boat.transform.position;
                 _hookState = HookState.SetFree;
-                _boat.SetState(boat.BoatState.None);
             }
+            CameraFollowHook();
         }
+    }
+    private void CameraFollowHook()
+    {
+        Camera.main.gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, Camera.main.gameObject.transform.position.z);
     }
     // -------- Fishing --------
     public void DeployHook()
@@ -124,7 +129,6 @@ public class hook : general
             {
                 currentHookRotation += hookRotationAmount;
                 gameObject.transform.Rotate(0.0f, 0.0f, hookRotationAmount);
-                Camera.main.transform.Rotate(0.0f, 0.0f, -hookRotationAmount);
             }
         }
         else if (_xyOffset.x > 0)
@@ -133,10 +137,10 @@ public class hook : general
             {
                 currentHookRotation -= hookRotationAmount;
                 gameObject.transform.Rotate(0.0f, 0.0f, -hookRotationAmount);
-                Camera.main.transform.Rotate(0.0f, 0.0f, hookRotationAmount);
             }
         }
-       
+        CameraFollowHook();
+
     }
     private void SetXYAxisOffset(Vector3 pPosition)
     {
