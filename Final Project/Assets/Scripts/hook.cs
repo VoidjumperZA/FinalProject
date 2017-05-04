@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class hook : general
 {
+    Camera mainCam;
     // Fishing
     private boat _boat;
     private bool _fishing = false;
@@ -34,6 +35,7 @@ public class hook : general
     private GameObject manager;
     public override void Start()
     {
+        mainCam = Camera.main;
         if (!GameObject.Find("Manager"))
         {
             Debug.Log("WARNING: Manager not found.");
@@ -115,6 +117,10 @@ public class hook : general
             gameObject.GetComponent<Rigidbody>().detectCollisions = true;
             _hookState = HookState.None;
             _boat.SetState(boat.BoatState.None);
+                //Debug.Log("Switching cam parent to boat.");
+                GameObject boatCam = GameObject.FindGameObjectWithTag("BoatCamHolder");
+                //mainCam.transform.position = hookCam.transform.position;
+                mainCam.transform.SetParent(boatCam.transform);
         }          
     }
 
@@ -203,6 +209,7 @@ public class hook : general
     {
         _hookState = HookState.Reel;
         _fishing = false;
+        Deselect();
     }
     private void OnTriggerEnter(Collider other)
     {
