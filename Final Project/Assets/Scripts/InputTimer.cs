@@ -44,7 +44,7 @@ public class InputTimer : MonoBehaviour
             else
             {
                 timeLeft -= Time.deltaTime;
-                Debug.Log("time: " + timeLeft);
+                //Debug.Log("time: " + timeLeft);
             }
 
             //Display a warning with x seconds left until timeout

@@ -7,6 +7,8 @@ public class hook : general
     // Fishing
     private boat _boat;
     private bool _fishing = false;
+    List<GameObject> fishAttachedToHook = new List<GameObject>();
+    float fishRotationAngle = 25.0f;
 
     // Movement
     [SerializeField] private float _ropeLength;
@@ -20,7 +22,7 @@ public class hook : general
     // X Velocity damping
     [SerializeField] private float _xOffsetDamping;
     // States
-    public enum HookState { None, Fish, Reel }
+    public enum HookState { None, Fish, Reel, SetFree }
     private HookState _hookState = HookState.None;
     public override void Start()
     {
@@ -36,11 +38,13 @@ public class hook : general
         {
             StateNoneUpdate();
             StateFishUpdate();
+            
         }
         else
         {
             DampXVelocityAfterDeselected();
             StateReelUpdate();
+            StateSetFreeStateUpdate();
         }
         ApplyVelocity();
     }
@@ -61,6 +65,29 @@ public class hook : general
             }
         }
     }
+
+    private void StateSetFreeStateUpdate()
+    {
+        if (_hookState == HookState.SetFree)
+        {
+            _boat.GetComponent<BoxCollider>().isTrigger = true;
+            gameObject.GetComponent<Rigidbody>().detectCollisions = false;
+            Debug.Log("Entered SetFree Update");
+            for (int i = 0; i < fishAttachedToHook.Count; i++)
+            {
+                fishAttachedToHook[i].GetComponent<fish>().Release();
+                Rigidbody fishRigidBod = fishAttachedToHook[i].GetComponent<Rigidbody>();
+                fishRigidBod.isKinematic = false;                
+                fishRigidBod.AddForceAtPosition(new Vector3(/*Random.Range(-5.0f, 5.0f)*/0.0f, 50.0f, 0.0f), gameObject.transform.position - (Vector3.down * 2.0f), ForceMode.Impulse);
+                //fishRigidBod.AddExplosionForce(100000.0f, gameObject.transform.position, 1000.0f, 1.0f);
+            }
+            fishAttachedToHook.Clear();
+            _boat.GetComponent<BoxCollider>().isTrigger = false;
+            gameObject.GetComponent<Rigidbody>().detectCollisions = true;
+            _hookState = HookState.None;
+        }          
+    }
+
     private void StateReelUpdate()
     {
         if (_hookState == HookState.Reel)
@@ -70,7 +97,7 @@ public class hook : general
             if (differenceVector.magnitude < _speed)
             {
                 gameObject.transform.position = _boat.transform.position;
-                _hookState = HookState.None;
+                _hookState = HookState.SetFree;
                 _boat.SetState(boat.BoatState.None);
             }
         }
@@ -140,7 +167,7 @@ public class hook : general
     private void OnTriggerEnter(Collider other)
     {
         if (_hookState == HookState.Fish)
-        {
+        {                        
             if (other.gameObject.CompareTag("Floor"))
             {
                 _hookState = HookState.Reel;
@@ -148,6 +175,12 @@ public class hook : general
             }
             if (other.gameObject.CompareTag("Fish"))
             {
+                float fishAngle = Random.Range(-fishRotationAngle, fishRotationAngle);
+                other.gameObject.transform.Rotate(fishAngle, 0.0f, 0.0f);
+
+                other.gameObject.GetComponent<fish>().Catch(gameObject);
+                fishAttachedToHook.Add(other.gameObject);
+
                 Debug.Log("Detecting Fish");
                 fish.FishType type = other.gameObject.GetComponent<fish>().GetFishType();
                 if (type == fish.FishType.Small)

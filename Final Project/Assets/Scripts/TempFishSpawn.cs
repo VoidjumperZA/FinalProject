@@ -13,6 +13,8 @@ public class TempFishSpawn : MonoBehaviour
     private GameObject[] leftSpawns;
     [SerializeField]
     private GameObject[] rightSpawns;
+    [SerializeField]
+    private float verticalSpawnFluctuation;
     private float timePassed;
     private bool valid;
 
@@ -45,6 +47,7 @@ public class TempFishSpawn : MonoBehaviour
                 //Choose a random fish and direction
                 int randomFish = Random.Range(0, fishPrefabs.Length);
                 int polarity = Random.Range(0, 2);
+                float verticalOffset = Random.Range(-verticalSpawnFluctuation, verticalSpawnFluctuation);
                 GameObject newFish;
                 //Debug.Log("Spawning fish. ID: " + randomFish + ". Polarity: " + polarity);
 
@@ -52,7 +55,9 @@ public class TempFishSpawn : MonoBehaviour
                 if (polarity == 0)
                 {
                     newFish = Instantiate(fishPrefabs[randomFish]);
-                    newFish.transform.position = leftSpawns[randomFish].transform.position;
+                    Vector3 spawnPosition = leftSpawns[randomFish].transform.position;
+                    spawnPosition.y += verticalOffset;
+                    newFish.transform.position = spawnPosition;//leftSpawns[randomFish].transform.position;
                     newFish.GetComponent<fish>().SetDirection(1.0f);
                     newFish.GetComponent<fish>().SetFishType(randomFish);
                     //Debug.Log("Fish Pos (Left): " + newFish.transform.position);
@@ -61,7 +66,9 @@ public class TempFishSpawn : MonoBehaviour
                 else
                 {
                     newFish = Instantiate(fishPrefabs[randomFish]);
-                    newFish.transform.position = rightSpawns[randomFish].transform.position;
+                    Vector3 spawnPosition = rightSpawns[randomFish].transform.position;
+                    spawnPosition.y += verticalOffset;
+                    newFish.transform.position = spawnPosition;//rightSpawns[randomFish].transform.position;
                     newFish.GetComponent<fish>().SetDirection(-1.0f);
                     newFish.GetComponent<fish>().SetFishType(randomFish);
                     //Debug.Log("Fish Pos (Right): " + newFish.transform.position);
