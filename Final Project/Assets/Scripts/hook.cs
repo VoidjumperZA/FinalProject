@@ -53,6 +53,7 @@ public class hook : general
     }
     public override void Update()
     {
+        //Disable screenshake
         if (camShaking == true)
         {
             screenShakeCounter++;
@@ -85,6 +86,8 @@ public class hook : general
         {
         }
     }
+
+    //Fishing state
     private void StateFishUpdate()
     {
         if (_hookState == HookState.Fish)
@@ -97,12 +100,15 @@ public class hook : general
         }
     }
 
+    //Set free state
     private void StateSetFreeStateUpdate()
     {
         if (_hookState == HookState.SetFree)
         {
+            //Temporarily turn the boat into a trigger to stop collisions
             _boat.GetComponent<BoxCollider>().isTrigger = true;
             gameObject.GetComponent<Rigidbody>().detectCollisions = false;
+
             Debug.Log("Entered SetFree Update");
             for (int i = 0; i < fishAttachedToHook.Count; i++)
             {
@@ -214,14 +220,18 @@ public class hook : general
     private void OnTriggerEnter(Collider other)
     {
         if (_hookState == HookState.Fish)
-        {                        
+        {            
+            //Reel the hook in if you touch the floor
             if (other.gameObject.CompareTag("Floor"))
             {
                 ReelUpTheHook();
             }
+
+            //On contact with a fish
             if (other.gameObject.CompareTag("Fish"))
             {
-                //Begin screen shake
+                //SCREEN SHAKE
+                //Choose either a positive or negative direction for both the X and Y components
                 int yPolarity = Random.Range(0, 2);
                 Debug.Log("yPol: " + yPolarity);
                 if (yPolarity == 0)
@@ -236,20 +246,26 @@ public class hook : general
                     xPolarity = -1;
                 }
                 Debug.Log("xPol has been corrected to: " + xPolarity);
+                //Save those to a vector
                 shakePolarities.x = xPolarity;
                 shakePolarities.y = yPolarity;
-                Debug.Log("Moving screen " + (screenShakeIntensity * (float)shakePolarities.x) + " unit on the x-axis and " + (screenShakeIntensity * (float)shakePolarities.y) + " on the y-axis.");
+                    Debug.Log("Moving screen " + (screenShakeIntensity * (float)shakePolarities.x) + " unit on the x-axis and " + (screenShakeIntensity * (float)shakePolarities.y) + " on the y-axis.");
+                //Displace the camera by a certain amount
                 Camera.main.gameObject.transform.position = new Vector3(Camera.main.gameObject.transform.position.x - (screenShakeIntensity * (float)shakePolarities.x), Camera.main.gameObject.transform.position.y - (screenShakeIntensity * (float)shakePolarities.y), Camera.main.gameObject.transform.position.z);
                 camShaking = true;
-                //Debug.Log("Offsetting camera by " + screenShakeIntensity + " units.");
 
+
+                //ATTACH FISH TO HOOK
+                //Rotate the fish by a small degree
                 float fishAngle = Random.Range(-fishRotationAngle, fishRotationAngle);
                 other.gameObject.transform.Rotate(fishAngle, 0.0f, 0.0f);
                 other.gameObject.GetComponent<BoxCollider>().enabled = false;
 
+                //The attached fish are now tracked in a list and also follow the hook
                 other.gameObject.GetComponent<fish>().Catch(gameObject);
                 fishAttachedToHook.Add(other.gameObject);
 
+                //ADDING SCORE
                 Debug.Log("Detecting Fish");
                 fish.FishType type = other.gameObject.GetComponent<fish>().GetFishType();
                 if (type == fish.FishType.Small)

@@ -14,12 +14,31 @@ public class boat : general {
     public enum BoatState { None, Move, Fish }
     private BoatState _boatState = BoatState.None;
 
+    //Camera and zoom levels
     private Camera mainCam;
+    private GameplayValues gameplayValues;
+    Vector3 cameraPosZoomedHook;
+    Vector3 cameraPosFocusBoat;
+    Vector3 cameraPosOceanOverview;
     public override void Start()
     {
         base.Start();
         _counter = new counter(0.3f);
-        mainCam = Camera.main; 
+        mainCam = Camera.main;
+
+        gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
+
+        //Focus Boat Level
+        cameraPosFocusBoat = mainCam.transform.position;
+        cameraPosFocusBoat.z += gameplayValues.GetCamZoomFocusBoat();
+
+        //Zoomed Hook Level
+        cameraPosZoomedHook = mainCam.transform.position;
+        cameraPosZoomedHook.z += gameplayValues.GetCamZoomZoomedHook();
+
+        //Ocean Overview Level
+        cameraPosOceanOverview = mainCam.transform.position;
+        cameraPosOceanOverview.z += gameplayValues.GetCamZoomOceanOverview();
         // After inicialization
     }
     public override void Update()
@@ -47,6 +66,7 @@ public class boat : general {
                     GameObject hookCam = GameObject.FindGameObjectWithTag("HookCamHolder");
                     //mainCam.transform.position = hookCam.transform.position;
                     mainCam.transform.SetParent(hookCam.transform);
+                    mainCam.transform.position = cameraPosZoomedHook;
                 }
             }
         }
