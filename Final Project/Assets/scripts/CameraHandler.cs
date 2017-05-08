@@ -64,7 +64,7 @@ public static class CameraHandler
         //Print, if requested by the user
         if (pShowDebugLog == true)
         {
-            Debug.Log("Moving screen: [" + screenShakeMovement.x + ", " + screenShakeMovement.y + "," + screenShakeMovement.z + "] units.");
+            Debug.Log("Moving screen: [" + (direction * (gameplayValues.GetScreenShakeIntensity() * (float)shakePolarities.x)) + ", " + (direction * (gameplayValues.GetScreenShakeIntensity() * (float)shakePolarities.y)) + "," + screenShakeMovement.z + "] units.");
         }
     }
 

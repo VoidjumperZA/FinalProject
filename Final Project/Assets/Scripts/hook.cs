@@ -80,7 +80,7 @@ public class hook : general
         {
             camShaking = false;
             screenShakeCounter = 0;
-            CameraHandler.ResetScreenShake();
+            CameraHandler.ResetScreenShake(true);
         }
     }
     private void StateNoneUpdate()
@@ -230,7 +230,7 @@ public class hook : general
             if (other.gameObject.CompareTag("Fish"))
             {
                 //Screen shake
-                CameraHandler.ApplyScreenShake();
+                CameraHandler.ApplyScreenShake(true);
                 camShaking = true;
 
                 //ATTACH FISH TO HOOK
