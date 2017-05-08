@@ -23,6 +23,7 @@ public class basic : MonoBehaviour
     }
     void Update()
     {
+        CameraHandler.ArtificialUpdate();
         SelectNewGeneral();
         DeselectPreviousGeneral();
         RenderTrail(_generals[0].gameObject.transform.position, _generals[1].gameObject.transform.position);

@@ -22,6 +22,9 @@ public class GameplayValues : MonoBehaviour
     [SerializeField]
     private float camZoomedHookZoomLevel;
 
+    [SerializeField]
+    private float zoomSpeed;
+
 
     // Use this for initialization
     void Start()
@@ -60,4 +63,8 @@ public class GameplayValues : MonoBehaviour
         return camZoomedHookZoomLevel;
     }
 
+    public float GetCamZoomSpeed()
+    {
+        return zoomSpeed;
+    }
 }
