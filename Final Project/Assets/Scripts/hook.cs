@@ -74,21 +74,21 @@ public class hook : general
             StateReelUpdate();
             StateSetFreeStateUpdate();
         }
-        ApplyVelocity(); if (camShaking == true)
+        ApplyVelocity();
+        if (camShaking == true)
         {
-            ShakeCameraOnCollect();
+            shakeCameraOnCollect();
         }
         SetCameraAndHookAngle();
     }
-    private void ShakeCameraOnCollect()
+    private void shakeCameraOnCollect()
     {
         screenShakeCounter++;
         if (screenShakeCounter >= screenShakeDuration)
         {
             camShaking = false;
             screenShakeCounter = 0;
-            Camera.main.gameObject.transform.position = new Vector3(Camera.main.gameObject.transform.position.x + (-1 * screenShakeIntensity * (float)shakePolarities.x), Camera.main.gameObject.transform.position.y + (-1 * screenShakeIntensity * (float)shakePolarities.y), Camera.main.gameObject.transform.position.z);
-            Debug.Log("Plusing screen " + (-1 * screenShakeIntensity * (float)shakePolarities.x) + " unit on the x-axis and plussing " + (-1 * screenShakeIntensity * (float)shakePolarities.y) + " on the y-axis.");
+            CameraHandler.ResetScreenShake(true);
         }
     }
     private void StateNoneUpdate()
@@ -168,6 +168,7 @@ public class hook : general
 
         _velocity = new Vector3(_xyOffset.x * _speed, Mathf.Min(_xyOffset.y * _speed / 2, -_fallSpeed), 0);
         gameObject.transform.Translate(_velocity);
+       
 
     }
     private void SetCameraAndHookAngle()
@@ -236,30 +237,9 @@ public class hook : general
             //On contact with a fish
             if (other.gameObject.CompareTag("Fish"))
             {
-                //SCREEN SHAKE
-                //Choose either a positive or negative direction for both the X and Y components
-                int yPolarity = Random.Range(0, 2);
-                Debug.Log("yPol: " + yPolarity);
-                if (yPolarity == 0)
-                {
-                    yPolarity = -1;
-                }
-                Debug.Log("yPol has been corrected to: " + yPolarity);
-                int xPolarity = Random.Range(0, 2);
-                Debug.Log("xPol: " + xPolarity);
-                if (xPolarity == 0)
-                {
-                    xPolarity = -1;
-                }
-                Debug.Log("xPol has been corrected to: " + xPolarity);
-                //Save those to a vector
-                shakePolarities.x = xPolarity;
-                shakePolarities.y = yPolarity;
-                    Debug.Log("Moving screen " + (screenShakeIntensity * (float)shakePolarities.x) + " unit on the x-axis and " + (screenShakeIntensity * (float)shakePolarities.y) + " on the y-axis.");
-                //Displace the camera by a certain amount
-                Camera.main.gameObject.transform.position = new Vector3(Camera.main.gameObject.transform.position.x - (screenShakeIntensity * (float)shakePolarities.x), Camera.main.gameObject.transform.position.y - (screenShakeIntensity * (float)shakePolarities.y), Camera.main.gameObject.transform.position.z);
+                //Screen shake
+                CameraHandler.ApplyScreenShake(true);
                 camShaking = true;
-
 
                 //ATTACH FISH TO HOOK
                 //Rotate the fish by a small degree
