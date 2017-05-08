@@ -62,26 +62,40 @@ public static class CameraHandler
             {
                 if (cameraParents[i] == null)
                 {
-                    Debug.Log("WARNING: Camera parent object [" + i + "], (which is likely related to " + (CameraFocus)i + ") does not exist or is not tagged correctly.");
+                    Debug.Log("ERROR: Camera parent object [" + i + "], (which is likely related to " + (CameraFocus)i + ") does not exist or is not tagged correctly.");
                 }
             }
+
+            hasStartBeenCalled = true;
         }
         else
         {
             Debug.Log("WARNING: Attempting to call ArtificialStart() for a second time. Unnecessary call.");
         }
     }
+
+    /// <summary>
+    /// Manually parent the GameObject to any GameObject. If you are planning to parent the camera to the Boat, Ocean or Hook Cam Holders, rather use SetCameraFocusPoint() instead.
+    /// </summary>
+    /// <param name="pTransform"></param>
     public static void SetParent(Transform pTransform)
     {
         if (hasStartBeenCalled == true)
         {
             if (pTransform != null)
             {
+                for (int i = 0; i < cameraParents.Count; i++)
+                {
+                    if (cameraParents[i].transform == pTransform)
+                    {
+                        Debug.Log("WARNING: Given transform to parent is equal to one of the Cam Holders (Boat, Ocean or Hook) If you are attempting to focus the camera on that position, rather use SetCameraFocusPoint() instead.");
+                    }
+                }
                 _camera.transform.SetParent(pTransform);
             }
             else
             {
-                Debug.Log("WARNING: Cannot set parent as given transform is null.");
+                Debug.Log("ERROR: Cannot set parent as given transform is null.");
             }
         }
         else
@@ -212,6 +226,6 @@ public static class CameraHandler
 
     private static void displayArtificialStartWarning()
     {
-        Debug.Log("WARNING: Camera operations cannot be commenced until the CameraHandler.ArtificialStart() method is called.");
+        Debug.Log("ERROR: Camera operations cannot be commenced until the CameraHandler.ArtificialStart() method is called.");
     }
 }
