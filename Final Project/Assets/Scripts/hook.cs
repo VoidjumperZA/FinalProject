@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class hook : general
 {
@@ -29,15 +30,14 @@ public class hook : general
     private float hookRotationAmount;
     private float maxHookRotation;
     private float currentHookRotation;
-    private Vector2 shakePolarities;
-    
     // States
     public enum HookState { None, Fish, Reel, SetFree }
     private HookState _hookState = HookState.None;
 
+    [SerializeField] private Button _reelButton;
+
     //Screen shake
     private bool camShaking;
-    private float screenShakeIntensity;
     private int screenShakeDuration;
     private int screenShakeCounter;
     public override void Start()
@@ -56,8 +56,8 @@ public class hook : general
 
         camShaking = false;
         screenShakeCounter = 0;
+
         screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
-        screenShakeIntensity = _gameplayValues.GetScreenShakeIntensity();
     }
     public override void Update()
     {
@@ -111,7 +111,8 @@ public class hook : general
         }
     }
 
-    //Set free state
+    //Set free state, to do any operation once returning from fish, before
+    //automatically switching to the None state
     private void StateSetFreeStateUpdate()
     {
         if (_hookState == HookState.SetFree)
@@ -130,12 +131,11 @@ public class hook : general
                 //fishRigidBod.AddExplosionForce(100000.0f, gameObject.transform.position, 1000.0f, 1.0f);
             }
             fishAttachedToHook.Clear();
-            _boat.GetComponent<BoxCollider>().isTrigger = false;
-            gameObject.GetComponent<Rigidbody>().detectCollisions = true;
+           
             _hookState = HookState.None;
             _boat.SetState(boat.BoatState.None);
-                //Debug.Log("Switching cam parent to boat.");
-                CameraHandler.SetParent(GameObject.FindGameObjectWithTag("BoatCamHolder").transform);
+
+            CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.FocusBoat, true);
         }          
     }
 

@@ -16,8 +16,6 @@ public class basic : MonoBehaviour
 
     void Start()
     {
-        CameraHandler.Initialize();
-
         _generals.Add(SpawnBoat());
         _generals.Add(SpawnHook());
 
@@ -26,8 +24,7 @@ public class basic : MonoBehaviour
         ((hook)_generals[1]).AssignBoat((boat)_generals[0]);
 
         Debug.Log(_generals.Count + " generals");
-
-        
+        CameraHandler.ArtificialStart();
     }
     void Update()
     {
