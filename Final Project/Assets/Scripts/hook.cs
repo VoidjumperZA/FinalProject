@@ -4,7 +4,14 @@ using UnityEngine;
 
 public class hook : general
 {
-    Camera mainCam;
+    // Class references
+    private GameObject _manager;
+    private InputTimer _inputTimer;
+    private GameplayValues _gameplayValues;
+    private Camera _mainCamera;
+    // Components
+    [SerializeField] private Rigidbody _rigidBody;
+    
     // Fishing
     private boat _boat;
     private bool _fishing = false;
@@ -12,17 +19,18 @@ public class hook : general
     float fishRotationAngle = 25.0f;
 
     // Movement
-    [SerializeField] private float _ropeLength;
     [SerializeField] private float _speed;
     [SerializeField] private float _fallSpeed;
     private Vector3 _xyOffset;
     private Vector3 _velocity;
+    // X Velocity damping
+    [SerializeField] private float _xOffsetDamping;
+    // Rotation
     private float hookRotationAmount;
     private float maxHookRotation;
     private float currentHookRotation;
     private Vector2 shakePolarities;
-    // X Velocity damping
-    [SerializeField] private float _xOffsetDamping;
+    
     // States
     public enum HookState { None, Fish, Reel, SetFree }
     private HookState _hookState = HookState.None;
@@ -32,24 +40,24 @@ public class hook : general
     private float screenShakeIntensity;
     private int screenShakeDuration;
     private int screenShakeCounter;
-    private GameObject manager;
     public override void Start()
     {
-        mainCam = Camera.main;
-        if (!GameObject.Find("Manager"))
-        {
-            Debug.Log("WARNING: Manager not found.");
-        }
-        manager = GameObject.Find("Manager");
         base.Start();
+        // Assign class references
+        _manager = GameObject.Find("Manager"); if (!_manager) Debug.Log("WARNING: Manager not found.");
+        _inputTimer = _manager.GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("Warning: Manager is missing InputTimer.");
+        _gameplayValues = _manager.GetComponent<GameplayValues>(); if (!_gameplayValues) Debug.Log("Warning: Manager is missing GameplayValues.");
+        _mainCamera = Camera.main; if (!_mainCamera) Debug.Log("Warning: Camera not found.");
+
+
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
         maxHookRotation = 25.0f;
 
         camShaking = false;
         screenShakeCounter = 0;
-        screenShakeDuration = manager.GetComponent<GameplayValues>().GetScreenShakeDuration();
-        screenShakeIntensity = manager.GetComponent<GameplayValues>().GetScreenShakeIntensity();
+        screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
+        screenShakeIntensity = _gameplayValues.GetScreenShakeIntensity();
     }
     public override void Update()
     {
@@ -98,7 +106,7 @@ public class hook : general
             if (Input.GetMouseButton(0))
             {
                  SetXYAxisOffset(mouse.Instance.GetWorldPoint());
-                GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock();
+                _inputTimer.ResetClock();
             }
         }
     }
@@ -110,15 +118,15 @@ public class hook : general
         {
             //Temporarily turn the boat into a trigger to stop collisions
             _boat.GetComponent<BoxCollider>().isTrigger = true;
-            gameObject.GetComponent<Rigidbody>().detectCollisions = false;
+            _rigidBody.detectCollisions = false;
 
             Debug.Log("Entered SetFree Update");
             for (int i = 0; i < fishAttachedToHook.Count; i++)
             {
                 fishAttachedToHook[i].GetComponent<fish>().Release();
-                Rigidbody fishRigidBod = fishAttachedToHook[i].GetComponent<Rigidbody>();
-                fishRigidBod.isKinematic = false;                
-                fishRigidBod.AddForceAtPosition(new Vector3(/*Random.Range(-5.0f, 5.0f)*/0.0f, 50.0f, 0.0f), gameObject.transform.position - (Vector3.down * 2.0f), ForceMode.Impulse);
+                Rigidbody fishRigidBody = fishAttachedToHook[i].GetComponent<Rigidbody>();
+                fishRigidBody.isKinematic = false;                
+                fishRigidBody.AddForceAtPosition(new Vector3(/*Random.Range(-5.0f, 5.0f)*/0.0f, 50.0f, 0.0f), gameObject.transform.position - (Vector3.down * 2.0f), ForceMode.Impulse);
                 //fishRigidBod.AddExplosionForce(100000.0f, gameObject.transform.position, 1000.0f, 1.0f);
             }
             fishAttachedToHook.Clear();

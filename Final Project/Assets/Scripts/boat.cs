@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class boat : general {
+    private GameObject _manager;
+    private InputTimer _inputTimer;
     // Fishing
     private hook _hook = null;
     // Movement
@@ -14,8 +16,8 @@ public class boat : general {
     public enum BoatState { None, Move, Fish }
     private BoatState _boatState = BoatState.None;
     //Camera and zoom levels
-    private Camera mainCam;
-    private GameplayValues gameplayValues;
+    private Camera _mainCamera;
+    private GameplayValues _gameplayValues;
     Vector3 cameraPosZoomedHook;
     Vector3 cameraPosFocusBoat;
     Vector3 cameraPosOceanOverview;
@@ -24,21 +26,24 @@ public class boat : general {
         base.Start();
         // After inicialization
         _counter = new counter(0.3f);
-        mainCam = Camera.main;
 
-        gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
+        _manager = GameObject.Find("Manager"); if (!_manager) Debug.Log("WARNING: Manager not found.");
+        _inputTimer = _manager.GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("Warning: Manager is missing InputTimer.");
+        _gameplayValues = _manager.GetComponent<GameplayValues>(); if (!_gameplayValues) Debug.Log("Warning: Manager is missing GameplayValues.");
+        _mainCamera = Camera.main; if (!_mainCamera) Debug.Log("Warning: Camera not found.");
+
 
         //Focus Boat Level
-        cameraPosFocusBoat = mainCam.transform.position;
-        cameraPosFocusBoat.z += gameplayValues.GetCamZoomFocusBoat();
+        cameraPosFocusBoat = _mainCamera.transform.position;
+        cameraPosFocusBoat.z += _gameplayValues.GetCamZoomFocusBoat();
 
         //Zoomed Hook Level
-        cameraPosZoomedHook = mainCam.transform.position;
-        cameraPosZoomedHook.z += gameplayValues.GetCamZoomZoomedHook();
+        cameraPosZoomedHook = _mainCamera.transform.position;
+        cameraPosZoomedHook.z += _gameplayValues.GetCamZoomZoomedHook();
 
         //Ocean Overview Level
-        cameraPosOceanOverview = mainCam.transform.position;
-        cameraPosOceanOverview.z += gameplayValues.GetCamZoomOceanOverview();
+        cameraPosOceanOverview = _mainCamera.transform.position;
+        cameraPosOceanOverview.z += _gameplayValues.GetCamZoomOceanOverview();
     }
     public override void Update()
     {
@@ -62,7 +67,7 @@ public class boat : general {
                 if (_boatState == BoatState.Fish)
                 {
                     CameraHandler.SetParent(GameObject.FindGameObjectWithTag("HookCamHolder").transform);
-                    mainCam.transform.position = cameraPosZoomedHook;
+                    _mainCamera.transform.position = cameraPosZoomedHook;
                 }
             }
         }
@@ -74,7 +79,7 @@ public class boat : general {
             if (Input.GetMouseButton(0))
             {
                 SetDestination(mouse.Instance.GetWorldPoint());
-                GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock();
+                _inputTimer.ResetClock();
             }
             MoveToDestination();
         }

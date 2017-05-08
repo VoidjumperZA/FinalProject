@@ -5,19 +5,16 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class InputTimer : MonoBehaviour
-{
-    [SerializeField]
-    private float timeUntilReturnToMenu = 10.0f;
-    [SerializeField]
-    private float timeOutWarning = 10.0f;
-    [SerializeField]
-    private GameObject timeOutWarningUI;
-    [SerializeField]
-    private Text timeOutWarningCountdownText;
-    private float timeLeft;
-    private bool valid; 
+{   
+    public float timeUntilReturnToMenu = 10.0f;
+    
+    public float timeOutWarning = 10.0f;
+    public GameObject timeOutWarningUI;
+    public Text timeOutWarningCountdownText;
+    public float timeLeft;
+    public bool valid; 
 	// Use this for initialization
-	void Start ()
+	private void Start()
     {
         timeOutWarningUI.SetActive(false);
         timeLeft = timeUntilReturnToMenu;
@@ -30,7 +27,7 @@ public class InputTimer : MonoBehaviour
     }
 	
 	// Update is called once per frame
-	void FixedUpdate ()
+	private void FixedUpdate ()
     {
         if (valid == true)
         {
