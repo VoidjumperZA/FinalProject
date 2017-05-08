@@ -4,7 +4,8 @@ using UnityEngine;
 
 public static class CameraHandler
 {
-    //public static CameraHandler Instance;
+    private static GameObject _manager { get { return GameObject.Find("Manager"); } }
+    private static GameplayValues _gameplayValues;
     private static Camera _camera { get { return Camera.main; } }
 
     //Screen shake

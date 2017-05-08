@@ -1,10 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class hook : general
 {
-    Camera mainCam;
+    // Class references
+    private GameObject _manager;
+    private InputTimer _inputTimer;
+    private GameplayValues _gameplayValues;
+    private GlobalUI _globalUI;
+    private Camera _mainCamera;
+    // Components
+    [SerializeField] private Rigidbody _rigidBody;
+    
     // Fishing
     private boat _boat;
     private bool _fishing = false;
@@ -12,41 +21,45 @@ public class hook : general
     float fishRotationAngle = 25.0f;
 
     // Movement
-    [SerializeField] private float _ropeLength;
     [SerializeField] private float _speed;
     [SerializeField] private float _fallSpeed;
     private Vector3 _xyOffset;
     private Vector3 _velocity;
+    // X Velocity damping
+    [SerializeField] private float _xOffsetDamping;
+    // Rotation
     private float hookRotationAmount;
     private float maxHookRotation;
     private float currentHookRotation;
-    // X Velocity damping
-    [SerializeField] private float _xOffsetDamping;
     // States
     public enum HookState { None, Fish, Reel, SetFree }
     private HookState _hookState = HookState.None;
+
+    [SerializeField] private Button _reelButton;
 
     //Screen shake
     private bool camShaking;
     private int screenShakeDuration;
     private int screenShakeCounter;
-    private GameObject manager;
     public override void Start()
     {
-        mainCam = Camera.main;
-        if (!GameObject.Find("Manager"))
-        {
-            Debug.Log("ERROR: Manager not found.");
-        }
-        manager = GameObject.Find("Manager");
         base.Start();
+        // Assign class references
+        _manager = GameObject.Find("Manager"); if (!_manager) Debug.Log("WARNING: Manager not found.");
+        _inputTimer = _manager.GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("Warning: Manager is missing InputTimer.");
+        _gameplayValues = _manager.GetComponent<GameplayValues>(); if (!_gameplayValues) Debug.Log("Warning: Manager is missing GameplayValues.");
+        _globalUI = _manager.GetComponent<GlobalUI>(); if (!_globalUI) Debug.Log("Warning: Manager is missing GlobalUI.");
+        _mainCamera = Camera.main; if (!_mainCamera) Debug.Log("Warning: Camera not found.");
+
+
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
         maxHookRotation = 25.0f;
 
         camShaking = false;
         screenShakeCounter = 0;
-        screenShakeDuration = manager.GetComponent<GameplayValues>().GetScreenShakeDuration();
+
+        screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
     }
     public override void Update()
     {
@@ -77,7 +90,7 @@ public class hook : general
         {
             camShaking = false;
             screenShakeCounter = 0;
-            CameraHandler.ResetScreenShake();
+            CameraHandler.ResetScreenShake(true);
         }
     }
     private void StateNoneUpdate()
@@ -94,8 +107,8 @@ public class hook : general
         {
             if (Input.GetMouseButton(0))
             {
-                 SetXYAxisOffset(mouse.Instance.GetWorldPoint());
-                GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock();
+                 SetXYAxisOffset(mouse.GetWorldPoint());
+                _inputTimer.ResetClock();
             }
         }
     }
@@ -106,9 +119,18 @@ public class hook : general
     {
         if (_hookState == HookState.SetFree)
         {
+            //Temporarily turn the boat into a trigger to stop collisions
+            _boat.GetComponent<BoxCollider>().isTrigger = true;
+            _rigidBody.detectCollisions = false;
+
+            Debug.Log("Entered SetFree Update");
             for (int i = 0; i < fishAttachedToHook.Count; i++)
             {
-                Destroy(fishAttachedToHook[i]);
+                fishAttachedToHook[i].GetComponent<fish>().Release();
+                Rigidbody fishRigidBody = fishAttachedToHook[i].GetComponent<Rigidbody>();
+                fishRigidBody.isKinematic = false;                
+                fishRigidBody.AddForceAtPosition(new Vector3(/*Random.Range(-5.0f, 5.0f)*/0.0f, 50.0f, 0.0f), gameObject.transform.position - (Vector3.down * 2.0f), ForceMode.Impulse);
+                //fishRigidBod.AddExplosionForce(100000.0f, gameObject.transform.position, 1000.0f, 1.0f);
             }
             fishAttachedToHook.Clear();
            
@@ -129,6 +151,7 @@ public class hook : general
             {
                 gameObject.transform.position = _boat.transform.position;
                 _hookState = HookState.SetFree;
+                _globalUI.SwitchHookButtons();
             }
         }
     }
@@ -198,7 +221,7 @@ public class hook : general
         //Debug.Log("hook - Deselect() " + _selected);
         if (_fishing) _hookState = HookState.Fish;
     }
-    private void ReelUpTheHook()
+    public void ReelUpTheHook()
     {
         _hookState = HookState.Reel;
         _fishing = false;
@@ -218,7 +241,7 @@ public class hook : general
             if (other.gameObject.CompareTag("Fish"))
             {
                 //Screen shake
-                CameraHandler.ApplyScreenShake();
+                CameraHandler.ApplyScreenShake(true);
                 camShaking = true;
 
                 //ATTACH FISH TO HOOK
@@ -232,7 +255,7 @@ public class hook : general
                 fishAttachedToHook.Add(other.gameObject);
 
                 //ADDING SCORE
-                //Debug.Log("Detecting Fish");
+                Debug.Log("Detecting Fish");
                 fish.FishType type = other.gameObject.GetComponent<fish>().GetFishType();
                 if (type == fish.FishType.Small)
                 {

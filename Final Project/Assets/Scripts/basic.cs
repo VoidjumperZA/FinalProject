@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class basic : MonoBehaviour
 {
+    [SerializeField] private InputTimer _inputTimer;
     [SerializeField] private LineRenderer _lineRenderer;
-    [SerializeField] private GameObject _boatPrefab;
     [SerializeField] private Transform _boatSpawn;
+    [SerializeField] private GameObject _boatPrefab;
+    [SerializeField] private GameObject _radarPrefab;
     [SerializeField] private GameObject _hookPrefab;
 
     private general _selected = null;
@@ -16,8 +18,11 @@ public class basic : MonoBehaviour
     {
         _generals.Add(SpawnBoat());
         _generals.Add(SpawnHook());
+
         ((boat)_generals[0]).AssignHook((hook)_generals[1]);
+        ((boat)_generals[0]).AssignRadar(SpawnRadar());
         ((hook)_generals[1]).AssignBoat((boat)_generals[0]);
+
         Debug.Log(_generals.Count + " generals");
         CameraHandler.ArtificialStart();
     }
@@ -32,7 +37,7 @@ public class basic : MonoBehaviour
     {
         // On Left mouse button click
         if (!Input.GetMouseButtonDown(0)) return;
-        GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock(); // Rework as [SerializedField] private InputTimer; Call _inputTimer.ResetClock();
+        _inputTimer.ResetClock();
         // Deselect() previously selected object
         if (_selected)
         {
@@ -40,7 +45,7 @@ public class basic : MonoBehaviour
             _selected = null;
         }
         // Raycast to get new object with general component
-        _selected = mouse.Instance.GetGeneral();
+        _selected = mouse.GetGeneral();
         // Select() new object
         if (_selected)
         {
@@ -52,12 +57,16 @@ public class basic : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && _selected)
         {
             _selected.Deselect();
-            GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock();
+            _inputTimer.ResetClock();
         }
     }
     private boat SpawnBoat()
     {
         return Instantiate(_boatPrefab, _boatSpawn.position, Quaternion.identity).GetComponent<boat>();
+    }
+    private Radar SpawnRadar()
+    {
+        return Instantiate(_radarPrefab, _boatSpawn.position, Quaternion.identity).GetComponent<Radar>();
     }
     private hook SpawnHook()
     {
