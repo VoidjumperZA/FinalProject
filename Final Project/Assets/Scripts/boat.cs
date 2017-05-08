@@ -13,11 +13,39 @@ public class boat : general {
     // States
     public enum BoatState { None, Move, Fish }
     private BoatState _boatState = BoatState.None;
+<<<<<<< HEAD
     
+=======
+
+    //Camera and zoom levels
+    private Camera mainCam;
+    private GameplayValues gameplayValues;
+    Vector3 cameraPosZoomedHook;
+    Vector3 cameraPosFocusBoat;
+    Vector3 cameraPosOceanOverview;
+>>>>>>> 56c73cb215bb75dcd96a457f19c8f2991a37931f
     public override void Start()
     {
         base.Start();
         _counter = new counter(0.3f);
+<<<<<<< HEAD
+=======
+        mainCam = Camera.main;
+
+        gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
+
+        //Focus Boat Level
+        cameraPosFocusBoat = mainCam.transform.position;
+        cameraPosFocusBoat.z += gameplayValues.GetCamZoomFocusBoat();
+
+        //Zoomed Hook Level
+        cameraPosZoomedHook = mainCam.transform.position;
+        cameraPosZoomedHook.z += gameplayValues.GetCamZoomZoomedHook();
+
+        //Ocean Overview Level
+        cameraPosOceanOverview = mainCam.transform.position;
+        cameraPosOceanOverview.z += gameplayValues.GetCamZoomOceanOverview();
+>>>>>>> 56c73cb215bb75dcd96a457f19c8f2991a37931f
         // After inicialization
     }
     public override void Update()
@@ -41,7 +69,15 @@ public class boat : general {
                 _boatState = SidewaysOrDownwards() ? BoatState.Move : BoatState.Fish;
                 if (_boatState == BoatState.Fish)
                 {
+<<<<<<< HEAD
                     CameraHandler.SetParent(GameObject.FindGameObjectWithTag("HookCamHolder").transform);
+=======
+                    //Debug.Log("Switching cam parent to hook.");
+                    GameObject hookCam = GameObject.FindGameObjectWithTag("HookCamHolder");
+                    //mainCam.transform.position = hookCam.transform.position;
+                    mainCam.transform.SetParent(hookCam.transform);
+                    mainCam.transform.position = cameraPosZoomedHook;
+>>>>>>> 56c73cb215bb75dcd96a457f19c8f2991a37931f
                 }
             }
         }

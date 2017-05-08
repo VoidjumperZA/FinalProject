@@ -5,11 +5,22 @@ using UnityEngine;
 public class GameplayValues : MonoBehaviour
 {
     //Screen Shake
+    [Header("Screen shake")]
     [SerializeField]
     [Range(0.0f, 3.0f)]
     private float screenShakeIntensity;
     [SerializeField]
     private int screenShakeDuration;
+
+    [Header("Camera Zoom")]
+    [SerializeField]
+    private float camDefaultFocusBoatModifier;
+
+    [SerializeField]
+    private float camOceanOverviewZoomLevel;
+
+    [SerializeField]
+    private float camZoomedHookZoomLevel;
 
 
     // Use this for initialization
@@ -32,6 +43,21 @@ public class GameplayValues : MonoBehaviour
     public int GetScreenShakeDuration()
     {
         return screenShakeDuration;
+    }
+
+    public float GetCamZoomFocusBoat()
+    {
+        return camDefaultFocusBoatModifier;
+    }
+
+    public float GetCamZoomOceanOverview()
+    {
+        return camOceanOverviewZoomLevel;
+    }
+
+    public float GetCamZoomZoomedHook()
+    {
+        return camZoomedHookZoomLevel;
     }
 
 }
