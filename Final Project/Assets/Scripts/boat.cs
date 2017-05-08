@@ -75,7 +75,7 @@ public class boat : general {
         if (_boatState == BoatState.Fish)
         {
             _hook.DeployHook();
-            Debug.Log("Deploy hook");
+            
         }
     }
     // -------- Action Recognizion --------
