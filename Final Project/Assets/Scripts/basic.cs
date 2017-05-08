@@ -11,6 +11,8 @@ public class basic : MonoBehaviour
     [SerializeField] private GameObject _radarPrefab;
     [SerializeField] private GameObject _hookPrefab;
 
+    private int cameraHandlerUpdateKey;
+
     private general _selected = null;
     private List<general> _generals = new List<general>();
 
@@ -32,13 +34,18 @@ public class basic : MonoBehaviour
             Debug.Log("ERROR: Cannot get a reference to InputTimer from the Manager object.");
         }
         CameraHandler.ArtificialStart();
+        cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
     }
     void Update()
     {
-        CameraHandler.ArtificialUpdate();
         SelectNewGeneral();
         DeselectPreviousGeneral();
-        RenderTrail(_generals[0].gameObject.transform.position, _generals[1].gameObject.transform.position);
+        RenderTrail(_generals[0].gameObject.transform.position, _generals[1].gameObject.transform.position);        
+    }
+
+    private void LateUpdate()
+    {
+        CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
     }
     private void SelectNewGeneral()
     {
