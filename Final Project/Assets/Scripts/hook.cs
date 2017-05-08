@@ -21,7 +21,6 @@ public class hook : general
     private float hookRotationAmount;
     private float maxHookRotation;
     private float currentHookRotation;
-    private Vector2 shakePolarities;
     // X Velocity damping
     [SerializeField] private float _xOffsetDamping;
     // States
@@ -32,7 +31,6 @@ public class hook : general
 
     //Screen shake
     private bool camShaking;
-    private float screenShakeIntensity;
     private int screenShakeDuration;
     private int screenShakeCounter;
     private GameObject manager;
@@ -41,7 +39,7 @@ public class hook : general
         mainCam = Camera.main;
         if (!GameObject.Find("Manager"))
         {
-            Debug.Log("WARNING: Manager not found.");
+            Debug.Log("ERROR: Manager not found.");
         }
         manager = GameObject.Find("Manager");
         base.Start();
@@ -52,7 +50,6 @@ public class hook : general
         camShaking = false;
         screenShakeCounter = 0;
         screenShakeDuration = manager.GetComponent<GameplayValues>().GetScreenShakeDuration();
-        screenShakeIntensity = manager.GetComponent<GameplayValues>().GetScreenShakeIntensity();
     }
     public override void Update()
     {
@@ -106,31 +103,18 @@ public class hook : general
         }
     }
 
-    //Set free state
+    //Set free state, to do any operation once returning from fish, before
+    //automatically switching to the None state
     private void StateSetFreeStateUpdate()
     {
         if (_hookState == HookState.SetFree)
         {
-            //Temporarily turn the boat into a trigger to stop collisions
-            _boat.GetComponent<BoxCollider>().isTrigger = true;
-            gameObject.GetComponent<Rigidbody>().detectCollisions = false;
-
-            Debug.Log("Entered SetFree Update");
-            for (int i = 0; i < fishAttachedToHook.Count; i++)
-            {
-                fishAttachedToHook[i].GetComponent<fish>().Release();
-                Rigidbody fishRigidBod = fishAttachedToHook[i].GetComponent<Rigidbody>();
-                fishRigidBod.isKinematic = false;                
-                fishRigidBod.AddForceAtPosition(new Vector3(/*Random.Range(-5.0f, 5.0f)*/0.0f, 50.0f, 0.0f), gameObject.transform.position - (Vector3.down * 2.0f), ForceMode.Impulse);
-                //fishRigidBod.AddExplosionForce(100000.0f, gameObject.transform.position, 1000.0f, 1.0f);
-            }
             fishAttachedToHook.Clear();
-            _boat.GetComponent<BoxCollider>().isTrigger = false;
-            gameObject.GetComponent<Rigidbody>().detectCollisions = true;
+           
             _hookState = HookState.None;
             _boat.SetState(boat.BoatState.None);
-                //Debug.Log("Switching cam parent to boat.");
-                CameraHandler.SetParent(GameObject.FindGameObjectWithTag("BoatCamHolder").transform);
+
+            CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.FocusBoat, true);
         }          
     }
 

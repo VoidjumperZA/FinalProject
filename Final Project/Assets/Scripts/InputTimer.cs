@@ -24,7 +24,7 @@ public class InputTimer : MonoBehaviour
         valid = true;
         if (timeOutWarning >= timeUntilReturnToMenu)
         {
-            Debug.Log("WARNING: Time out warning time is larger than or equal to the time until return to main menu.\n\tMARKING SCRIPT AS INVALID");
+            Debug.Log("ERROR: Time out warning time is larger than or equal to the time until return to main menu.\n\tMARKING SCRIPT AS INVALID");
             valid = false;
         }
     }

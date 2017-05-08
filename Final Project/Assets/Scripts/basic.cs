@@ -19,6 +19,7 @@ public class basic : MonoBehaviour
         ((boat)_generals[0]).AssignHook((hook)_generals[1]);
         ((hook)_generals[1]).AssignBoat((boat)_generals[0]);
         Debug.Log(_generals.Count + " generals");
+        CameraHandler.ArtificialStart();
     }
     void Update()
     {

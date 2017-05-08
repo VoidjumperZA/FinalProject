@@ -16,9 +16,7 @@ public class boat : general {
     //Camera and zoom levels
     private Camera mainCam;
     private GameplayValues gameplayValues;
-    Vector3 cameraPosZoomedHook;
-    Vector3 cameraPosFocusBoat;
-    Vector3 cameraPosOceanOverview;
+    
     public override void Start()
     {
         base.Start();
@@ -26,19 +24,7 @@ public class boat : general {
         _counter = new counter(0.3f);
         mainCam = Camera.main;
 
-        gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
-
-        //Focus Boat Level
-        cameraPosFocusBoat = mainCam.transform.position;
-        cameraPosFocusBoat.z += gameplayValues.GetCamZoomFocusBoat();
-
-        //Zoomed Hook Level
-        cameraPosZoomedHook = mainCam.transform.position;
-        cameraPosZoomedHook.z += gameplayValues.GetCamZoomZoomedHook();
-
-        //Ocean Overview Level
-        cameraPosOceanOverview = mainCam.transform.position;
-        cameraPosOceanOverview.z += gameplayValues.GetCamZoomOceanOverview();
+        gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();       
     }
     public override void Update()
     {
@@ -62,13 +48,9 @@ public class boat : general {
                 if (_boatState != BoatState.Fish && SidewaysOrDownwards())
                 {
                     _boatState = BoatState.Move;
+                    CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.FocusBoat, true);
                 }
-                //_boatState = SidewaysOrDownwards() ? BoatState.Move : BoatState.Fish;
-                /*if (_boatState == BoatState.Fish)
-                {
-                    CameraHandler.SetParent(GameObject.FindGameObjectWithTag("HookCamHolder").transform);
-                    mainCam.transform.position = cameraPosZoomedHook;
-                }*/
+                
             }
         }
     }
@@ -143,9 +125,11 @@ public class boat : general {
     public void EnableFishing()
     {
         _boatState = BoatState.Fish;
-        Debug.Log("Enable fising");
+        //Debug.Log("Enable fising");
 
-        CameraHandler.SetParent(GameObject.FindGameObjectWithTag("HookCamHolder").transform);
-        mainCam.transform.position = cameraPosZoomedHook;
+
+        CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.ZoomedHook, true);
+        //CameraHandler.SetParent(GameObject.FindGameObjectWithTag("HookCamHolder").transform);
+        //mainCam.transform.position = cameraPosZoomedHook;
     }
 }
