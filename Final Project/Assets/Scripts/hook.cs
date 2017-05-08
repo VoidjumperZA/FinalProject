@@ -20,7 +20,6 @@ public class hook : general
     private float hookRotationAmount;
     private float maxHookRotation;
     private float currentHookRotation;
-    private Vector2 shakePolarities;
     // X Velocity damping
     [SerializeField] private float _xOffsetDamping;
     // States
@@ -29,7 +28,6 @@ public class hook : general
 
     //Screen shake
     private bool camShaking;
-    private float screenShakeIntensity;
     private int screenShakeDuration;
     private int screenShakeCounter;
     private GameObject manager;
@@ -49,7 +47,6 @@ public class hook : general
         camShaking = false;
         screenShakeCounter = 0;
         screenShakeDuration = manager.GetComponent<GameplayValues>().GetScreenShakeDuration();
-        screenShakeIntensity = manager.GetComponent<GameplayValues>().GetScreenShakeIntensity();
     }
     public override void Update()
     {
