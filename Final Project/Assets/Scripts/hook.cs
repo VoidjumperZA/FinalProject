@@ -248,7 +248,7 @@ public class hook : general
                 other.gameObject.GetComponent<BoxCollider>().enabled = false;
 
                 //The attached fish are now tracked in a list and also follow the hook
-                other.gameObject.GetComponent<fish>().Catch(gameObject);
+                //other.gameObject.GetComponent<fish>().Catch(gameObject);
                 fishAttachedToHook.Add(other.gameObject);
 
                 //ADDING SCORE

@@ -12,7 +12,7 @@ public class basic : MonoBehaviour
     [SerializeField] private GameObject _hookPrefab;
 
     private general _selected = null;
-    private List<general> _generals = new List<general>();
+    private static List<general> _generals = new List<general>(); public static List<general> Generals { get { return _generals; } }
 
     void Start()
     {
@@ -28,6 +28,7 @@ public class basic : MonoBehaviour
     }
     void Update()
     {
+        Debug.Log(_generals.Count + " generals");
         SelectNewGeneral();
         DeselectPreviousGeneral();
         RenderTrail(_generals[0].gameObject.transform.position, _generals[1].gameObject.transform.position);
@@ -75,5 +76,8 @@ public class basic : MonoBehaviour
     {
         _lineRenderer.SetPositions(new Vector3[] { pPositionOne, pPositionTwo });
     }
-
+    public void AddFish(fish pFish)
+    {
+        _generals.Add(pFish);
+    }
 }

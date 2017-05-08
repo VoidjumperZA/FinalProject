@@ -3,37 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class fish : general {
-    [SerializeField]
-    private float _speed;
+    [SerializeField] private SkinnedMeshRenderer _renderer;
+    [SerializeField] private cakeslice.Outline _outliner;
+    [SerializeField] private float _speed;
     private GameObject _hook = null;
     public enum FishType { Small, Medium, Large, Hunted };
     public FishType fishType;
 
     private bool _caught = false;
     // Use this for initialization
-    void Start() {
-
+    public override void Start() {
+        base.Start();
     }
 
     // Update is called once per frame
-    void Update() {
+    public override void Update() {
         if (!_caught) gameObject.transform.Translate(Vector3.forward * _speed);
         else FollowHook();
-        //if (gameObject.transform.position.x < -9) Destroy(gameObject);
     }
     private void FollowHook()
     {
         if (!_hook) return;
         gameObject.transform.position = _hook.transform.position;
-        //gameObject.transform.rotation = _hook.transform.rotation;
-        //gameObject.transform.Rotate(0.0f, 90.0f, 0.0f);
-        /*Vector3 differenceVector = _hook.transform.position - gameObject.transform.position;
-        if (differenceVector.magnitude >= _speed)
-        {
-            gameObject.transform.Translate(differenceVector.normalized * _speed);
-        }*/
     }
-    public void Catch(GameObject pHook)
+    private void Catch(GameObject pHook)
     {
         _hook = pHook;
         _caught = true;
@@ -70,7 +63,28 @@ public class fish : general {
     {
         if (col.gameObject.name == "Fish Despawner" || col.gameObject.tag == "Floor")
         {
+            basic.Generals.Remove(gameObject.GetComponent<fish>());
             Destroy(gameObject);
         }
+        if (col.gameObject.tag == "Hook")
+        {
+            if (!_visible) return;
+
+            Catch(col.gameObject);
+            ToggleOutliner(false);
+        }
+    }
+
+    public override void ToggleOutliner(bool pBool)
+    {
+        if (!_caught || !pBool)
+        {
+            _outliner.enabled = pBool;
+        }
+    }
+    public override void ToggleRenderer(bool pBool)
+    {
+        _visible = pBool;
+        _renderer.enabled = pBool;
     }
 }

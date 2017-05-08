@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class TempFishSpawn : MonoBehaviour
 {
+    [SerializeField] private basic _basic;
+
     [SerializeField]
     private GameObject[] fishPrefabs;
 
@@ -75,7 +77,8 @@ public class TempFishSpawn : MonoBehaviour
                     newFish.GetComponent<fish>().SetDirection(1.0f);
                     newFish.GetComponent<fish>().SetFishType(randomFish);
                     //Debug.Log("Fish Pos (Right): " + newFish.transform.position);
-                }   
+                }
+                _basic.AddFish(newFish.GetComponent<fish>()); 
                 //Set our time back to max            
                 timePassed = timeBetweenSpawns;
             }
