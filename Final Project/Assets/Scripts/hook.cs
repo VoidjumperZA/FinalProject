@@ -9,6 +9,7 @@ public class hook : general
     private GameObject _manager;
     private InputTimer _inputTimer;
     private GameplayValues _gameplayValues;
+    private GlobalUI _globalUI;
     private Camera _mainCamera;
     // Components
     [SerializeField] private Rigidbody _rigidBody;
@@ -47,6 +48,7 @@ public class hook : general
         _manager = GameObject.Find("Manager"); if (!_manager) Debug.Log("WARNING: Manager not found.");
         _inputTimer = _manager.GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("Warning: Manager is missing InputTimer.");
         _gameplayValues = _manager.GetComponent<GameplayValues>(); if (!_gameplayValues) Debug.Log("Warning: Manager is missing GameplayValues.");
+        _globalUI = _manager.GetComponent<GlobalUI>(); if (!_globalUI) Debug.Log("Warning: Manager is missing GlobalUI.");
         _mainCamera = Camera.main; if (!_mainCamera) Debug.Log("Warning: Camera not found.");
 
 
@@ -149,6 +151,7 @@ public class hook : general
             {
                 gameObject.transform.position = _boat.transform.position;
                 _hookState = HookState.SetFree;
+                _globalUI.SwitchHookButtons();
             }
         }
     }
@@ -218,7 +221,7 @@ public class hook : general
         //Debug.Log("hook - Deselect() " + _selected);
         if (_fishing) _hookState = HookState.Fish;
     }
-    private void ReelUpTheHook()
+    public void ReelUpTheHook()
     {
         _hookState = HookState.Reel;
         _fishing = false;

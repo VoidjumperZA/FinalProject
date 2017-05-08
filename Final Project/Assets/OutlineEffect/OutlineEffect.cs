@@ -289,7 +289,7 @@ namespace cakeslice
         {
             if(outlineShaderMaterial)
             {
-                float scalingFactor = 1;
+                float scalingFactor = 1f;
                 if(scaleWithScreenSize)
                 {
                     // If Screen.height gets bigger, outlines gets thicker

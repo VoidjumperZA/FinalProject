@@ -6,7 +6,7 @@ public class fish : general {
     [SerializeField] private SkinnedMeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
     [SerializeField] private float _speed;
-    private GameObject _hook = null;
+    private hook _hook = null;
     public enum FishType { Small, Medium, Large, Hunted };
     public FishType fishType;
 
@@ -26,11 +26,11 @@ public class fish : general {
         if (!_hook) return;
         gameObject.transform.position = _hook.transform.position;
     }
-    private void Catch(GameObject pHook)
+    private void Catch(hook pHook)
     {
         _hook = pHook;
         _caught = true;
-        transform.position = pHook.transform.position;
+        transform.position = pHook.gameObject.transform.position;
         _speed = 0.0f;
     }
 
@@ -70,7 +70,7 @@ public class fish : general {
         {
             if (!_visible) return;
 
-            Catch(col.gameObject);
+            Catch(col.gameObject.GetComponent<hook>());
             ToggleOutliner(false);
         }
     }
