@@ -42,13 +42,14 @@ public class boat : general {
     }
     public override void Update()
     {
-       // Debug.Log(_boatState + " Boat");
+        //Debug.Log(_boatState + " Boat");
         if (_selected)
         {
+        
             StateNoneUpdate();
             StateMoveUpdate();
-            StateFishUpdate();
         }
+            StateFishUpdate();
     }
     // -------- State Machine --------
     private void StateNoneUpdate()
@@ -58,12 +59,16 @@ public class boat : general {
             _counter.Count();
             if (_counter.Done())
             {
-                _boatState = SidewaysOrDownwards() ? BoatState.Move : BoatState.Fish;
-                if (_boatState == BoatState.Fish)
+                if (_boatState != BoatState.Fish && SidewaysOrDownwards())
+                {
+                    _boatState = BoatState.Move;
+                }
+                //_boatState = SidewaysOrDownwards() ? BoatState.Move : BoatState.Fish;
+                /*if (_boatState == BoatState.Fish)
                 {
                     CameraHandler.SetParent(GameObject.FindGameObjectWithTag("HookCamHolder").transform);
                     mainCam.transform.position = cameraPosZoomedHook;
-                }
+                }*/
             }
         }
     }
@@ -84,6 +89,7 @@ public class boat : general {
         if (_boatState == BoatState.Fish)
         {
             _hook.DeployHook();
+            Debug.Log("Deploy hook");
         }
     }
     // -------- Action Recognizion --------
@@ -132,5 +138,14 @@ public class boat : general {
     public void SetState(BoatState pState)
     {
         _boatState = pState;
+    }
+
+    public void EnableFishing()
+    {
+        _boatState = BoatState.Fish;
+        Debug.Log("Enable fising");
+
+        CameraHandler.SetParent(GameObject.FindGameObjectWithTag("HookCamHolder").transform);
+        mainCam.transform.position = cameraPosZoomedHook;
     }
 }

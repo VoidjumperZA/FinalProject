@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class hook : general
 {
@@ -26,6 +27,8 @@ public class hook : general
     // States
     public enum HookState { None, Fish, Reel, SetFree }
     private HookState _hookState = HookState.None;
+
+    [SerializeField] private Button _reelButton;
 
     //Screen shake
     private bool camShaking;
