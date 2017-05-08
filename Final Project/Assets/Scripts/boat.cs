@@ -5,6 +5,8 @@ using UnityEngine;
 public class boat : general {
     private GameObject _manager;
     private InputTimer _inputTimer;
+    // Radar
+    private Radar _radar = null;
     // Fishing
     private hook _hook = null;
     // Movement
@@ -78,7 +80,7 @@ public class boat : general {
         {
             if (Input.GetMouseButton(0))
             {
-                SetDestination(mouse.Instance.GetWorldPoint());
+                SetDestination(mouse.GetWorldPoint());
                 _inputTimer.ResetClock();
             }
             MoveToDestination();
@@ -94,7 +96,7 @@ public class boat : general {
     // -------- Action Recognizion --------
     private bool SidewaysOrDownwards()
     {
-        Vector3 mouseWorldPoint = mouse.Instance.GetWorldPoint();
+        Vector3 mouseWorldPoint = mouse.GetWorldPoint();
         return Mathf.Abs(mouseWorldPoint.x - gameObject.transform.position.x) > Mathf.Abs(mouseWorldPoint.y - gameObject.transform.position.y);
     }
     // -------- Movement --------
@@ -133,6 +135,11 @@ public class boat : general {
     public void AssignHook(hook pHook)
     {
         _hook = pHook;
+    }
+    public void AssignRadar(Radar pRadar)
+    {
+        _radar = pRadar;
+        _radar.gameObject.transform.SetParent(gameObject.transform);
     }
     public void SetState(BoatState pState)
     {

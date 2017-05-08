@@ -105,7 +105,7 @@ public class hook : general
         {
             if (Input.GetMouseButton(0))
             {
-                 SetXYAxisOffset(mouse.Instance.GetWorldPoint());
+                 SetXYAxisOffset(mouse.GetWorldPoint());
                 _inputTimer.ResetClock();
             }
         }

@@ -4,16 +4,19 @@ using UnityEngine;
 
 public static class CameraHandler
 {
-    //public static CameraHandler Instance;
+    private static GameObject _manager { get { return GameObject.Find("Manager"); } }
+    private static GameplayValues _gameplayValues;
     private static Camera _camera { get { return Camera.main; } }
-    private static Vector2 shakePolarities;
-    private static GameplayValues gameplayValues;
-    private static bool screenShakeLock; 
+    private static Vector2 _shakePolarities;
+    private static bool _screenShakeLock; 
+    public static void Initialize()
+    {
+        _gameplayValues = _manager.GetComponent<GameplayValues>(); if (!_gameplayValues) Debug.Log("Warning: Manager is missing GameplayValues.");
+    }
     public static void SetParent(Transform pTransform)
     {
         _camera.transform.SetParent(pTransform);
-        gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
-        screenShakeLock = false;
+        _screenShakeLock = false;
     }
     /// <summary>
     /// Apply screenshake to the camera. Use pShowDebugLog = true to get a console report of the movement applied.
@@ -25,14 +28,13 @@ public static class CameraHandler
         //stop the screen offsetting before it has been reset
         //therefore avoiding stacking shakes and eventually having a 
         //noticable and incorrect permanent offset
-        if (screenShakeLock == false)
+        if (_screenShakeLock == false)
         {
             //Only create a new direction set on apply
             chooseRandomShakeDirections();
             internalShake(false, pShowDebugLog);
         }
-        
-        screenShakeLock = true;
+        _screenShakeLock = true;
     }
 
     /// <summary>
@@ -42,7 +44,7 @@ public static class CameraHandler
     public static void ResetScreenShake(bool pShowDebugLog = false)
     {
         internalShake(true, pShowDebugLog);
-        screenShakeLock = false;
+        _screenShakeLock = false;
     }
 
     //Avoid duplicate code
@@ -56,7 +58,7 @@ public static class CameraHandler
         }
         
         //Create the vector separately so it allows for easy debugging
-        Vector3 screenShakeMovement = new Vector3(_camera.transform.position.x - (direction * (gameplayValues.GetScreenShakeIntensity() * (float)shakePolarities.x)), _camera.transform.position.y - (direction * (gameplayValues.GetScreenShakeIntensity() * (float)shakePolarities.y)), _camera.transform.position.z);
+        Vector3 screenShakeMovement = new Vector3(_camera.transform.position.x - (direction * (_gameplayValues.GetScreenShakeIntensity() * (float)_shakePolarities.x)), _camera.transform.position.y - (direction * (_gameplayValues.GetScreenShakeIntensity() * (float)_shakePolarities.y)), _camera.transform.position.z);
 
         //Apply
         _camera.transform.position = screenShakeMovement;
@@ -64,7 +66,7 @@ public static class CameraHandler
         //Print, if requested by the user
         if (pShowDebugLog == true)
         {
-            Debug.Log("Moving screen: [" + (direction * (gameplayValues.GetScreenShakeIntensity() * (float)shakePolarities.x)) + ", " + (direction * (gameplayValues.GetScreenShakeIntensity() * (float)shakePolarities.y)) + "," + screenShakeMovement.z + "] units.");
+            Debug.Log("Moving screen: [" + (direction * (_gameplayValues.GetScreenShakeIntensity() * (float)_shakePolarities.x)) + ", " + (direction * (_gameplayValues.GetScreenShakeIntensity() * (float)_shakePolarities.y)) + "," + screenShakeMovement.z + "] units.");
         }
     }
 
@@ -86,8 +88,8 @@ public static class CameraHandler
         }
         Debug.Log("xPol has been corrected to: " + xPolarity);
         //Save those to a vector
-        shakePolarities.x = xPolarity;
-        shakePolarities.y = yPolarity;
+        _shakePolarities.x = xPolarity;
+        _shakePolarities.y = yPolarity;
     }
 
 }
