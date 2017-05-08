@@ -53,22 +53,6 @@ public class hook : general
     }
     public override void Update()
     {
-<<<<<<< HEAD
-        
-=======
-        //Disable screenshake
-        if (camShaking == true)
-        {
-            screenShakeCounter++;
-            if (screenShakeCounter >= screenShakeDuration)
-            {
-                camShaking = false;
-                screenShakeCounter = 0;
-                Camera.main.gameObject.transform.position = new Vector3(Camera.main.gameObject.transform.position.x + (-1 * screenShakeIntensity * (float)shakePolarities.x), Camera.main.gameObject.transform.position.y + (-1 * screenShakeIntensity * (float)shakePolarities.y), Camera.main.gameObject.transform.position.z);
-                Debug.Log("Plusing screen " + (-1 * screenShakeIntensity * (float)shakePolarities.x) + " unit on the x-axis and plussing " + (-1 * screenShakeIntensity * (float)shakePolarities.y) + " on the y-axis.");
-            }
-        }
->>>>>>> 56c73cb215bb75dcd96a457f19c8f2991a37931f
         //Debug.Log(_hookState + " Hook");
         if (_selected)
         {
