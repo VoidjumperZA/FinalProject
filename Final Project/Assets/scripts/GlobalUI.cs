@@ -19,4 +19,10 @@ public class GlobalUI : MonoBehaviour {
         boat b = GameObject.FindGameObjectWithTag("Boat").GetComponent<boat>();
         b.EnableFishing();
     }
+
+    public void SendRadarPulse()
+    {
+        Radar r = GameObject.FindGameObjectWithTag("Radar").GetComponent<Radar>();
+        r.SendPulse();
+    }
 }
