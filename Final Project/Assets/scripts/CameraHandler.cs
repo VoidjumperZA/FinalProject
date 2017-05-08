@@ -13,15 +13,14 @@ public static class CameraHandler
     private static GameplayValues gameplayValues;
     private static bool screenShakeLock;
 
-    //Vector3 cameraPosZoomedHook;
-    private static Vector3 cameraPosFocusBoat;
-    private static Vector3 cameraPosOceanOverview;
-    private static Vector3 cameraPosZoomedHook;
     public enum CameraFocus { FocusBoat, OceanOverview, ZoomedHook };
     public static CameraFocus cameraFocus;
-    private static List<Vector3> cameraPositions;
+    private static List<float> orthZoomLevel;
     private static List<GameObject> cameraParents;
     private static bool hasStartBeenCalled = false;
+    private static bool updateLock;
+    private static float originalOrthSize;
+    private static bool zooming;
 
     /// <summary>
     /// Must be called at least once from another script to set the class up.
@@ -31,26 +30,23 @@ public static class CameraHandler
         //Avoid duplicate calls
         if (hasStartBeenCalled == false)
         {
+            //ARTIFICIAL UPDATE
+            updateLock = false;
             //SCREEN SHAKE
             gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
             screenShakeLock = false;
 
             //CAMERA POSITIONS
-            cameraPositions = new List<Vector3>();
+            orthZoomLevel = new List<float>();
             // Focus Boat Level
-            cameraPosFocusBoat = _camera.transform.position;
-            cameraPosFocusBoat.z += gameplayValues.GetCamZoomFocusBoat();
-            cameraPositions.Add(cameraPosFocusBoat);
+            originalOrthSize = _camera.orthographicSize;
+            orthZoomLevel.Add(originalOrthSize + gameplayValues.GetCamZoomFocusBoat());
 
             //Ocean Overview Level
-            cameraPosOceanOverview = _camera.transform.position;
-            cameraPosOceanOverview.z += gameplayValues.GetCamZoomOceanOverview();
-            cameraPositions.Add(cameraPosOceanOverview);
+            orthZoomLevel.Add(originalOrthSize + gameplayValues.GetCamZoomOceanOverview());
 
             //Zoomed Hook Level
-            cameraPosZoomedHook = _camera.transform.position;
-            cameraPosZoomedHook.z += gameplayValues.GetCamZoomZoomedHook();
-            cameraPositions.Add(cameraPosZoomedHook);
+            orthZoomLevel.Add(originalOrthSize + gameplayValues.GetCamZoomZoomedHook());
             //int enumSize = System.Enum.GetNames(typeof(CameraFocus)).Length;
 
             //CAMERA PARENTS
@@ -67,6 +63,8 @@ public static class CameraHandler
                 }
             }
 
+            zooming = false;
+
             hasStartBeenCalled = true;
         }
         else
@@ -75,23 +73,49 @@ public static class CameraHandler
         }
     }
 
+    public static void ArtificialUpdate()
+    {
+        if (hasStartBeenCalled == true && updateLock == false)
+        {
+            updateLock = true;
+            if (zooming == true)
+            {
+                if (_camera.orthographicSize != orthZoomLevel[(int)cameraFocus])
+                {
+                    float polarity = 1.0f;
+                    if (_camera.orthographicSize > orthZoomLevel[(int)cameraFocus])
+                    {
+                        polarity = -1.0f;
+                    }
+
+                    _camera.orthographicSize += polarity * (gameplayValues.GetCamZoomSpeed());
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Manually parent the GameObject to any GameObject. If you are planning to parent the camera to the Boat, Ocean or Hook Cam Holders, rather use SetCameraFocusPoint() instead.
     /// </summary>
     /// <param name="pTransform"></param>
-    public static void SetParent(Transform pTransform)
+    public static void SetParent(Transform pTransform, bool pCallingFromInternal = false)
     {
         if (hasStartBeenCalled == true)
         {
             if (pTransform != null)
             {
-                for (int i = 0; i < cameraParents.Count; i++)
+                //Don't do this check, if we're already calling from the internal SetFocus method
+                if (pCallingFromInternal == false)
                 {
-                    if (cameraParents[i].transform == pTransform)
+                    for (int i = 0; i < cameraParents.Count; i++)
                     {
-                        Debug.Log("WARNING: Given transform to parent is equal to one of the Cam Holders (Boat, Ocean or Hook) If you are attempting to focus the camera on that position, rather use SetCameraFocusPoint() instead.");
+                        if (cameraParents[i].transform == pTransform)
+                        {
+                            Debug.Log("WARNING: Given transform to parent is equal to one of the Cam Holders (Boat, Ocean or Hook) If you are attempting to focus the camera on that position, rather use SetCameraFocusPoint() instead.");
+                        }
                     }
                 }
+                
                 _camera.transform.SetParent(pTransform);
             }
             else
@@ -211,12 +235,12 @@ public static class CameraHandler
         if (hasStartBeenCalled == true)
         {
             cameraFocus = pCameraPoint;
-            _camera.transform.position = cameraPositions[(int)cameraFocus];
+            _camera.orthographicSize = orthZoomLevel[(int)cameraFocus];
 
             if (pAttachToRelatedParent == true)
             {
                 //Explicit call to avoid accidentally overriding transform.setparent
-                CameraHandler.SetParent(cameraParents[(int)cameraFocus].transform);
+                CameraHandler.SetParent(cameraParents[(int)cameraFocus].transform, true);
             }
         }
         else

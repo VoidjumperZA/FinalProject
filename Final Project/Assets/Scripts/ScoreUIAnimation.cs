@@ -51,7 +51,7 @@ public class ScoreUIAnimation : MonoBehaviour {
         //If we are x percent of our oringal scale, or nearly invisible, just despawn this object
         if (gameObject.transform.localScale.x <= originalScale * percentScale || selfImage.GetComponent<Image>().color.a < 0.1f)
         {
-            Debug.Log("UI is below size or opacity threshold.");
+            //Debug.Log("UI is below size or opacity threshold.");
             Destroy(gameObject);
         }
     }
@@ -59,7 +59,7 @@ public class ScoreUIAnimation : MonoBehaviour {
     public void SetSpawnParametres(float pAngle, float pScale)
     {
         //Rotate and scale the UI
-        Debug.Log("Angle is: " + pAngle);
+        //Debug.Log("Angle is: " + pAngle);
         gameObject.transform.localScale = new Vector3(pScale, pScale, pScale);
         gameObject.transform.Rotate(0.0f, 0.0f, pAngle);
 

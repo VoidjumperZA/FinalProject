@@ -41,16 +41,18 @@ public class hook : general
     private bool camShaking;
     private int screenShakeDuration;
     private int screenShakeCounter;
+
+    private bool valid;
     public override void Start()
     {
+        valid = true;
         base.Start();
         // Assign class references
-        _manager = GameObject.Find("Manager"); if (!_manager) Debug.Log("WARNING: Manager not found.");
-        _inputTimer = _manager.GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("Warning: Manager is missing InputTimer.");
-        _gameplayValues = _manager.GetComponent<GameplayValues>(); if (!_gameplayValues) Debug.Log("Warning: Manager is missing GameplayValues.");
-        _globalUI = _manager.GetComponent<GlobalUI>(); if (!_globalUI) Debug.Log("Warning: Manager is missing GlobalUI.");
-        _mainCamera = Camera.main; if (!_mainCamera) Debug.Log("Warning: Camera not found.");
-
+        _manager = GameObject.Find("Manager"); if (!_manager) { Debug.Log("ERROR: Manager can not be found."); valid = false; }
+        _inputTimer = _manager.GetComponent<InputTimer>(); if (!_inputTimer) { Debug.Log("ERROR: Manager is missing the InputTimer script."); valid = false; }
+        _gameplayValues = _manager.GetComponent<GameplayValues>(); if (!_gameplayValues) { Debug.Log("ERROR: Manager is missing the GameplayValues script."); valid = false; }
+        _globalUI = _manager.GetComponent<GlobalUI>(); if (!_globalUI) { Debug.Log("ERROR: Manager is missing the GlobalUI script."); valid = false; }
+        _mainCamera = Camera.main; if (!_mainCamera) { Debug.Log("ERROR: No main camera in the scene."); valid = false; }
 
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
@@ -61,28 +63,39 @@ public class hook : general
 
         screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
     }
+
+    //
     public override void Update()
     {
-        //Debug.Log(_hookState + " Hook");
-        if (_selected)
+        if (valid == true)
         {
-            StateNoneUpdate();
-            StateFishUpdate();
-            
+            //Debug.Log(_hookState + " Hook");
+            if (_selected)
+            {
+                StateNoneUpdate();
+                StateFishUpdate();
+
+            }
+            else
+            {
+                DampXVelocityAfterDeselected();
+                StateReelUpdate();
+                StateSetFreeStateUpdate();
+            }
+            ApplyVelocity();
+            if (camShaking == true)
+            {
+                shakeCameraOnCollect();
+            }
+            SetCameraAndHookAngle();
         }
         else
         {
-            DampXVelocityAfterDeselected();
-            StateReelUpdate();
-            StateSetFreeStateUpdate();
-        }
-        ApplyVelocity();
-        if (camShaking == true)
-        {
-            shakeCameraOnCollect();
-        }
-        SetCameraAndHookAngle();
+            Debug.Log("ERROR: Hook.cs is missing integral script references, cannot continue.");
+        }       
     }
+
+    //
     private void shakeCameraOnCollect()
     {
         screenShakeCounter++;
@@ -93,6 +106,8 @@ public class hook : general
             CameraHandler.ResetScreenShake(true);
         }
     }
+
+    //
     private void StateNoneUpdate()
     {
         if (_hookState == HookState.None)

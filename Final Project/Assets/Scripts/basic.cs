@@ -29,6 +29,7 @@ public class basic : MonoBehaviour
     void Update()
     {
         Debug.Log(_generals.Count + " generals");
+        CameraHandler.ArtificialUpdate();
         SelectNewGeneral();
         DeselectPreviousGeneral();
         RenderTrail(_generals[0].gameObject.transform.position, _generals[1].gameObject.transform.position);
