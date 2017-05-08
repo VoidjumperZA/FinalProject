@@ -78,19 +78,24 @@ public static class CameraHandler
     /// Manually parent the GameObject to any GameObject. If you are planning to parent the camera to the Boat, Ocean or Hook Cam Holders, rather use SetCameraFocusPoint() instead.
     /// </summary>
     /// <param name="pTransform"></param>
-    public static void SetParent(Transform pTransform)
+    public static void SetParent(Transform pTransform, bool pCallingFromInternal = false)
     {
         if (hasStartBeenCalled == true)
         {
             if (pTransform != null)
             {
-                for (int i = 0; i < cameraParents.Count; i++)
+                //Don't do this check, if we're already calling from the internal SetFocus method
+                if (pCallingFromInternal == false)
                 {
-                    if (cameraParents[i].transform == pTransform)
+                    for (int i = 0; i < cameraParents.Count; i++)
                     {
-                        Debug.Log("WARNING: Given transform to parent is equal to one of the Cam Holders (Boat, Ocean or Hook) If you are attempting to focus the camera on that position, rather use SetCameraFocusPoint() instead.");
+                        if (cameraParents[i].transform == pTransform)
+                        {
+                            Debug.Log("WARNING: Given transform to parent is equal to one of the Cam Holders (Boat, Ocean or Hook) If you are attempting to focus the camera on that position, rather use SetCameraFocusPoint() instead.");
+                        }
                     }
                 }
+                
                 _camera.transform.SetParent(pTransform);
             }
             else
@@ -215,7 +220,7 @@ public static class CameraHandler
             if (pAttachToRelatedParent == true)
             {
                 //Explicit call to avoid accidentally overriding transform.setparent
-                CameraHandler.SetParent(cameraParents[(int)cameraFocus].transform);
+                CameraHandler.SetParent(cameraParents[(int)cameraFocus].transform, true);
             }
         }
         else

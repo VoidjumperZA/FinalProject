@@ -77,7 +77,7 @@ public class hook : general
         {
             camShaking = false;
             screenShakeCounter = 0;
-            CameraHandler.ResetScreenShake(true);
+            CameraHandler.ResetScreenShake();
         }
     }
     private void StateNoneUpdate()
@@ -106,6 +106,10 @@ public class hook : general
     {
         if (_hookState == HookState.SetFree)
         {
+            for (int i = 0; i < fishAttachedToHook.Count; i++)
+            {
+                Destroy(fishAttachedToHook[i]);
+            }
             fishAttachedToHook.Clear();
            
             _hookState = HookState.None;
@@ -214,7 +218,7 @@ public class hook : general
             if (other.gameObject.CompareTag("Fish"))
             {
                 //Screen shake
-                CameraHandler.ApplyScreenShake(true);
+                CameraHandler.ApplyScreenShake();
                 camShaking = true;
 
                 //ATTACH FISH TO HOOK
@@ -228,7 +232,7 @@ public class hook : general
                 fishAttachedToHook.Add(other.gameObject);
 
                 //ADDING SCORE
-                Debug.Log("Detecting Fish");
+                //Debug.Log("Detecting Fish");
                 fish.FishType type = other.gameObject.GetComponent<fish>().GetFishType();
                 if (type == fish.FishType.Small)
                 {
