@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class boat : general {
+    private GameObject _manager;
+    private InputTimer _inputTimer;
+    private GameplayValues _gameplayValues;
+    // Radar
+    private Radar _radar = null;
     // Fishing
     private hook _hook = null;
     // Movement
@@ -14,17 +19,16 @@ public class boat : general {
     public enum BoatState { None, Move, Fish }
     private BoatState _boatState = BoatState.None;
     //Camera and zoom levels
-    private Camera mainCam;
-    private GameplayValues gameplayValues;
-    
+    private Camera _mainCamera;
     public override void Start()
     {
         base.Start();
         // After inicialization
         _counter = new counter(0.3f);
-        mainCam = Camera.main;
-
-        gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();       
+        _manager = GameObject.Find("Manager"); if (!_manager) Debug.Log("WARNING: Manager not found.");
+        _inputTimer = _manager.GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("Warning: Manager is missing InputTimer.");
+        _gameplayValues = _manager.GetComponent<GameplayValues>(); if (!_gameplayValues) Debug.Log("Warning: Manager is missing GameplayValues.");
+        _mainCamera = Camera.main; if (!_mainCamera) Debug.Log("Warning: Camera not found.");
     }
     public override void Update()
     {
@@ -60,8 +64,8 @@ public class boat : general {
         {
             if (Input.GetMouseButton(0))
             {
-                SetDestination(mouse.Instance.GetWorldPoint());
-                GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock();
+                SetDestination(mouse.GetWorldPoint());
+                _inputTimer.ResetClock();
             }
             MoveToDestination();
         }
@@ -77,7 +81,7 @@ public class boat : general {
     // -------- Action Recognizion --------
     private bool SidewaysOrDownwards()
     {
-        Vector3 mouseWorldPoint = mouse.Instance.GetWorldPoint();
+        Vector3 mouseWorldPoint = mouse.GetWorldPoint();
         return Mathf.Abs(mouseWorldPoint.x - gameObject.transform.position.x) > Mathf.Abs(mouseWorldPoint.y - gameObject.transform.position.y);
     }
     // -------- Movement --------
@@ -116,6 +120,11 @@ public class boat : general {
     public void AssignHook(hook pHook)
     {
         _hook = pHook;
+    }
+    public void AssignRadar(Radar pRadar)
+    {
+        _radar = pRadar;
+        _radar.gameObject.transform.SetParent(gameObject.transform);
     }
     public void SetState(BoatState pState)
     {
