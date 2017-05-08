@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class basic : MonoBehaviour
 {
-    [SerializeField] private InputTimer _inputTimer;
+    private InputTimer _inputTimer;
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
     [SerializeField] private GameObject _boatPrefab;
@@ -24,6 +24,13 @@ public class basic : MonoBehaviour
         ((hook)_generals[1]).AssignBoat((boat)_generals[0]);
 
         Debug.Log(_generals.Count + " generals");
+        //InputTimer and basic should be on the same object, but I'm explictly calling in case they ever aren't
+        //and therefore I can still get the script
+        _inputTimer = GameObject.Find("Manager").GetComponent<InputTimer>();
+        if (_inputTimer == null)
+        {
+            Debug.Log("ERROR: Cannot get a reference to InputTimer from the Manager object.");
+        }
         CameraHandler.ArtificialStart();
     }
     void Update()
