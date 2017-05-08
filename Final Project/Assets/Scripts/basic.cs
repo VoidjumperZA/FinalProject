@@ -30,7 +30,7 @@ public class basic : MonoBehaviour
     {
         // On Left mouse button click
         if (!Input.GetMouseButtonDown(0)) return;
-        GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock();
+        GameObject.Find("Manager").GetComponent<InputTimer>().ResetClock(); // Rework as [SerializedField] private InputTimer; Call _inputTimer.ResetClock();
         // Deselect() previously selected object
         if (_selected)
         {

@@ -53,17 +53,7 @@ public class hook : general
     }
     public override void Update()
     {
-        if (camShaking == true)
-        {
-            screenShakeCounter++;
-            if (screenShakeCounter >= screenShakeDuration)
-            {
-                camShaking = false;
-                screenShakeCounter = 0;
-                Camera.main.gameObject.transform.position = new Vector3(Camera.main.gameObject.transform.position.x + (-1 * screenShakeIntensity * (float)shakePolarities.x), Camera.main.gameObject.transform.position.y + (-1 * screenShakeIntensity * (float)shakePolarities.y), Camera.main.gameObject.transform.position.z);
-                Debug.Log("Plusing screen " + (-1 * screenShakeIntensity * (float)shakePolarities.x) + " unit on the x-axis and plussing " + (-1 * screenShakeIntensity * (float)shakePolarities.y) + " on the y-axis.");
-            }
-        }
+        
         //Debug.Log(_hookState + " Hook");
         if (_selected)
         {
@@ -77,7 +67,22 @@ public class hook : general
             StateReelUpdate();
             StateSetFreeStateUpdate();
         }
-        ApplyVelocity();
+        ApplyVelocity(); if (camShaking == true)
+        {
+            ShakeCameraOnCollect();
+        }
+        SetCameraAndHookAngle();
+    }
+    private void ShakeCameraOnCollect()
+    {
+        screenShakeCounter++;
+        if (screenShakeCounter >= screenShakeDuration)
+        {
+            camShaking = false;
+            screenShakeCounter = 0;
+            Camera.main.gameObject.transform.position = new Vector3(Camera.main.gameObject.transform.position.x + (-1 * screenShakeIntensity * (float)shakePolarities.x), Camera.main.gameObject.transform.position.y + (-1 * screenShakeIntensity * (float)shakePolarities.y), Camera.main.gameObject.transform.position.z);
+            Debug.Log("Plusing screen " + (-1 * screenShakeIntensity * (float)shakePolarities.x) + " unit on the x-axis and plussing " + (-1 * screenShakeIntensity * (float)shakePolarities.y) + " on the y-axis.");
+        }
     }
     private void StateNoneUpdate()
     {
@@ -118,9 +123,7 @@ public class hook : general
             _hookState = HookState.None;
             _boat.SetState(boat.BoatState.None);
                 //Debug.Log("Switching cam parent to boat.");
-                GameObject boatCam = GameObject.FindGameObjectWithTag("BoatCamHolder");
-                //mainCam.transform.position = hookCam.transform.position;
-                mainCam.transform.SetParent(boatCam.transform);
+                CameraHandler.SetParent(GameObject.FindGameObjectWithTag("BoatCamHolder").transform);
         }          
     }
 
@@ -135,12 +138,7 @@ public class hook : general
                 gameObject.transform.position = _boat.transform.position;
                 _hookState = HookState.SetFree;
             }
-            CameraFollowHook();
         }
-    }
-    private void CameraFollowHook()
-    {
-        //Camera.main.gameObject.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y, Camera.main.gameObject.transform.position.z);
     }
     // -------- Fishing --------
     public void DeployHook()
@@ -158,6 +156,10 @@ public class hook : general
 
         _velocity = new Vector3(_xyOffset.x * _speed, Mathf.Min(_xyOffset.y * _speed / 2, -_fallSpeed), 0);
         gameObject.transform.Translate(_velocity);
+
+    }
+    private void SetCameraAndHookAngle()
+    {
         if (_xyOffset.x < 0)
         {
             if (currentHookRotation < maxHookRotation)
@@ -176,8 +178,6 @@ public class hook : general
                 Camera.main.transform.Rotate(0.0f, 0.0f, hookRotationAmount);
             }
         }
-        CameraFollowHook();
-
     }
     private void SetXYAxisOffset(Vector3 pPosition)
     {

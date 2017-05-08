@@ -13,13 +13,11 @@ public class boat : general {
     // States
     public enum BoatState { None, Move, Fish }
     private BoatState _boatState = BoatState.None;
-
-    private Camera mainCam;
+    
     public override void Start()
     {
         base.Start();
         _counter = new counter(0.3f);
-        mainCam = Camera.main; 
         // After inicialization
     }
     public override void Update()
@@ -43,10 +41,7 @@ public class boat : general {
                 _boatState = SidewaysOrDownwards() ? BoatState.Move : BoatState.Fish;
                 if (_boatState == BoatState.Fish)
                 {
-                    //Debug.Log("Switching cam parent to hook.");
-                    GameObject hookCam = GameObject.FindGameObjectWithTag("HookCamHolder");
-                    //mainCam.transform.position = hookCam.transform.position;
-                    mainCam.transform.SetParent(hookCam.transform);
+                    CameraHandler.SetParent(GameObject.FindGameObjectWithTag("HookCamHolder").transform);
                 }
             }
         }
