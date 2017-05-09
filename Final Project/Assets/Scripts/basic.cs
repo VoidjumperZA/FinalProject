@@ -14,25 +14,24 @@ public class basic : MonoBehaviour
     private int cameraHandlerUpdateKey;
 
     private general _selected = null;
-    private List<general> _generals = new List<general>();
+    private static List<general> _generals = new List<general>(); public static List<general> Generals { get { return _generals; } }
+    public static boat Boat { get { return (boat)_generals[0]; }  set {  _generals[0] = (boat)value; } }
+    public static hook Hook { get { return (hook)_generals[1]; } set {  _generals[1] = (hook)value; } }
+    public static Radar Radar { get { return (Radar)_generals[2]; } set { _generals[1] = (Radar)value; } }
 
     void Start()
     {
-        _generals.Add(SpawnBoat());
-        _generals.Add(SpawnHook());
+        _generals.Add(SpawnBoat()); // _generals[0]
+        _generals.Add(SpawnHook()); // _generals[1]
 
-        ((boat)_generals[0]).AssignHook((hook)_generals[1]);
-        ((boat)_generals[0]).AssignRadar(SpawnRadar());
-        ((hook)_generals[1]).AssignBoat((boat)_generals[0]);
+        Boat.AssignHook(Hook);
+        Boat.AssignRadar(SpawnRadar()); // _generals[3]
+        Hook.AssignBoat(Boat);
 
         Debug.Log(_generals.Count + " generals");
         //InputTimer and basic should be on the same object, but I'm explictly calling in case they ever aren't
         //and therefore I can still get the script
-        _inputTimer = GameObject.Find("Manager").GetComponent<InputTimer>();
-        if (_inputTimer == null)
-        {
-            Debug.Log("ERROR: Cannot get a reference to InputTimer from the Manager object.");
-        }
+        _inputTimer = GameObject.Find("Manager").GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("ERROR: Cannot get a reference to InputTimer from the Manager object.");
         CameraHandler.ArtificialStart();
         cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
     }
@@ -40,7 +39,7 @@ public class basic : MonoBehaviour
     {
         SelectNewGeneral();
         DeselectPreviousGeneral();
-        RenderTrail(_generals[0].gameObject.transform.position, _generals[1].gameObject.transform.position);        
+        RenderTrail(Boat.transform.position, Hook.gameObject.transform.position);        
     }
 
     private void LateUpdate()
@@ -80,7 +79,7 @@ public class basic : MonoBehaviour
     }
     private Radar SpawnRadar()
     {
-        return Instantiate(_radarPrefab, _boatSpawn.position, Quaternion.identity).GetComponent<Radar>();
+        return Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,0,0.25f), Quaternion.identity).GetComponent<Radar>();
     }
     private hook SpawnHook()
     {
@@ -90,5 +89,8 @@ public class basic : MonoBehaviour
     {
         _lineRenderer.SetPositions(new Vector3[] { pPositionOne, pPositionTwo });
     }
-
+    public void AddFish(fish pFish)
+    {
+        _generals.Add(pFish);
+    }
 }

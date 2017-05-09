@@ -5,6 +5,7 @@ using UnityEngine;
 public class general : MonoBehaviour
 {
     protected bool _selected;
+    protected bool _visible;
 
 
 
@@ -25,8 +26,12 @@ public class general : MonoBehaviour
     {
         return gameObject.tag;
     }
-    public virtual void Text(string pText)
+    public virtual void ToggleOutliner(bool pBool)
     {
-        Debug.Log(pText);
+
+    }
+    public virtual void ToggleRenderer(bool pBool)
+    {
+        _visible = pBool;
     }
 }

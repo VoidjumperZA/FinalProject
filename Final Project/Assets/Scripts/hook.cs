@@ -69,30 +69,32 @@ public class hook : general
     {
         if (valid == true)
         {
-            //Debug.Log(_hookState + " Hook");
+            /*Debug.Log(_hookState + " Hook");
+            Debug.Log(_fishing + " :Fishing");*/
             if (_selected)
             {
                 StateNoneUpdate();
-                StateFishUpdate();
 
             }
             else
             {
                 DampXVelocityAfterDeselected();
-                StateReelUpdate();
                 StateSetFreeStateUpdate();
             }
+            StateReelUpdate();
+            StateFishUpdate();
             ApplyVelocity();
             if (camShaking == true)
             {
-                shakeCameraOnCollect();
+                //shakeCameraOnCollect();
             }
-            SetCameraAndHookAngle();
+           // SetCameraAndHookAngle();
         }
         else
         {
             Debug.Log("ERROR: Hook.cs is missing integral script references, cannot continue.");
-        }       
+        }
+        //Debug.Log(_xyOffset.ToString() + " :Offset");    
     }
 
     //
@@ -112,13 +114,16 @@ public class hook : general
     {
         if (_hookState == HookState.None)
         {
+            _fishing = false;
+            _xyOffset = Vector2.zero;
+            currentHookRotation = 0;
         }
     }
 
     //Fishing state
     private void StateFishUpdate()
     {
-        if (_hookState == HookState.Fish)
+        if (_hookState == HookState.Fish && _fishing)
         {
             if (Input.GetMouseButton(0))
             {
@@ -134,10 +139,6 @@ public class hook : general
     {
         if (_hookState == HookState.SetFree)
         {
-            //Temporarily turn the boat into a trigger to stop collisions
-            _boat.GetComponent<BoxCollider>().isTrigger = true;
-            _rigidBody.detectCollisions = false;
-
             Debug.Log("Entered SetFree Update");
             for (int i = 0; i < fishAttachedToHook.Count; i++)
             {
@@ -150,7 +151,8 @@ public class hook : general
             fishAttachedToHook.Clear();
            
             _hookState = HookState.None;
-            _boat.SetState(boat.BoatState.None);
+            basic.Boat.SetState(boat.BoatState.None);
+            _globalUI.SwitchHookButtons();
 
             CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.FocusBoat, true);
         }          
@@ -166,7 +168,6 @@ public class hook : general
             {
                 gameObject.transform.position = _boat.transform.position;
                 _hookState = HookState.SetFree;
-                _globalUI.SwitchHookButtons();
             }
         }
     }
@@ -182,6 +183,7 @@ public class hook : general
     // -------- Movement --------
     private void ApplyVelocity()
     {
+        Debug.Log(_velocity.ToString() + " :Velocity");
         if (!_fishing) return;
 
         _velocity = new Vector3(_xyOffset.x * _speed, Mathf.Min(_xyOffset.y * _speed / 2, -_fallSpeed), 0);
@@ -196,8 +198,8 @@ public class hook : general
             if (currentHookRotation < maxHookRotation)
             {
                 currentHookRotation += hookRotationAmount;
-                gameObject.transform.Rotate(0.0f, 0.0f, hookRotationAmount);
-                Camera.main.transform.Rotate(0.0f, 0.0f, -hookRotationAmount);
+                gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
+                Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
             }
         }
         else if (_xyOffset.x > 0)
@@ -205,8 +207,8 @@ public class hook : general
             if (currentHookRotation > -maxHookRotation)
             {
                 currentHookRotation -= hookRotationAmount;
-                gameObject.transform.Rotate(0.0f, 0.0f, -hookRotationAmount);
-                Camera.main.transform.Rotate(0.0f, 0.0f, hookRotationAmount);
+                gameObject.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
+                Camera.main.transform.Rotate(0.0f, 0.0f, currentHookRotation);
             }
         }
     }
@@ -218,7 +220,7 @@ public class hook : general
     // X Velocity damping
     private void DampXVelocityAfterDeselected()
     {
-        _xyOffset *= _xOffsetDamping;
+        if (_xyOffset.magnitude > 0)_xyOffset *= _xOffsetDamping;
     }
     // -------- General Script Override --------
     public override void Select()
@@ -266,7 +268,7 @@ public class hook : general
                 other.gameObject.GetComponent<BoxCollider>().enabled = false;
 
                 //The attached fish are now tracked in a list and also follow the hook
-                other.gameObject.GetComponent<fish>().Catch(gameObject);
+                //other.gameObject.GetComponent<fish>().Catch(gameObject);
                 fishAttachedToHook.Add(other.gameObject);
 
                 //ADDING SCORE
@@ -283,7 +285,7 @@ public class hook : general
                 if (type == fish.FishType.Large)
                 {
                     GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(150, true);
-                    ReelUpTheHook();
+                    //ReelUpTheHook();
                 }
                 if (type == fish.FishType.Hunted)
                 {

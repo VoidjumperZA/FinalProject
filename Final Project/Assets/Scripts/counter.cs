@@ -11,11 +11,11 @@ public class counter {
     private float _limit;
     private bool _realTime;
 
-    public counter(float pLimit, float pStep = 0.0f, bool pRealTime = true)
+    public counter(float pLimit, float pStep = 0.0f)
     {
         _limit = pLimit;
         _step = pStep;
-        _realTime = pRealTime;
+        _realTime = (pStep == 0.0f) ? true : false;
         Debug.Log("Counter(" + _limit + ", " + _step + ") created!");
     }
 
