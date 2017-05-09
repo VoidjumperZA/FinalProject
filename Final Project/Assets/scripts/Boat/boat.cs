@@ -16,6 +16,8 @@ public class boat : general {
     // Action recognizion
     private counter _counter;
     // States
+    private Dictionary<BoatState, AbstractBoatState> _stateCache = new Dictionary<BoatState, AbstractBoatState>();
+    private AbstractBoatState _state = null;
     public enum BoatState { None, Move, Fish }
     private BoatState _boatState = BoatState.None;
     //Camera and zoom levels
@@ -29,6 +31,8 @@ public class boat : general {
         _inputTimer = _manager.GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("Warning: Manager is missing InputTimer.");
         _gameplayValues = _manager.GetComponent<GameplayValues>(); if (!_gameplayValues) Debug.Log("Warning: Manager is missing GameplayValues.");
         _mainCamera = Camera.main; if (!_mainCamera) Debug.Log("Warning: Camera not found.");
+        
+        
     }
     public override void Update()
     {

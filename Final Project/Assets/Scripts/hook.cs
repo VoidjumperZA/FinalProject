@@ -151,7 +151,7 @@ public class hook : general
             fishAttachedToHook.Clear();
            
             _hookState = HookState.None;
-            _boat.SetState(boat.BoatState.None);
+            basic.Boat.SetState(boat.BoatState.None);
             _globalUI.SwitchHookButtons();
 
             CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.FocusBoat, true);

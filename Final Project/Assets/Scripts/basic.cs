@@ -15,18 +15,18 @@ public class basic : MonoBehaviour
 
     private general _selected = null;
     private static List<general> _generals = new List<general>(); public static List<general> Generals { get { return _generals; } }
-    private boat _boat { get { return (boat)_generals[0]; }  set {  _generals[0] = (boat)value; } }
-    private hook _hook { get { return (hook)_generals[1]; } set {  _generals[1] = (hook)value; } }
-    private Radar _radar { get { return (Radar)_generals[2]; } set { _generals[1] = (Radar)value; } }
+    public static boat Boat { get { return (boat)_generals[0]; }  set {  _generals[0] = (boat)value; } }
+    public static hook Hook { get { return (hook)_generals[1]; } set {  _generals[1] = (hook)value; } }
+    public static Radar Radar { get { return (Radar)_generals[2]; } set { _generals[1] = (Radar)value; } }
 
     void Start()
     {
         _generals.Add(SpawnBoat()); // _generals[0]
         _generals.Add(SpawnHook()); // _generals[1]
 
-        _boat.AssignHook(_hook);
-        _boat.AssignRadar(SpawnRadar()); // _generals[3]
-        _hook.AssignBoat(_boat);
+        Boat.AssignHook(Hook);
+        Boat.AssignRadar(SpawnRadar()); // _generals[3]
+        Hook.AssignBoat(Boat);
 
         Debug.Log(_generals.Count + " generals");
         //InputTimer and basic should be on the same object, but I'm explictly calling in case they ever aren't
@@ -39,7 +39,7 @@ public class basic : MonoBehaviour
     {
         SelectNewGeneral();
         DeselectPreviousGeneral();
-        RenderTrail(_generals[0].gameObject.transform.position, _generals[1].gameObject.transform.position);        
+        RenderTrail(Boat.transform.position, Hook.gameObject.transform.position);        
     }
 
     private void LateUpdate()
