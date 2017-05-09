@@ -22,8 +22,7 @@ public class GlobalUI : MonoBehaviour {
 	
     public void DeployHook()
     {
-        boat b = GameObject.FindGameObjectWithTag("Boat").GetComponent<boat>();
-        b.EnableFishing();
+        GameObject.FindGameObjectWithTag("Boat").GetComponent<boat>().EnableFishing();
 
         _deployHookButton.gameObject.SetActive(false);
         _radarButton.gameObject.SetActive(false);

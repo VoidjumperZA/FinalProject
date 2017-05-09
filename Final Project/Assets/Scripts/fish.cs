@@ -70,6 +70,7 @@ public class fish : general {
         {
             if (!_visible) return;
 
+            if (fishType == FishType.Large || fishType == FishType.Hunted) _hook.ReelUpTheHook();
             Catch(col.gameObject.GetComponent<hook>());
             ToggleOutliner(false);
         }

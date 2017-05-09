@@ -12,12 +12,17 @@ public static class mouse {
     }
     public static general GetGeneral()
     {
-        if (GetRaycastHit().HasValue) return GetRaycastHit().Value.collider.gameObject.GetComponent<general>();
-        return null;
+        if (GetRaycastHit().HasValue)
+        {
+            Debug.Log(GetRaycastHit().Value.collider.gameObject.tag + " :Name");
+            return GetRaycastHit().Value.collider.gameObject.GetComponent<general>();
+        }
+            return null;
     }
     public static RaycastHit? GetRaycastHit()
-    {
-        if (Physics.Raycast(new Ray(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.forward), out _hitInfo))
+    { 
+        
+        if (Physics.Raycast(new Ray(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.forward), out _hitInfo, 1 << 8))
         {
             return _hitInfo;
         }

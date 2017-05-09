@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Radar : MonoBehaviour {
+public class Radar : general {
     // Pulse visualisation
     private bool _active = false;
     [SerializeField] private float _cooldownDuration;
@@ -11,11 +11,11 @@ public class Radar : MonoBehaviour {
     [SerializeField] private Renderer _renderer;
     // Fish detector
     [SerializeField] private float _radarAngle;
-	void Start() {
+	public override void Start() {
         _renderer.enabled = false;
         _cooldown = new counter(_cooldownDuration);
 	}
-	void Update() {
+	public override void Update() {
         if (_active) VisualiseRadarCone();
 	}
     private void VisualiseRadarCone()

@@ -35,27 +35,27 @@ public class boat : general {
         //Debug.Log(_boatState + " Boat");
         if (_selected)
         {
-        
             StateNoneUpdate();
             StateMoveUpdate();
         }
-            StateFishUpdate();
+        StateFishUpdate();
     }
     // -------- State Machine --------
     private void StateNoneUpdate()
     {
         if (_boatState == BoatState.None)
         {
-            _counter.Count();
+            /*_counter.Count();
             if (_counter.Done())
-            {
-                if (_boatState != BoatState.Fish && SidewaysOrDownwards())
+            {*/
+                if (SidewaysOrDownwards())
                 {
                     _boatState = BoatState.Move;
+                    _destination = Vector3.zero;
                     CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.FocusBoat, true);
                 }
                 
-            }
+            //}
         }
     }
     private void StateMoveUpdate()
@@ -65,7 +65,7 @@ public class boat : general {
             if (Input.GetMouseButton(0))
             {
                 SetDestination(mouse.GetWorldPoint());
-                _inputTimer.ResetClock();
+                //_inputTimer.ResetClock();
             }
             MoveToDestination();
         }
@@ -107,7 +107,7 @@ public class boat : general {
     {
         base.Select();
         //Debug.Log("boat - Select() " + _selected);
-        _counter.Reset();
+        //_counter.Reset();
 
     }
     public override void Deselect()
@@ -115,7 +115,7 @@ public class boat : general {
         base.Deselect();
         //Debug.Log("boat - Deselect() " + _selected);
         if (_boatState != BoatState.Fish) _boatState = BoatState.None;
-        _counter.SetActive(false);
+        //_counter.SetActive(false);
     }
     public void AssignHook(hook pHook)
     {
@@ -134,6 +134,7 @@ public class boat : general {
     public void EnableFishing()
     {
         _boatState = BoatState.Fish;
+        //_hook.DeployHook();
         //Debug.Log("Enable fising");
 
 
