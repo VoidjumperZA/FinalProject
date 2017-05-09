@@ -4,22 +4,31 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ScoreHandler : MonoBehaviour {
+    [Header("UI Pieces")]
     [SerializeField]
     private GameObject scoreUI; //the appearing score ui
     [SerializeField]
     private Text totalScore; //the counter listing our total score
     [SerializeField]
+    private Text currentHookScore;
+    [Header("Flashing")]
+    [SerializeField]
     Color flashColour;  //which colour the text flashes when it updates
     [SerializeField]
-    float colourFlashTime; //how long does it flash that colour
+    private float colourFlashTime; //how long does it flash that colour
+    [Header("Values")]
     [SerializeField]
     private GameObject UISpawnPosition; //where are we spawning that ui
     [SerializeField]
-    float minimumUIScale; //our size is random, what is the minimum bound for scaling
+    private float minimumUIScale; //our size is random, what is the minimum bound for scaling
     [SerializeField]
-    float maximumUIScale; //maximum bound for scaling
+    private float maximumUIScale; //maximum bound for scaling
     [SerializeField]
-    float UIRotationAngle; //rotating our ui a little for affect
+    private float UIRotationAngle; //rotating our ui a little for effect
+    [SerializeField]
+    private float hookScoreXOffset;
+    [SerializeField]
+    private float hookScoreYOffset;
     private Transform UIPosition;
     private int playerCurrentScore; 
     private float timeColourHasBeenFlashing;
@@ -27,7 +36,7 @@ public class ScoreHandler : MonoBehaviour {
     private bool colourFlashing;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         UIPosition = UISpawnPosition.transform;
         playerCurrentScore = 0;
@@ -35,11 +44,16 @@ public class ScoreHandler : MonoBehaviour {
         timeColourHasBeenFlashing = 0.0f;
         originalTotalScoreColour = totalScore.color;
         colourFlashing = false;
+        
+
 	}
 	
 	// Update is called once per frame
-	void Update () {
-
+	void Update () 
+    {
+        Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(GameObject.FindGameObjectWithTag("Hook").transform.position);
+        Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + hookScoreXOffset, hookPosOnScreen.y + hookScoreYOffset, 0.0f);
+        currentHookScore.transform.position = offsetPosition;
         //Temporarily to simulate hitting different fish types
         if (Input.GetKeyDown(KeyCode.W))
         {

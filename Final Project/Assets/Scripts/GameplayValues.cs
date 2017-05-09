@@ -25,6 +25,13 @@ public class GameplayValues : MonoBehaviour
     [SerializeField]
     private float zoomSpeed;
 
+    [Header("Combos")]
+    [SerializeField]
+    private int minComboSize;
+
+    [SerializeField]
+    private int maxComboSize;
+
 
     // Use this for initialization
     void Start()
@@ -66,5 +73,15 @@ public class GameplayValues : MonoBehaviour
     public float GetCamZoomSpeed()
     {
         return zoomSpeed;
+    }
+
+    public int GetMinComboSize()
+    {
+        return minComboSize;
+    }
+
+    public int GetMaxComboSize()
+    {
+        return maxComboSize;
     }
 }
