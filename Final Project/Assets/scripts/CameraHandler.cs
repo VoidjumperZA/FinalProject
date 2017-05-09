@@ -13,12 +13,18 @@ public static class CameraHandler
     private static GameplayValues gameplayValues;
     private static bool screenShakeLock;
 
+    public enum UpdateStatus { Available, Taken };
+    public static UpdateStatus updateStatus;
+    public static int minKeyRange;
+    public static int maxKeyRange;
+    public static int updateKey;
+
+    //Camera zoom levels and focus points
     public enum CameraFocus { FocusBoat, OceanOverview, ZoomedHook };
     public static CameraFocus cameraFocus;
     private static List<float> orthZoomLevel;
     private static List<GameObject> cameraParents;
     private static bool hasStartBeenCalled = false;
-    private static bool updateLock;
     private static float originalOrthSize;
     private static bool zooming;
 
@@ -31,7 +37,10 @@ public static class CameraHandler
         if (hasStartBeenCalled == false)
         {
             //ARTIFICIAL UPDATE
-            updateLock = false;
+            minKeyRange = 1000;
+            maxKeyRange = 9999;
+            updateKey = 1000;
+
             //SCREEN SHAKE
             gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
             screenShakeLock = false;
@@ -73,25 +82,64 @@ public static class CameraHandler
         }
     }
 
-    public static void ArtificialUpdate()
+    public static void ArtificialUpdate(int pKey)
     {
-        if (hasStartBeenCalled == true && updateLock == false)
-        {
-            updateLock = true;
+        if (hasStartBeenCalled == true && updateStatus == UpdateStatus.Taken && pKey == updateKey)
+        {           
             if (zooming == true)
             {
-                if (_camera.orthographicSize != orthZoomLevel[(int)cameraFocus])
+                //if our camera sized equals our target OR is greater than the target - step and smaller than the target + step
+                if (_camera.orthographicSize > orthZoomLevel[(int)cameraFocus] - gameplayValues.GetCamZoomSpeed() && _camera.orthographicSize < orthZoomLevel[(int)cameraFocus] + gameplayValues.GetCamZoomSpeed())
                 {
+                    //if our step could mathematically never reach our target (e.g. step = 0.75, target = 10)
+                    //then correct and set the camera to the final target
+                    _camera.orthographicSize = orthZoomLevel[(int)cameraFocus];
+                    zooming = false;
+                }
+                else
+                {                   
                     float polarity = 1.0f;
                     if (_camera.orthographicSize > orthZoomLevel[(int)cameraFocus])
                     {
                         polarity = -1.0f;
                     }
-
+                    Debug.Log("CORRECTING");
                     _camera.orthographicSize += polarity * (gameplayValues.GetCamZoomSpeed());
                 }
             }
         }
+        else
+        {
+            Debug.Log("WARNING: Either ArtificialStart() has not been called or you are trying to access the ArtificialUpdate without requestion permission, or with an incorrect key. Please request a key using RequestUpdateCallPermission()");
+        }
+    }
+
+    /// <summary>
+    /// Gives permission as well as a unique key to a script wanting to manage the ArtificialUpdate. This is to stop multiple scripts over calling the ArtificialUpdate multiples times per frame and destroying any update sensitive information.
+    /// </summary>
+    /// <returns>A unique key.</returns>
+    public static int RequestUpdateCallPermission()
+    {
+        int key = 666;
+        if (updateStatus == UpdateStatus.Taken)
+        {
+            Debug.Log("WARNING: Access to the ArtificialUpdate denied. Update call is currently being used by another script.");
+        }
+        else
+        {
+            updateKey = Random.Range(minKeyRange, maxKeyRange);
+            key = updateKey;
+            updateStatus = UpdateStatus.Taken;
+        }
+        return key;
+    }
+
+    /// <summary>
+    /// Relinquishes a script's hold on the ArtificialUpdate, allowing a new script to request a key and use the update.
+    /// </summary>
+    public static void ReleaseUpdateCallPermission()
+    {
+        updateStatus = UpdateStatus.Available;
     }
 
     /// <summary>
@@ -235,7 +283,8 @@ public static class CameraHandler
         if (hasStartBeenCalled == true)
         {
             cameraFocus = pCameraPoint;
-            _camera.orthographicSize = orthZoomLevel[(int)cameraFocus];
+            //_camera.orthographicSize = orthZoomLevel[(int)cameraFocus];
+            zooming = true;
 
             if (pAttachToRelatedParent == true)
             {

@@ -11,6 +11,8 @@ public class basic : MonoBehaviour
     [SerializeField] private GameObject _radarPrefab;
     [SerializeField] private GameObject _hookPrefab;
 
+    private int cameraHandlerUpdateKey;
+
     private general _selected = null;
     private static List<general> _generals = new List<general>(); public static List<general> Generals { get { return _generals; } }
     private boat _boat { get { return (boat)_generals[0]; }  set {  _generals[0] = (boat)value; } }
@@ -31,13 +33,18 @@ public class basic : MonoBehaviour
         //and therefore I can still get the script
         _inputTimer = GameObject.Find("Manager").GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("ERROR: Cannot get a reference to InputTimer from the Manager object.");
         CameraHandler.ArtificialStart();
+        cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
     }
     void Update()
     {
-        CameraHandler.ArtificialUpdate();
         SelectNewGeneral();
         DeselectPreviousGeneral();
-        RenderTrail(_generals[0].gameObject.transform.position, _generals[1].gameObject.transform.position);
+        RenderTrail(_generals[0].gameObject.transform.position, _generals[1].gameObject.transform.position);        
+    }
+
+    private void LateUpdate()
+    {
+        CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
     }
     private void SelectNewGeneral()
     {
