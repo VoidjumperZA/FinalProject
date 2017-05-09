@@ -7,7 +7,7 @@ public class fish : general {
     [SerializeField] private cakeslice.Outline _outliner;
     [SerializeField] private float _speed;
     private hook _hook = null;
-    public enum FishType { Small, Medium, Large, Hunted };
+    public enum FishType { Small, Medium, Large };
     public FishType fishType;
 
     private bool _caught = false;
@@ -70,7 +70,7 @@ public class fish : general {
         {
             if (!_visible) return;
 
-            if (fishType == FishType.Large || fishType == FishType.Hunted) _hook.ReelUpTheHook();
+            if (fishType == FishType.Large ) _hook.ReelUpTheHook();
             Catch(col.gameObject.GetComponent<hook>());
             ToggleOutliner(false);
         }

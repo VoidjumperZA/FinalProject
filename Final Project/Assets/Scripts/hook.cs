@@ -288,10 +288,10 @@ public class hook : general
                     GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(150, true);
                     //ReelUpTheHook();
                 }
-                if (type == fish.FishType.Hunted)
-                {
-                    GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(500, true);
-                }
+                //if (type == fish.FishType.Hunted)
+                //{
+                    //GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(500, true);
+                //}
                 
             }
         }

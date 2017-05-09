@@ -11,12 +11,14 @@ public class ScoreHandler : MonoBehaviour {
     private Text totalScore; //the counter listing our total score
     [SerializeField]
     private Text currentHookScore;
+
     [Header("Flashing")]
     [SerializeField]
     Color flashColour;  //which colour the text flashes when it updates
     [SerializeField]
     private float colourFlashTime; //how long does it flash that colour
     [Header("Values")]
+
     [SerializeField]
     private GameObject UISpawnPosition; //where are we spawning that ui
     [SerializeField]
@@ -128,10 +130,16 @@ public class ScoreHandler : MonoBehaviour {
 
     public void BankScore()
     {
+        //Add our score to the bank
         bankedScore += playerCurrentScore;
+
+        //Empty it from the hook
         playerCurrentScore = 0;
+
+        //Display on the UI
         currentHookScore.text = playerCurrentScore + "";
         totalScore.text = bankedScore + "";
+
         //Briefly switch the colour and start a counter to switch it back for visual feedback
         timeColourHasBeenFlashing = colourFlashTime;
         colourFlashing = true;
