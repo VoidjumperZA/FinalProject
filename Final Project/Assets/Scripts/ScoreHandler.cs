@@ -30,18 +30,25 @@ public class ScoreHandler : MonoBehaviour {
     [SerializeField]
     private float hookScoreYOffset;
     private Transform UIPosition;
-    private int playerCurrentScore; 
+    private int playerCurrentScore;
+    private int bankedScore;
     private float timeColourHasBeenFlashing;
+    private Color originalHookScoreColour;
     private Color originalTotalScoreColour;
     private bool colourFlashing;
+    private Text flashTextHolder;
+    private Color originalColourHolder;
 
     // Use this for initialization
     void Start()
     {
         UIPosition = UISpawnPosition.transform;
         playerCurrentScore = 0;
-        totalScore.text = playerCurrentScore + "";
+        bankedScore = 0;
+        currentHookScore.text = playerCurrentScore + "";
+        totalScore.text = bankedScore + "";
         timeColourHasBeenFlashing = 0.0f;
+        originalHookScoreColour = currentHookScore.color;
         originalTotalScoreColour = totalScore.color;
         colourFlashing = false;
         
@@ -78,7 +85,8 @@ public class ScoreHandler : MonoBehaviour {
             {
                 colourFlashing = false;
                 //reset the text back to it's original colour
-                totalScore.color = originalTotalScoreColour;
+                flashTextHolder.color = originalColourHolder;
+                flashTextHolder = null;
             }
         }
     }
@@ -108,12 +116,28 @@ public class ScoreHandler : MonoBehaviour {
         {
             createScoreUI(pAddedScore);
         }
-        totalScore.text = playerCurrentScore + "";
+        currentHookScore.text = playerCurrentScore + "";
 
         //Briefly switch the colour and start a counter to switch it back for visual feedback
         timeColourHasBeenFlashing = colourFlashTime;
         colourFlashing = true;
+        currentHookScore.color = flashColour;
+        flashTextHolder = currentHookScore;
+        originalColourHolder = originalHookScoreColour;
+    }
+
+    public void BankScore()
+    {
+        bankedScore += playerCurrentScore;
+        playerCurrentScore = 0;
+        currentHookScore.text = playerCurrentScore + "";
+        totalScore.text = bankedScore + "";
+        //Briefly switch the colour and start a counter to switch it back for visual feedback
+        timeColourHasBeenFlashing = colourFlashTime;
+        colourFlashing = true;
         totalScore.color = flashColour;
+        flashTextHolder = totalScore;
+        originalColourHolder = originalTotalScoreColour;
     }
 
     //Instantiate a UI instance

@@ -140,6 +140,7 @@ public class hook : general
         if (_hookState == HookState.SetFree)
         {
             Debug.Log("Entered SetFree Update");
+            GameObject.Find("Manager").GetComponent<ScoreHandler>().BankScore();
             for (int i = 0; i < fishAttachedToHook.Count; i++)
             {
                 fishAttachedToHook[i].GetComponent<fish>().Release();
@@ -183,7 +184,7 @@ public class hook : general
     // -------- Movement --------
     private void ApplyVelocity()
     {
-        Debug.Log(_velocity.ToString() + " :Velocity");
+        //Debug.Log(_velocity.ToString() + " :Velocity");
         if (!_fishing) return;
 
         _velocity = new Vector3(_xyOffset.x * _speed, Mathf.Min(_xyOffset.y * _speed / 2, -_fallSpeed), 0);
