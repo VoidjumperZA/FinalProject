@@ -275,6 +275,7 @@ public class hook : general
                 //ADDING SCORE
                 Debug.Log("Detecting Fish");
                 fish.FishType type = other.gameObject.GetComponent<fish>().GetFishType();
+                GameObject.Find("Manager").GetComponent<Combo>().CheckComboProgress(type);
                 if (type == fish.FishType.Small)
                 {
                     GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(10, true);

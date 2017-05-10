@@ -8,9 +8,13 @@ public class Combo : MonoBehaviour
 
     [Header("Combo Pieces")]
     [SerializeField]
-    private Image comboImageToInstantiate;
+    private Image comboBackgroundImageToInstantiate;
     [SerializeField]
-    private Sprite[] comboIconStates;
+    private Image comboFishImageToInstantiate;
+    [SerializeField]
+    private Sprite[] comboBackgroundIconSprites;
+    [SerializeField]
+    private Sprite[] comboFishIconSprites;
     [SerializeField]
     private GameObject iconSpawnPosition;
     [SerializeField]
@@ -21,11 +25,19 @@ public class Combo : MonoBehaviour
 
     private GameplayValues gameplayValues;
     private int comboLength;
+    private int comboIndex;
     private List<fish.FishType> combo;
+    private List<Image> iconBackgroundsList;
+    private List<Image> iconFishList;
+
+    private enum IconBackgroundStates { Standard, Next, Completed, Broken };
+    private IconBackgroundStates iconBackgroundStates;
     // Use this for initialization
     void Start()
     {
         combo = new List<fish.FishType>();
+        iconBackgroundsList = new List<Image>();
+        iconFishList = new List<Image>();
         gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
     }
 
@@ -38,30 +50,56 @@ public class Combo : MonoBehaviour
         }
     }
 
+    public void CheckComboProgress(fish.FishType pFishType)
+    {
+        Debug.Log("Checking Combo Progress.");
+        if (pFishType == combo[comboIndex])
+        {
+            Debug.Log("Combo type was correct!");
+            iconBackgroundsList[comboIndex].sprite = comboBackgroundIconSprites[(int)IconBackgroundStates.Completed];
+            comboIndex++;
+            iconBackgroundsList[comboIndex].sprite = comboBackgroundIconSprites[(int)IconBackgroundStates.Next];
+        }
+    }
+
     private void createNewCombo()
     {
-        comboLength = Random.Range(gameplayValues.GetMinComboSize(), gameplayValues.GetMaxComboSize() + 1);
-        Debug.Log("New Combo [" + comboLength + "]: ");
-        int numberOfFish = System.Enum.GetNames(typeof(fish.FishType)).Length;
-        for (int i = 0; i < comboLength; i++)
+        comboIndex = 0;
+        for (int i = 0; i < iconBackgroundsList.Count; i++)
         {
-            int comboIndex = Random.Range(0, numberOfFish);
-            combo.Add((fish.FishType)comboIndex);
-            Debug.Log("- " + combo[i].ToString());
-            Image newComboIcon = GameObject.Instantiate(comboImageToInstantiate, canvas.transform);
+            Destroy(iconBackgroundsList[i].gameObject);
+            Destroy(iconFishList[i].gameObject);
+        }
+        iconBackgroundsList.Clear();
+        iconFishList.Clear();
 
-            if (i == comboLength - 1)
+        comboLength = Random.Range(gameplayValues.GetMinComboSize(), gameplayValues.GetMaxComboSize());
+        Debug.Log("New Combo [" + comboLength + 1 + "]: ");
+        int numberOfFish = System.Enum.GetNames(typeof(fish.FishType)).Length;
+        for (int i = comboLength; i > -1; i--)
+        {
+            int fishTypeIndex = Random.Range(0, numberOfFish);
+            combo.Add((fish.FishType)fishTypeIndex);
+            Debug.Log("- (" + fishTypeIndex + ")" + combo[comboLength - i].ToString());
+            Image newComboIconBackground = GameObject.Instantiate(comboBackgroundImageToInstantiate, canvas.transform);
+            Image newComboIconFish = GameObject.Instantiate(comboFishImageToInstantiate, canvas.transform);
+            newComboIconFish.sprite = comboFishIconSprites[fishTypeIndex];
+
+            if (i == comboLength)
             {
-                newComboIcon.sprite = comboIconStates[1];
+                newComboIconBackground.sprite = comboBackgroundIconSprites[(int)IconBackgroundStates.Next];
             }
             else
             {
-                newComboIcon.sprite = comboIconStates[0];
+                newComboIconBackground.sprite = comboBackgroundIconSprites[(int)IconBackgroundStates.Standard];
             }
 
             Vector3 iconPosition = iconSpawnPosition.transform.position;
             iconPosition.x -= (i * widthBetweenIcons);
-            newComboIcon.transform.position = iconPosition;
+            newComboIconBackground.transform.position = iconPosition;
+            newComboIconFish.transform.position = iconPosition;
+            iconBackgroundsList.Add(newComboIconBackground);
+            iconFishList.Add(newComboIconFish);
         }
 
     }

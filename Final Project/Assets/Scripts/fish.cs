@@ -32,6 +32,7 @@ public class fish : general {
         _caught = true;
         transform.position = pHook.gameObject.transform.position;
         _speed = 0.0f;
+       
     }
 
     public void Release()
