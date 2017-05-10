@@ -103,7 +103,6 @@ public static class CameraHandler
                     {
                         polarity = -1.0f;
                     }
-                    Debug.Log("CORRECTING");
                     _camera.orthographicSize += polarity * (gameplayValues.GetCamZoomSpeed());
                 }
             }

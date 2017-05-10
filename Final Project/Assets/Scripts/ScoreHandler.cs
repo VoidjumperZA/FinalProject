@@ -4,42 +4,65 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ScoreHandler : MonoBehaviour {
+    [Header("UI Pieces")]
     [SerializeField]
     private GameObject scoreUI; //the appearing score ui
     [SerializeField]
     private Text totalScore; //the counter listing our total score
     [SerializeField]
+    private Text currentHookScore;
+
+    [Header("Flashing")]
+    [SerializeField]
     Color flashColour;  //which colour the text flashes when it updates
     [SerializeField]
-    float colourFlashTime; //how long does it flash that colour
+    private float colourFlashTime; //how long does it flash that colour
+    [Header("Values")]
+
     [SerializeField]
     private GameObject UISpawnPosition; //where are we spawning that ui
     [SerializeField]
-    float minimumUIScale; //our size is random, what is the minimum bound for scaling
+    private float minimumUIScale; //our size is random, what is the minimum bound for scaling
     [SerializeField]
-    float maximumUIScale; //maximum bound for scaling
+    private float maximumUIScale; //maximum bound for scaling
     [SerializeField]
-    float UIRotationAngle; //rotating our ui a little for affect
+    private float UIRotationAngle; //rotating our ui a little for effect
+    [SerializeField]
+    private float hookScoreXOffset;
+    [SerializeField]
+    private float hookScoreYOffset;
     private Transform UIPosition;
-    private int playerCurrentScore; 
+    private int playerCurrentScore;
+    private int bankedScore;
     private float timeColourHasBeenFlashing;
+    private Color originalHookScoreColour;
     private Color originalTotalScoreColour;
     private bool colourFlashing;
+    private Text flashTextHolder;
+    private Color originalColourHolder;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         UIPosition = UISpawnPosition.transform;
         playerCurrentScore = 0;
-        totalScore.text = playerCurrentScore + "";
+        bankedScore = 0;
+        currentHookScore.text = playerCurrentScore + "";
+        totalScore.text = bankedScore + "";
         timeColourHasBeenFlashing = 0.0f;
+        originalHookScoreColour = currentHookScore.color;
         originalTotalScoreColour = totalScore.color;
         colourFlashing = false;
+        
+
 	}
 	
 	// Update is called once per frame
-	void Update () {
-
+	void Update () 
+    {
+        Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
+        Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + hookScoreXOffset, hookPosOnScreen.y + hookScoreYOffset, 0.0f);
+        currentHookScore.transform.position = offsetPosition;
         //Temporarily to simulate hitting different fish types
         if (Input.GetKeyDown(KeyCode.W))
         {
@@ -64,7 +87,8 @@ public class ScoreHandler : MonoBehaviour {
             {
                 colourFlashing = false;
                 //reset the text back to it's original colour
-                totalScore.color = originalTotalScoreColour;
+                flashTextHolder.color = originalColourHolder;
+                flashTextHolder = null;
             }
         }
     }
@@ -94,12 +118,34 @@ public class ScoreHandler : MonoBehaviour {
         {
             createScoreUI(pAddedScore);
         }
-        totalScore.text = playerCurrentScore + "";
+        currentHookScore.text = playerCurrentScore + "";
+
+        //Briefly switch the colour and start a counter to switch it back for visual feedback
+        timeColourHasBeenFlashing = colourFlashTime;
+        colourFlashing = true;
+        currentHookScore.color = flashColour;
+        flashTextHolder = currentHookScore;
+        originalColourHolder = originalHookScoreColour;
+    }
+
+    public void BankScore()
+    {
+        //Add our score to the bank
+        bankedScore += playerCurrentScore;
+
+        //Empty it from the hook
+        playerCurrentScore = 0;
+
+        //Display on the UI
+        currentHookScore.text = playerCurrentScore + "";
+        totalScore.text = bankedScore + "";
 
         //Briefly switch the colour and start a counter to switch it back for visual feedback
         timeColourHasBeenFlashing = colourFlashTime;
         colourFlashing = true;
         totalScore.color = flashColour;
+        flashTextHolder = totalScore;
+        originalColourHolder = originalTotalScoreColour;
     }
 
     //Instantiate a UI instance

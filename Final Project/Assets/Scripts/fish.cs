@@ -70,14 +70,6 @@ public class fish : general {
             basic.Generals.Remove(gameObject.GetComponent<fish>());
             Destroy(gameObject);
         }
-        if (col.gameObject.tag == "Hook")
-        {
-            if (!Visible) return;
-
-            //if (fishType == FishType.Large || fishType == FishType.Hunted) col.gameObject.GetComponent<hook>().SetState(hook.HookState.Reel);
-            //Catch(col.gameObject.GetComponent<hook>());
-            //ToggleOutliner(false);
-        }
     }
 
     public override void ToggleOutliner(bool pBool)
