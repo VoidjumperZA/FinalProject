@@ -12,7 +12,7 @@ public class fish : general
     // Fish type related
     public int Score;
     [SerializeField] private float _speed;
-    public enum FishType { Small, Medium, Large, Hunted };
+    public enum FishType { Small, Medium, Large};
     public FishType fishType;
     // Radar related
     [SerializeField]

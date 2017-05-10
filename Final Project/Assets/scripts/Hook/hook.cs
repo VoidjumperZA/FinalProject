@@ -133,6 +133,8 @@ public class hook : general
                 CameraHandler.ApplyScreenShake(true);
                 camShaking = true;
 
+                
+
                 //ATTACH FISH TO HOOK
                 //Rotate the fish by a small degree
                 float fishAngle = Random.Range(-fishRotationAngle, fishRotationAngle);
