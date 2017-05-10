@@ -8,7 +8,7 @@ public class fish : general {
     public int Score;
     [SerializeField] private float _speed;
     private hook _hook = null;
-    public enum FishType { Small, Medium, Large, Hunted };
+    public enum FishType { Small, Medium, Large };
     public FishType fishType;
 
     private bool _caught = false;
