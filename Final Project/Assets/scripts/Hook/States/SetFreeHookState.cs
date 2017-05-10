@@ -9,14 +9,9 @@ public class SetFreeHookState : AbstractHookState {
     }
     public override void Start()
     {
-    }
-    public override void Update()
-    {
         for (int i = 0; i < _hook.FishOnHook.Count; i++)
         {
-            _hook.FishOnHook[i].Release();
-            basic.Generals.Remove(_hook.FishOnHook[i]);
-            GameObject.Destroy(_hook.FishOnHook[i].gameObject);
+            _hook.FishOnHook[i].SetState(fish.FishState.PiledUp);
         }
         _hook.FishOnHook.Clear();
         basic.GlobalUi.SwitchHookButtons();
@@ -24,9 +19,11 @@ public class SetFreeHookState : AbstractHookState {
         SetState(hook.HookState.None);
         CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.FocusBoat, true);
     }
+    public override void Update()
+    {
+    }
     public override void Refresh()
     {
-
         _hook.FishOnHook = null;
         _hook.FishOnHook = new List<fish>();
     }
