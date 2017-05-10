@@ -65,7 +65,7 @@ public class FishHookState : AbstractHookState
         {
             fish theFish = other.gameObject.GetComponent<fish>();
             if (!theFish.Visible) return;
-            theFish.Catch(_hook);
+            theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
             GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(theFish.GetScore(), true);
             GameObject.Find("Manager").GetComponent<Combo>().CheckComboProgress(theFish.fishType);
