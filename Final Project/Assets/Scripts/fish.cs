@@ -5,7 +5,8 @@ using UnityEngine;
 public class fish : general {
     [SerializeField] private SkinnedMeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
-    public int Score;
+    [SerializeField]
+    private int score;
     [SerializeField] private float _speed;
     private hook _hook = null;
     public enum FishType { Small, Medium, Large };
@@ -37,6 +38,9 @@ public class fish : general {
         _speed = 0.0f;
         GetComponent<BoxCollider>().enabled = false;
     }
+
+    public int GetScore()
+    { return score; }
 
     public void Release()
     {

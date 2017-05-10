@@ -41,6 +41,7 @@ public class GlobalUI : MonoBehaviour {
     public void ReelUpHook()
     {
         basic.Hook.SetState(hook.HookState.Reel);
+        GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
     }
 
     public void SwitchHookButtons()

@@ -28,6 +28,15 @@ public class Combo : MonoBehaviour
     [SerializeField]
     private float iconSlideSpeed;
     [SerializeField]
+    private int minComboSize;
+    [SerializeField]
+    private int maxComboSize;
+    [SerializeField]
+    private float comboScoreUIMovementSpeed;
+    [SerializeField]
+    private float comboScoreUIAlphaFade;
+    [Header("Canvas")]
+    [SerializeField]
     private Canvas canvas;
     private bool animatingComboBreak;
     private int iconsFinishedSliding;
@@ -97,12 +106,19 @@ public class Combo : MonoBehaviour
 
     public void CheckComboProgress(fish.FishType pFishType)
     {
-        Debug.Log("Checking Combo Progress.");
+        Debug.Log("Checking Combo Progress. Combo Index: " + comboIndex);
         if (animatingComboBreak == false && pFishType == combo[comboIndex])
         {
             Debug.Log("Combo type was correct! Hit fish was " + pFishType + " and required fish was " + combo[comboIndex]);
             iconBackgroundsList[comboIndex].sprite = comboBackgroundIconSprites[(int)IconBackgroundStates.Completed];
             comboIndex++;
+            if (comboIndex == (comboLength + 1))
+            {
+                Debug.Log("Combo Completed! ComboIndex: " + comboIndex + " and combo length: " + comboLength);
+                GameObject.Find("Manager").GetComponent<ScoreHandler>().AddComboScore();
+                CreateNewCombo();
+                return;
+            }
             iconBackgroundsList[comboIndex].sprite = comboBackgroundIconSprites[(int)IconBackgroundStates.Next];
         }
         else
@@ -141,6 +157,7 @@ public class Combo : MonoBehaviour
             Destroy(iconBackgroundsList[i].gameObject);
             Destroy(iconFishList[i].gameObject);
         }
+        combo.Clear();
         iconBackgroundsList.Clear();
         iconFishList.Clear();
         iconSlideDistancesList.Clear();
@@ -149,11 +166,12 @@ public class Combo : MonoBehaviour
 
     public void CreateNewCombo()
     {
+        Debug.Log("Combo Size: " + combo.Count);
         ClearPreviousCombo(true);
 
         if (comboCanBeGenerated == true)
         {
-            comboLength = Random.Range(gameplayValues.GetMinComboSize(), gameplayValues.GetMaxComboSize());
+            comboLength = Random.Range(minComboSize, maxComboSize);
             Debug.Log("New Combo [" + (comboLength + 1) + "]: ");
             int numberOfFish = System.Enum.GetNames(typeof(fish.FishType)).Length;
             Debug.Log("There are " + numberOfFish + " types.");
@@ -161,7 +179,7 @@ public class Combo : MonoBehaviour
             {
                 int fishTypeIndex = Random.Range(0, numberOfFish);
                 combo.Add((fish.FishType)fishTypeIndex);
-                Debug.Log("- (" + fishTypeIndex + ")" + combo[combo.Count - 1].ToString());
+                Debug.Log("-> (" + fishTypeIndex + ")" + combo[combo.Count - 1].ToString());
                 Image newComboIconBackground = GameObject.Instantiate(comboBackgroundImageToInstantiate, canvas.transform);
                 Image newComboIconFish = GameObject.Instantiate(comboFishImageToInstantiate, canvas.transform);
                 newComboIconFish.sprite = comboFishIconSprites[fishTypeIndex];
@@ -182,8 +200,20 @@ public class Combo : MonoBehaviour
                 iconBackgroundsList.Add(newComboIconBackground);
                 iconFishList.Add(newComboIconFish);
             }
+            for (int i = 0; i < comboLength + 1; i++)
+            {
+                Debug.Log("- " + combo[i].ToString());
+            }
         }       
     }
 
+    public float GetComboScoreUIMovementSpeed()
+    {
+        return comboScoreUIMovementSpeed;
+    }
 
+    public float GetComboScoreUIAlphaFade()
+    {
+        return comboScoreUIAlphaFade;
+    }
 }
