@@ -5,6 +5,7 @@ using UnityEngine;
 public class fish : general {
     [SerializeField] private SkinnedMeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
+    public int Score;
     [SerializeField] private float _speed;
     private hook _hook = null;
     public enum FishType { Small, Medium, Large, Hunted };
@@ -14,6 +15,7 @@ public class fish : general {
     // Use this for initialization
     public override void Start() {
         base.Start();
+        
     }
 
     // Update is called once per frame
@@ -26,12 +28,14 @@ public class fish : general {
         if (!_hook) return;
         gameObject.transform.position = _hook.transform.position;
     }
-    private void Catch(hook pHook)
+    public void Catch(hook pHook)
     {
+        ToggleOutliner(false);
         _hook = pHook;
         _caught = true;
         transform.position = pHook.gameObject.transform.position;
         _speed = 0.0f;
+        GetComponent<BoxCollider>().enabled = false;
     }
 
     public void Release()
@@ -68,11 +72,11 @@ public class fish : general {
         }
         if (col.gameObject.tag == "Hook")
         {
-            if (!_visible) return;
+            if (!Visible) return;
 
-            if (fishType == FishType.Large || fishType == FishType.Hunted) _hook.ReelUpTheHook();
-            Catch(col.gameObject.GetComponent<hook>());
-            ToggleOutliner(false);
+            //if (fishType == FishType.Large || fishType == FishType.Hunted) col.gameObject.GetComponent<hook>().SetState(hook.HookState.Reel);
+            //Catch(col.gameObject.GetComponent<hook>());
+            //ToggleOutliner(false);
         }
     }
 
@@ -85,7 +89,7 @@ public class fish : general {
     }
     public override void ToggleRenderer(bool pBool)
     {
-        _visible = pBool;
+        Visible = pBool;
         _renderer.enabled = pBool;
     }
 }

@@ -22,7 +22,8 @@ public class GlobalUI : MonoBehaviour {
 	
     public void DeployHook()
     {
-        GameObject.FindGameObjectWithTag("Boat").GetComponent<boat>().EnableFishing();
+        basic.Boat.SetState(boat.BoatState.Fish);
+        CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.ZoomedHook, true);
 
         _deployHookButton.gameObject.SetActive(false);
         _radarButton.gameObject.SetActive(false);
@@ -31,16 +32,15 @@ public class GlobalUI : MonoBehaviour {
 
     }
 
-    public void SendRadarPulse()
+    /*public void SendRadarPulse()
     {
         Radar r = GameObject.FindGameObjectWithTag("Radar").GetComponent<Radar>();
         r.SendPulse();
-    }
+    }*/
 
     public void ReelUpHook()
     {
-        hook h = GameObject.FindGameObjectWithTag("Hook").GetComponent<hook>();
-        h.ReelUpTheHook();
+        basic.Hook.SetState(hook.HookState.Reel);
     }
 
     public void SwitchHookButtons()

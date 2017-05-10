@@ -2,124 +2,41 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class boat : general {
-    private GameObject _manager;
-    private InputTimer _inputTimer;
-    private GameplayValues _gameplayValues;
+public class boat : general
+{
+    // States
+    private Dictionary<BoatState, AbstractBoatState> _stateCache = new Dictionary<BoatState, AbstractBoatState>();
+    private AbstractBoatState _abstractState = null;
+    public enum BoatState { None, Move, Fish }
+    [SerializeField] private BoatState _boatState = BoatState.None;
     // Radar
     private Radar _radar = null;
     // Fishing
     private hook _hook = null;
-    // Movement
-    [SerializeField] private float _speed;
-    private Vector3 _destination;
-    // Action recognizion
-    private counter _counter;
-    // States
-    private Dictionary<BoatState, AbstractBoatState> _stateCache = new Dictionary<BoatState, AbstractBoatState>();
-    private AbstractBoatState _state = null;
-    public enum BoatState { None, Move, Fish }
-    private BoatState _boatState = BoatState.None;
-    //Camera and zoom levels
-    private Camera _mainCamera;
+    [SerializeField] private float _acceleration;
     public override void Start()
     {
         base.Start();
-        // After inicialization
-        _counter = new counter(0.3f);
-        _manager = GameObject.Find("Manager"); if (!_manager) Debug.Log("WARNING: Manager not found.");
-        _inputTimer = _manager.GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("Warning: Manager is missing InputTimer.");
-        _gameplayValues = _manager.GetComponent<GameplayValues>(); if (!_gameplayValues) Debug.Log("Warning: Manager is missing GameplayValues.");
-        _mainCamera = Camera.main; if (!_mainCamera) Debug.Log("Warning: Camera not found.");
-        
-        
+        InitializeStateMachine();
     }
     public override void Update()
     {
-        //Debug.Log(_boatState + " Boat");
-        if (_selected)
-        {
-            StateNoneUpdate();
-            StateMoveUpdate();
-        }
-        StateFishUpdate();
+        _abstractState.Update();
+        
     }
-    // -------- State Machine --------
-    private void StateNoneUpdate()
+    public void SetState(BoatState pState)
     {
-        if (_boatState == BoatState.None)
-        {
-            /*_counter.Count();
-            if (_counter.Done())
-            {*/
-                if (SidewaysOrDownwards())
-                {
-                    _boatState = BoatState.Move;
-                    _destination = Vector3.zero;
-                    CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.FocusBoat, true);
-                }
-                
-            //}
-        }
+        if (_abstractState != null) _abstractState.Refresh();
+        _abstractState = _stateCache[pState];
+        _abstractState.Start();
     }
-    private void StateMoveUpdate()
+    private void InitializeStateMachine()
     {
-        if (_boatState == BoatState.Move)
-        {
-            if (Input.GetMouseButton(0))
-            {
-                SetDestination(mouse.GetWorldPoint());
-                //_inputTimer.ResetClock();
-            }
-            MoveToDestination();
-        }
-    }
-    private void StateFishUpdate()
-    {
-        if (_boatState == BoatState.Fish)
-        {
-            _hook.DeployHook();
-            
-        }
-    }
-    // -------- Action Recognizion --------
-    private bool SidewaysOrDownwards()
-    {
-        Vector3 mouseWorldPoint = mouse.GetWorldPoint();
-        return Mathf.Abs(mouseWorldPoint.x - gameObject.transform.position.x) > Mathf.Abs(mouseWorldPoint.y - gameObject.transform.position.y);
-    }
-    // -------- Movement --------
-    private void MoveToDestination()
-    {
-        if (_destination == Vector3.zero) return;
-        Vector3 differenceVector = _destination - gameObject.transform.position;
-        if (differenceVector.magnitude >= _speed)
-        {
-            gameObject.transform.Translate(differenceVector.normalized * _speed);
-            _hook.gameObject.transform.position = gameObject.transform.position;
-        }
-
-    }
-    private void SetDestination(Vector3 pPosition)
-    { 
-        // Debug.Log(pPosition.ToString() + " mouseWorldPoint");
-        _destination = new Vector3(pPosition.x, gameObject.transform.position.y, gameObject.transform.position.z);
-    }
-    // -------- Fishing --------
-    // -------- General Script Override --------
-    public override void Select()
-    {
-        base.Select();
-        //Debug.Log("boat - Select() " + _selected);
-        //_counter.Reset();
-
-    }
-    public override void Deselect()
-    {
-        base.Deselect();
-        //Debug.Log("boat - Deselect() " + _selected);
-        if (_boatState != BoatState.Fish) _boatState = BoatState.None;
-        //_counter.SetActive(false);
+        _stateCache.Clear();
+        _stateCache[BoatState.None] = new NoneBoatState(this);
+        _stateCache[BoatState.Move] = new MoveBoatState(this, _acceleration);
+        _stateCache[BoatState.Fish] = new FishBoatState(this);
+        SetState(_boatState);
     }
     public void AssignHook(hook pHook)
     {
@@ -129,21 +46,5 @@ public class boat : general {
     {
         _radar = pRadar;
         _radar.gameObject.transform.SetParent(gameObject.transform);
-    }
-    public void SetState(BoatState pState)
-    {
-        _boatState = pState;
-    }
-
-    public void EnableFishing()
-    {
-        _boatState = BoatState.Fish;
-        //_hook.DeployHook();
-        //Debug.Log("Enable fising");
-
-
-        CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.ZoomedHook, true);
-        //CameraHandler.SetParent(GameObject.FindGameObjectWithTag("HookCamHolder").transform);
-        //mainCam.transform.position = cameraPosZoomedHook;
     }
 }

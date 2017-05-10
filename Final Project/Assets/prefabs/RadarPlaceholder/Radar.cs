@@ -41,7 +41,8 @@ public class Radar : general {
     }
     private void DetectFish()
     {
-        foreach (general pFish in basic.Generals){
+        foreach (general pFish in basic.Generals)
+        {
 
             bool visible = Vector3.Dot(-gameObject.transform.up, (pFish.transform.position - gameObject.transform.position).normalized) > Mathf.Cos(_radarAngle);
 
@@ -49,19 +50,5 @@ public class Radar : general {
             pFish.ToggleRenderer(visible);
 
         }
-        /*Debug.Log(fish.Length + " DASDSADSAD");
-        foreach (GameObject pFish in fish)
-        {
-            if (Vector3.Dot(-gameObject.transform.up, (pFish.transform.position - gameObject.transform.position).normalized) < Mathf.Cos(_radarAngle))
-            {
-                pFish.enabled = false;
-                pFish.GetComponent<cakeslice.Outline>().enabled = false;
-            }
-            else
-            {
-                pFish.GetComponent<SkinnedMeshRenderer>().enabled = true;
-                pFish.GetComponent<cakeslice.Outline>().enabled = true;
-            }
-        }*/
     }
 }

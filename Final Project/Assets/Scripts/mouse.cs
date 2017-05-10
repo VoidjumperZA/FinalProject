@@ -14,7 +14,7 @@ public static class mouse {
     {
         if (GetRaycastHit().HasValue)
         {
-            Debug.Log(GetRaycastHit().Value.collider.gameObject.tag + " :Name");
+            //Debug.Log(GetRaycastHit().Value.collider.gameObject.tag + " :Name");
             return GetRaycastHit().Value.collider.gameObject.GetComponent<general>();
         }
             return null;
@@ -27,5 +27,9 @@ public static class mouse {
             return _hitInfo;
         }
         return null;
+    }
+    public static bool GameObjectTagIs(string pTag)
+    {
+        return GetGeneral() ? GetGeneral().gameObject.CompareTag(pTag) : false;
     }
 }
