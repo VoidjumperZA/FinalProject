@@ -9,15 +9,13 @@ public class SetFreeHookState : AbstractHookState {
     }
     public override void Start()
     {
-        for (int i = 0; i < _hook.FishOnHook.Count; i++)
-        {
-            _hook.FishOnHook[i].SetState(fish.FishState.PiledUp);
-        }
+        basic.Scorehandler.BankScore();
+        for (int i = 0; i < _hook.FishOnHook.Count; i++) _hook.FishOnHook[i].SetState(fish.FishState.PiledUp);
         _hook.FishOnHook.Clear();
         basic.GlobalUi.SwitchHookButtons();
         basic.Boat.SetState(boat.BoatState.None);
-        SetState(hook.HookState.None);
         CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.FocusBoat, true);
+        SetState(hook.HookState.None);
     }
     public override void Update()
     {

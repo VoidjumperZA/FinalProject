@@ -22,7 +22,6 @@ public class ReelHookState : AbstractHookState {
         {
             _hook.gameObject.transform.position = basic.Boat.transform.position;
             SetState(hook.HookState.SetFree);
-            GameObject.Find("Manager").GetComponent<ScoreHandler>().BankScore();
         }
     }
     public override void Refresh()
