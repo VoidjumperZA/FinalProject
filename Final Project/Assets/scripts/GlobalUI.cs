@@ -24,7 +24,7 @@ public class GlobalUI : MonoBehaviour {
     {
         basic.Boat.SetState(boat.BoatState.Fish);
         CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.ZoomedHook, true);
-
+        GameObject.Find("Manager").GetComponent<Combo>().CreateNewCombo();
         _deployHookButton.gameObject.SetActive(false);
         _radarButton.gameObject.SetActive(false);
         _reelUpHook.gameObject.SetActive(true);

@@ -59,6 +59,7 @@ public class FishHookState : AbstractHookState
         if (other.gameObject.CompareTag("Floor"))
         {
             SetState(hook.HookState.Reel);
+            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
         } //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
         {
@@ -67,7 +68,12 @@ public class FishHookState : AbstractHookState
             theFish.Catch(_hook);
             _hook.FishOnHook.Add(theFish);
             GameObject.Find("Manager").GetComponent<ScoreHandler>().AddScore(theFish.Score, true);
-            if (theFish.fishType == fish.FishType.Large || theFish.fishType == fish.FishType.Hunted) SetState(hook.HookState.Reel);
+            GameObject.Find("Manager").GetComponent<Combo>().CheckComboProgress(theFish.fishType);
+            if (theFish.fishType == fish.FishType.Large)
+            {
+                //SetState(hook.HookState.Reel);
+                
+            }
         }
     }
 }
