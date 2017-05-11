@@ -6,11 +6,14 @@ public class TempFishSpawn : MonoBehaviour
 {
     private basic _basic;
 
+    [Header("Fish")]
     [SerializeField]
     private GameObject[] _fishPrefabs;
     [Header("Spawns")]
     [SerializeField]
-    private float _timeBetweenSpawns;
+    private float minTimeBetweenSpawns;
+    [SerializeField]
+    private float maxTimeBetweenSpawns;   
     [SerializeField]
     private float _spawnWidth;
     [SerializeField]
@@ -21,18 +24,20 @@ public class TempFishSpawn : MonoBehaviour
     private float _verticalSpawnFluctuation;
     private float _timePassed;
     private bool _valid;
+   
 
     // Use this for initialization
     void Start()
     {
         _basic = GetComponent<basic>();
         //Max our time to start
-        _timePassed = _timeBetweenSpawns;
+        _timePassed = maxTimeBetweenSpawns;
         _spawnWidth /= 2;
 
         //Is our game valid, if there is disparity between how many fish types we have and the levels of spawning
         //then mark that as invalid.
         _valid = true;
+        
     }
 
     // Update is called once per frame
@@ -47,7 +52,7 @@ public class TempFishSpawn : MonoBehaviour
             if (_timePassed <= 0)
             {
                 _basic.AddFish(CreateFish(Random.Range(0, 2)));
-                _timePassed = _timeBetweenSpawns;
+                _timePassed = maxTimeBetweenSpawns;
             }
         }
     }
