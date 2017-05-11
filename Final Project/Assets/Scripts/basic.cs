@@ -58,7 +58,7 @@ public class basic : MonoBehaviour
     }
     private Radar SpawnRadar()
     {
-        return Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,-5f,0.25f), Quaternion.identity).GetComponent<Radar>();
+        return Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,0,0.25f), Quaternion.identity).GetComponent<Radar>();
     }
     private hook SpawnHook()
     {

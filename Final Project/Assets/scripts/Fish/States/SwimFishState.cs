@@ -12,7 +12,7 @@ public class SwimFishState : AbstractFishState
     }
     public override void Start()
     {
-     
+
     }
     public override void Update()
     {
