@@ -13,6 +13,8 @@ public class ScoreHandler : MonoBehaviour {
     private Text currentHookScore;
     [SerializeField]
     private GameObject comboScoreUI;
+    [SerializeField]
+    private Text currencyText;
 
 
     [Header("Flashing")]
@@ -39,6 +41,7 @@ public class ScoreHandler : MonoBehaviour {
     private float hookScoreYOffset;
     private Transform UIPosition;
     private int playerCurrentScore;
+    private int caughtFishCurrecy;
     private int bankedScore;
     private float timeColourHasBeenFlashing;
     private Color originalHookScoreColour;
@@ -53,8 +56,10 @@ public class ScoreHandler : MonoBehaviour {
         UIPosition = UISpawnPosition.transform;
         playerCurrentScore = 0;
         bankedScore = 0;
+        caughtFishCurrecy = 0;
         currentHookScore.text = playerCurrentScore + "";
         totalScore.text = bankedScore + "";
+        currencyText.text = caughtFishCurrecy + "";
         timeColourHasBeenFlashing = 0.0f;
         originalHookScoreColour = currentHookScore.color;
         originalTotalScoreColour = totalScore.color;
@@ -104,7 +109,7 @@ public class ScoreHandler : MonoBehaviour {
     /// </summary>
     /// <param name="pAddedScore"></param>
     /// <param name="pCreatUIAnnouncement"></param>
-    public void AddScore(int pAddedScore, bool pCreatUIAnnouncement)
+    public void AddScore(int pAddedScore, bool pCreatUIAnnouncement, bool pCaughtAFish)
     {
         playerCurrentScore += pAddedScore;
         if (pCreatUIAnnouncement == true)
@@ -112,6 +117,10 @@ public class ScoreHandler : MonoBehaviour {
             createScoreUI(pAddedScore);
         }
         currentHookScore.text = playerCurrentScore + "";
+        if (pCaughtAFish == true)
+        {
+            addCurrency();
+        }
 
         //Briefly switch the colour and start a counter to switch it back for visual feedback
         timeColourHasBeenFlashing = colourFlashTime;
@@ -178,5 +187,11 @@ public class ScoreHandler : MonoBehaviour {
     public int GetComboScoreValue()
     {
         return comboScoreValue;
+    }
+
+    private void addCurrency()
+    {
+        caughtFishCurrecy++;
+        currencyText.text = "" + caughtFishCurrecy;
     }
 }
