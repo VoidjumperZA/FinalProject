@@ -63,9 +63,7 @@ public class ScoreHandler : MonoBehaviour {
         timeColourHasBeenFlashing = 0.0f;
         originalHookScoreColour = currentHookScore.color;
         originalTotalScoreColour = totalScore.color;
-        colourFlashing = false;
-        
-
+        colourFlashing = false;   
 	}
 	
 	// Update is called once per frame
