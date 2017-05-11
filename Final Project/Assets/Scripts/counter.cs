@@ -11,6 +11,8 @@ public class counter {
     private float _limit;
     private bool _realTime;
 
+    private bool _passedPercentage = false;
+
     public counter(float pLimit, float pStep = 0.0f)
     {
         _limit = pLimit;
@@ -52,5 +54,15 @@ public class counter {
     public bool Done()
     {
         return _done;
+    }
+    public bool Remaining(float pPercentage)
+    {
+        if (_passedPercentage) return false;
+        if ((_counter / _limit) + pPercentage >= 0.9f || (_counter / _limit) + pPercentage <= 1.1f)
+        {
+            _passedPercentage = true;
+            return true;
+        }
+        else return false;
     }
 }

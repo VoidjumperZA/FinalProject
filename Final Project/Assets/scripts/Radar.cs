@@ -23,7 +23,7 @@ public class Radar : general {
         _cooldown.Count();
         float offset = Time.time * scrollSpeed;
         _renderer.material.mainTextureOffset = new Vector2(0, offset);
-        DetectFish();
+        DetectCollectables();
         if (_cooldown.Done())
         {
             _active = false;
@@ -39,15 +39,15 @@ public class Radar : general {
         _cooldown.Reset();
 
     }
-    private void DetectFish()
+    private void DetectCollectables()
     {
-        foreach (general pFish in basic.Generals)
+        foreach (general collectable in basic.Generals)
         {
 
-            bool visible = Vector3.Dot(-gameObject.transform.up, (pFish.transform.position - gameObject.transform.position).normalized) > Mathf.Cos(_radarAngle);
-
-            pFish.ToggleOutliner(visible);
-            pFish.ToggleRenderer(visible);
+            bool visible = Vector3.Dot(-gameObject.transform.up, (collectable.transform.position - gameObject.transform.position).normalized) > Mathf.Cos(_radarAngle);
+            if (visible) collectable.Reveal();
+            /*pFish.ToggleOutliner(visible);
+            pFish.ToggleRenderer(visible);*/
 
         }
     }

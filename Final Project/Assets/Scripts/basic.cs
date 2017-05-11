@@ -17,15 +17,18 @@ public class basic : MonoBehaviour
 
     private int cameraHandlerUpdateKey;
     private static List<general> _generals = new List<general>(); public static List<general> Generals { get { return _generals; } }
-    public static boat Boat { get { return (boat)_generals[0]; }  set {  _generals[0] = (boat)value; } }
-    public static hook Hook { get { return (hook)_generals[1]; } set {  _generals[1] = (hook)value; } }
-    public static Radar Radar { get { return (Radar)_generals[2]; } set { _generals[2] = (Radar)value; } }
+    public static boat Boat; //{ get { return (boat)_generals[0]; }  set {  _generals[0] = (boat)value; } }
+    public static hook Hook; //{ get { return (hook)_generals[1]; } set {  _generals[1] = (hook)value; } }
+    public static Radar Radar; //{ get { return (Radar)_generals[2]; } set { _generals[2] = (Radar)value; } }
 
     void Start()
     {
-        _generals.Add(SpawnBoat()); // _generals[0]
-        _generals.Add(SpawnHook()); // _generals[1]
-        _generals.Add(SpawnRadar());
+        Boat = SpawnBoat();
+        Hook = SpawnHook();
+        Radar = SpawnRadar();
+        //_generals.Add(SpawnBoat()); // _generals[0]
+        //_generals.Add(SpawnHook()); // _generals[1]
+        //_generals.Add(SpawnRadar());
 
         Boat.AssignHook(Hook);
         Boat.AssignRadar(Radar); // _generals[3]
@@ -54,15 +57,21 @@ public class basic : MonoBehaviour
     }
     private boat SpawnBoat()
     {
-        return Instantiate(_boatPrefab, _boatSpawn.position, Quaternion.identity).GetComponent<boat>();
-    }
-    private Radar SpawnRadar()
-    {
-        return Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,0,0.25f), Quaternion.identity).GetComponent<Radar>();
+        boat theBoat = Instantiate(_boatPrefab, _boatSpawn.position, Quaternion.identity).GetComponent<boat>();
+        _generals.Add(theBoat);
+        return theBoat;
     }
     private hook SpawnHook()
     {
-        return Instantiate(_hookPrefab, _generals[0].transform.position, Quaternion.identity).GetComponent<hook>();
+        hook theHook = Instantiate(_hookPrefab, _generals[0].transform.position, Quaternion.identity).GetComponent<hook>();
+        _generals.Add(theHook);
+        return theHook;
+    }
+    private Radar SpawnRadar()
+    {
+        Radar theRadar = Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,0,0.25f), Quaternion.identity).GetComponent<Radar>();
+        _generals.Add(theRadar);
+        return theRadar;
     }
     private void RenderTrail(Vector3 pPositionOne, Vector3 pPositionTwo)
     {
@@ -71,5 +80,9 @@ public class basic : MonoBehaviour
     public void AddFish(fish pFish)
     {
         _generals.Add(pFish);
+    }
+    public void AddTrash(trash pTrash)
+    {
+        _generals.Add(pTrash);
     }
 }

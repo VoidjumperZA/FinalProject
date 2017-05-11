@@ -10,7 +10,10 @@ public class hook : general
     private AbstractHookState _abstractState = null;
     public enum HookState { None, FollowBoat, Fish, Reel, SetFree }
     [SerializeField] private HookState _hookState = HookState.None;
+
     [HideInInspector] public List<fish> FishOnHook = new List<fish>();
+    [HideInInspector] public List<trash> TrashOnHook = new List<trash>();
+
     // Class references
     private GameObject _manager;
     private InputTimer _inputTimer;
@@ -48,7 +51,6 @@ public class hook : general
     public override void Start()
     {
         valid = true;
-        base.Start();
         InitializeStateMachine();
 
         hookRotationAmount = 1.0f;

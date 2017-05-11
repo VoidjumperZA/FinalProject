@@ -74,5 +74,13 @@ public class FishHookState : AbstractHookState
                 //SetState(hook.HookState.Reel);
             }
         }
+        if (other.gameObject.CompareTag("Trash"))
+        {
+            trash theTrash = other.gameObject.GetComponent<trash>();
+            if (!theTrash.Visible) return;
+            theTrash.SetState(trash.TrashState.FollowHook);
+            _hook.TrashOnHook.Add(theTrash);
+            
+        }
     }
 }

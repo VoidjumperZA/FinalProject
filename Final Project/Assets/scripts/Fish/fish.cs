@@ -15,14 +15,12 @@ public class fish : general
     public enum FishType { Small, Medium, Large};
     public FishType fishType;
     // Radar related
-    [SerializeField]
-    private SkinnedMeshRenderer _renderer;
-    [SerializeField]
-    private cakeslice.Outline _outliner;
+    [SerializeField] private SkinnedMeshRenderer _renderer;
+    [SerializeField] private cakeslice.Outline _outliner;
+    [SerializeField] private float _revealDuration;
 
     // Use this for initialization
     public override void Start() {
-        base.Start();
         InitializeStateMachine();
     }
 
@@ -41,7 +39,7 @@ public class fish : general
     {
         _stateCache.Clear();
         _stateCache[FishState.None] = new NoneFishState(this);
-        _stateCache[FishState.Swim] = new SwimFishState(this, _speed);
+        _stateCache[FishState.Swim] = new SwimFishState(this, _speed, _revealDuration);
         _stateCache[FishState.FollowHook] = new FollowHookFishState(this);
         _stateCache[FishState.PiledUp] = new PiledUpFishState(this);
         SetState(_fishState);
@@ -78,6 +76,20 @@ public class fish : general
     public void OnTriggerEnter(Collider other)
     {
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
+    }
+    public override void Reveal()
+    {
+        if (Revealed) return;
+
+        ToggleOutliner(true);
+        ToggleRenderer(true);
+        Revealed = true;
+    }
+    public override void Hide()
+    {
+        ToggleOutliner(false);
+        ToggleRenderer(false);
+        Revealed = false;
     }
     public int GetScore()
     {
