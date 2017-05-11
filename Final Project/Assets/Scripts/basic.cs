@@ -75,7 +75,7 @@ public class basic : MonoBehaviour
     }
     private Radar SpawnRadar()
     {
-        Radar theRadar = Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,-3f,0.25f), Quaternion.identity).GetComponent<Radar>();
+        Radar theRadar = Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,-5f,0.25f), Quaternion.identity).GetComponent<Radar>();
         _generals.Add(theRadar);
         return theRadar;
     }
