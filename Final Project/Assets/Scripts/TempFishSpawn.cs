@@ -13,7 +13,9 @@ public class TempFishSpawn : MonoBehaviour
     [SerializeField]
     private float minTimeBetweenSpawns;
     [SerializeField]
-    private float maxTimeBetweenSpawns;   
+    private float maxTimeBetweenSpawns;
+    [SerializeField]
+    private float bufferSpaceUnderBoat;
     [SerializeField]
     private float _spawnWidth;
     [SerializeField]
@@ -30,6 +32,14 @@ public class TempFishSpawn : MonoBehaviour
     void Start()
     {
         _basic = GetComponent<basic>();
+        _verticalSpawnFluctuation = (_basic.GetSeaDepth() / 2);
+        Vector3 leftSpawnPos = new Vector3(_leftSpawn.transform.position.x, GameObject.FindGameObjectWithTag("Boat").transform.position.y, _leftSpawn.transform.position.z);
+        leftSpawnPos.y -= (_verticalSpawnFluctuation);
+        _leftSpawn.transform.position = leftSpawnPos;
+
+        Vector3 rightSpawnPos = new Vector3(_rightSpawn.transform.position.x, GameObject.FindGameObjectWithTag("Boat").transform.position.y, _rightSpawn.transform.position.z);
+        rightSpawnPos.y -= (_verticalSpawnFluctuation);
+        _rightSpawn.transform.position = rightSpawnPos;
         //Max our time to start
         _timePassed = maxTimeBetweenSpawns;
         _spawnWidth /= 2;
@@ -37,7 +47,6 @@ public class TempFishSpawn : MonoBehaviour
         //Is our game valid, if there is disparity between how many fish types we have and the levels of spawning
         //then mark that as invalid.
         _valid = true;
-        
     }
 
     // Update is called once per frame
@@ -60,7 +69,7 @@ public class TempFishSpawn : MonoBehaviour
     {
         //Choose a random fish and direction
         int randomFish = Random.Range(0, _fishPrefabs.Length);
-        float verticalOffset = Random.Range(-_verticalSpawnFluctuation, _verticalSpawnFluctuation);
+        float verticalOffset = Random.Range(-_verticalSpawnFluctuation, _verticalSpawnFluctuation - bufferSpaceUnderBoat);
 
         GameObject newFish = Instantiate(_fishPrefabs[randomFish],
                                         (pPolarity == 0) ? _leftSpawn.position + new Vector3(0, verticalOffset, 0) : _rightSpawn.position + new Vector3(0, verticalOffset, 0),
