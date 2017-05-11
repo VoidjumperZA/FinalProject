@@ -18,7 +18,7 @@ public class counter {
         _limit = pLimit;
         _step = pStep;
         _realTime = (pStep == 0.0f) ? true : false;
-        Debug.Log("Counter(" + _limit + ", " + _step + ") created!");
+        //Debug.Log("Counter(" + _limit + ", " + _step + ") created!");
     }
 
     public void Reset()
