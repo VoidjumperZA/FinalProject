@@ -90,7 +90,7 @@ public class Combo : MonoBehaviour
                     else
                     {
                         iconsFinishedSliding++;
-                        Debug.Log("" + iconsFinishedSliding + " finished sliding.");
+                        //Debug.Log("" + iconsFinishedSliding + " finished sliding.");
                     }
                 }
             }
@@ -106,15 +106,15 @@ public class Combo : MonoBehaviour
 
     public void CheckComboProgress(fish.FishType pFishType)
     {
-        Debug.Log("Checking Combo Progress. Combo Index: " + comboIndex);
+        //Debug.Log("Checking Combo Progress. Combo Index: " + comboIndex);
         if (animatingComboBreak == false && pFishType == combo[comboIndex])
         {
-            Debug.Log("Combo type was correct! Hit fish was " + pFishType + " and required fish was " + combo[comboIndex]);
+            //Debug.Log("Combo type was correct! Hit fish was " + pFishType + " and required fish was " + combo[comboIndex]);
             iconBackgroundsList[comboIndex].sprite = comboBackgroundIconSprites[(int)IconBackgroundStates.Completed];
             comboIndex++;
             if (comboIndex == (comboLength + 1))
             {
-                Debug.Log("Combo Completed! ComboIndex: " + comboIndex + " and combo length: " + comboLength);
+                //Debug.Log("Combo Completed! ComboIndex: " + comboIndex + " and combo length: " + comboLength);
                 GameObject.Find("Manager").GetComponent<ScoreHandler>().AddComboScore();
                 CreateNewCombo();
                 return;
@@ -123,12 +123,12 @@ public class Combo : MonoBehaviour
         }
         else
         {
-            Debug.Log("Combo type was incorrect! Hit fish was " + pFishType + " and required fish was " + combo[comboIndex]);
+            //Debug.Log("Combo type was incorrect! Hit fish was " + pFishType + " and required fish was " + combo[comboIndex]);
             animatingComboBreak = true;
             for (int i = 0; i < iconBackgroundsList.Count; i++)
             {
                 iconSlideDistancesList.Add(Random.Range(-iconSlideDistance, iconSlideDistance));
-                Debug.Log("Distance: " + iconSlideDistancesList[i]);
+                //Debug.Log("Distance: " + iconSlideDistancesList[i]);
                 iconSlideCounterList.Add(0.0f);
                 int iconIndex = -1;
                 if (i < comboIndex)
