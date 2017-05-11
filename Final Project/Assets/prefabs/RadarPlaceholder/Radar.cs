@@ -12,7 +12,7 @@ public class Radar : general {
     // Fish detector
     [SerializeField] private float _radarAngle;
 	public override void Start() {
-        _renderer.enabled = false;
+        _renderer.enabled = true;
         _cooldown = new counter(_cooldownDuration);
 	}
 	public override void Update() {
