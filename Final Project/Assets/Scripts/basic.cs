@@ -7,6 +7,8 @@ public class basic : MonoBehaviour
     private InputTimer _inputTimer;
     [HideInInspector] public static GlobalUI GlobalUi;
     [HideInInspector] public static ScoreHandler Scorehandler;
+    [HideInInspector] public static Combo combo;
+
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
     [SerializeField] private GameObject _boatPrefab;
@@ -35,6 +37,7 @@ public class basic : MonoBehaviour
         _inputTimer = GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("ERROR: Cannot get a reference to InputTimer from the Manager object.");
         GlobalUi = GetComponent<GlobalUI>(); if (!GlobalUi) Debug.Log("ERROR: Cannot get a reference to GlobalUI from the Manager object.");
         Scorehandler = GetComponent<ScoreHandler>(); if (!Scorehandler) Debug.Log("ERROR: Cannot get reference to ScoreHandler from Manager object");
+        combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
 
         CameraHandler.ArtificialStart();
         cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();

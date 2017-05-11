@@ -11,6 +11,9 @@ public class ScoreHandler : MonoBehaviour {
     private Text totalScore; //the counter listing our total score
     [SerializeField]
     private Text currentHookScore;
+    [SerializeField]
+    private GameObject comboScoreUI;
+
 
     [Header("Flashing")]
     [SerializeField]
@@ -18,9 +21,12 @@ public class ScoreHandler : MonoBehaviour {
     [SerializeField]
     private float colourFlashTime; //how long does it flash that colour
     [Header("Values")]
-
     [SerializeField]
     private GameObject UISpawnPosition; //where are we spawning that ui
+    [SerializeField]
+    private GameObject ConboUISpawnPosition; //where are we spawning the combo notifier ui
+    [SerializeField]
+    private int comboScoreValue;
     [SerializeField]
     private float minimumUIScale; //our size is random, what is the minimum bound for scaling
     [SerializeField]
@@ -62,20 +68,7 @@ public class ScoreHandler : MonoBehaviour {
     {
         Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
         Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + hookScoreXOffset, hookPosOnScreen.y + hookScoreYOffset, 0.0f);
-        currentHookScore.transform.position = offsetPosition;
-        //Temporarily to simulate hitting different fish types
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            AddScore(10, true);
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            AddScore(50, true);
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            AddScore(500, true);
-        }
+        currentHookScore.transform.position = offsetPosition;       
 
         //if our colour is in flash mode
         if (colourFlashing == true)
@@ -128,6 +121,11 @@ public class ScoreHandler : MonoBehaviour {
         originalColourHolder = originalHookScoreColour;
     }
 
+    public void AddComboScore()
+    {
+        createComboScoreUI();
+    }
+
     public void BankScore()
     {
         //Add our score to the bank
@@ -161,5 +159,24 @@ public class ScoreHandler : MonoBehaviour {
         float scale = Random.Range(minimumUIScale, maximumUIScale);
         newScoreInstance.GetComponent<ScoreUIAnimation>().SetSpawnParametres(angle, scale);
         newScoreInstance.GetComponent<ScoreUIAnimation>().SetScoreText(pScore);
+    }
+
+    private void createComboScoreUI()
+    {
+        GameObject newComboScoreInstance = Instantiate(comboScoreUI, ConboUISpawnPosition.transform);
+
+        //Activate it because our instantiated object is in world, but deactivated. 
+        newComboScoreInstance.SetActive(true);
+
+        //create our random angles and scale and send it to UI
+        //float angle = Random.Range(-UIRotationAngle, UIRotationAngle);
+        //float scale = Random.Range(minimumUIScale, maximumUIScale);
+        //newScoreInstance.GetComponent<ScoreUIAnimation>().SetSpawnParametres(angle, scale);
+        newComboScoreInstance.GetComponent<ComboScoreUIAnimation>().SetScoreText(comboScoreValue);
+    }
+
+    public int GetComboScoreValue()
+    {
+        return comboScoreValue;
     }
 }

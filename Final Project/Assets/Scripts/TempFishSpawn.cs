@@ -4,84 +4,75 @@ using UnityEngine;
 
 public class TempFishSpawn : MonoBehaviour
 {
-    [SerializeField] private basic _basic;
+    private basic _basic;
 
     [SerializeField]
-    private GameObject[] fishPrefabs;
-
+    private GameObject[] _fishPrefabs;
+    [Header("Spawns")]
     [SerializeField]
-    private float timeBetweenSpawns;
+    private float _timeBetweenSpawns;
     [SerializeField]
-    private GameObject[] leftSpawns;
+    private float _spawnWidth;
     [SerializeField]
-    private GameObject[] rightSpawns;
+    private Transform _leftSpawn;
     [SerializeField]
-    private float verticalSpawnFluctuation;
-    private float timePassed;
-    private bool valid;
+    private Transform _rightSpawn;
+    [SerializeField]
+    private float _verticalSpawnFluctuation;
+    private float _timePassed;
+    private bool _valid;
 
     // Use this for initialization
     void Start()
     {
+        _basic = GetComponent<basic>();
         //Max our time to start
-        timePassed = timeBetweenSpawns;
+        _timePassed = _timeBetweenSpawns;
+        _spawnWidth /= 2;
 
         //Is our game valid, if there is disparity between how many fish types we have and the levels of spawning
         //then mark that as invalid.
-        valid = true;
-        if (fishPrefabs.Length != leftSpawns.Length || fishPrefabs.Length != rightSpawns.Length)
-        {
-            Debug.Log("WARNING: Inconsistent number of fish to spawn levels.\n\tMARKING SCRIPT AS INVALID");
-            valid = false;
-        }
+        _valid = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (valid == true)
+        if (_valid == true)
         {
+            MoveSpawnArea(basic.Boat.transform.position);
             //Always count down time
-            timePassed -= Time.deltaTime;
+            _timePassed -= Time.deltaTime;
             //Once our spawn timer is up
-            if (timePassed <= 0)
+            if (_timePassed <= 0)
             {
-                //Choose a random fish and direction
-                int randomFish = Random.Range(0, fishPrefabs.Length);
-                int polarity = Random.Range(0, 2);
-                float verticalOffset = Random.Range(-verticalSpawnFluctuation, verticalSpawnFluctuation);
-                GameObject newFish;
-                //Debug.Log("Spawning fish. ID: " + randomFish + ". Polarity: " + polarity);
-
-                //LEFT
-                if (polarity == 0)
-                {
-                    newFish = Instantiate(fishPrefabs[randomFish], leftSpawns[randomFish].transform.position, leftSpawns[randomFish].transform.rotation);
-
-                    //newFish = Instantiate(fishPrefabs[randomFish]);
-                    Vector3 spawnPosition = leftSpawns[randomFish].transform.position;
-                    spawnPosition.y += verticalOffset;
-                    newFish.transform.position = spawnPosition;//leftSpawns[randomFish].transform.position;
-                    newFish.GetComponent<fish>().SetDirection(1.0f);
-                    newFish.GetComponent<fish>().SetFishType(randomFish);
-                    //Debug.Log("Fish Pos (Left): " + newFish.transform.position);
-                }
-                //RIGHT
-                else
-                {
-                    newFish = Instantiate(fishPrefabs[randomFish], rightSpawns[randomFish].transform.position, rightSpawns[randomFish].transform.rotation);
-                    //newFish = Instantiate(fishPrefabs[randomFish]);
-                    Vector3 spawnPosition = rightSpawns[randomFish].transform.position;
-                    spawnPosition.y += verticalOffset;
-                    newFish.transform.position = spawnPosition;//rightSpawns[randomFish].transform.position;
-                    newFish.GetComponent<fish>().SetDirection(1.0f);
-                    newFish.GetComponent<fish>().SetFishType(randomFish);
-                    //Debug.Log("Fish Pos (Right): " + newFish.transform.position);
-                }
-                _basic.AddFish(newFish.GetComponent<fish>()); 
-                //Set our time back to max            
-                timePassed = timeBetweenSpawns;
+                _basic.AddFish(CreateFish(Random.Range(0, 2)));
+                _timePassed = _timeBetweenSpawns;
             }
-        } 
+        }
+    }
+    private fish CreateFish(int pPolarity)
+    {
+        //Choose a random fish and direction
+        int randomFish = Random.Range(0, _fishPrefabs.Length);
+        float verticalOffset = Random.Range(-_verticalSpawnFluctuation, _verticalSpawnFluctuation);
+
+        GameObject newFish = Instantiate(_fishPrefabs[randomFish],
+                                        (pPolarity == 0) ? _leftSpawn.position + new Vector3(0, verticalOffset, 0) : _rightSpawn.position + new Vector3(0, verticalOffset, 0),
+                                        (pPolarity == 0) ? _leftSpawn.rotation : _rightSpawn.rotation);
+        newFish.GetComponent<fish>().SetDirection(1.0f);
+        newFish.GetComponent<fish>().SetFishType(randomFish);
+        return newFish.GetComponent<fish>();
+    }
+
+
+    private void MoveSpawnArea(Vector3 pBoatPosition)
+    {
+        Vector3 differenceVector = pBoatPosition - new Vector3(0, 0.5f, 0);
+        if (differenceVector.magnitude > 0)
+        { 
+                _leftSpawn.position = new Vector3(pBoatPosition.x - _spawnWidth, _leftSpawn.position.y, _leftSpawn.position.z);
+                _rightSpawn.position = new Vector3(pBoatPosition.x + _spawnWidth, _rightSpawn.position.y, _rightSpawn.position.z);           
+        }
     }
 }
