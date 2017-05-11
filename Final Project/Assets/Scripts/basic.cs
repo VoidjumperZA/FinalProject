@@ -21,6 +21,10 @@ public class basic : MonoBehaviour
     public static hook Hook;
     public static Radar Radar;
 
+    private GameObject boat;
+    private GameObject floor;
+    private float seaDepth;
+
     void Start()
     {
         Boat = SpawnBoat();
@@ -39,6 +43,11 @@ public class basic : MonoBehaviour
         Scorehandler = GetComponent<ScoreHandler>(); if (!Scorehandler) Debug.Log("ERROR: Cannot get reference to ScoreHandler from Manager object");
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
 
+        floor = GameObject.FindGameObjectWithTag("Floor");
+        boat = GameObject.FindGameObjectWithTag("Boat");
+        Vector3 difference = boat.transform.position - floor.transform.position;
+        seaDepth = difference.y;
+        //
         CameraHandler.ArtificialStart();
         cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
     }
@@ -81,5 +90,10 @@ public class basic : MonoBehaviour
     public void AddTrash(trash pTrash)
     {
         _generals.Add(pTrash);
+    }
+
+    public float GetSeaDepth()
+    {
+        return seaDepth;
     }
 }

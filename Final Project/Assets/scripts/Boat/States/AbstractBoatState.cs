@@ -23,6 +23,10 @@ public abstract class AbstractBoatState {
     {
         _boat.SetState(pState);
     }
+    public virtual void OnTriggerEnter(Collider other)
+    {
+
+    }
 
 
 }
