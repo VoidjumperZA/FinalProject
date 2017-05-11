@@ -19,9 +19,12 @@ public class fish : general
     private SkinnedMeshRenderer _renderer;
     [SerializeField]
     private cakeslice.Outline _outliner;
+    [HideInInspector]
+    public Animator Animator;
 
     // Use this for initialization
     public override void Start() {
+        Animator = GetComponent<Animator>();
         base.Start();
         InitializeStateMachine();
     }
