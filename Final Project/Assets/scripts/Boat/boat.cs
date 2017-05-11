@@ -16,7 +16,6 @@ public class boat : general
     [SerializeField] private float _acceleration;
     public override void Start()
     {
-        base.Start();
         InitializeStateMachine();
     }
     public override void Update()

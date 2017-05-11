@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwimFishState : AbstractFishState
+public class FloatTrashState : AbstractTrashState
 {
     private counter _outlineCounter;
     private float _speed;
-    public SwimFishState(fish pFish, float pSpeed, float pRevealDuration) : base(pFish)
+    public FloatTrashState(trash pTrash, float pSpeed, float pRevealDuration) : base(pTrash)
     {
         _speed = pSpeed;
         _outlineCounter = new counter(pRevealDuration);
@@ -18,24 +18,15 @@ public class SwimFishState : AbstractFishState
     }
     public override void Update()
     {
-        _fish.gameObject.transform.Translate(Vector3.forward * _speed);
-        if (_fish.Revealed) HandleOutline();
+        if (_trash.Revealed) HandleOutline();
     }
     public override void Refresh()
     {
 
     }
-    public override fish.FishState StateType()
+    public override trash.TrashState StateType()
     {
-        return fish.FishState.Swim;
-    }
-    public override void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.name == "Fish Despawner" || other.gameObject.tag == "Floor")
-        {
-            basic.Generals.Remove(_fish);
-            GameObject.Destroy(_fish.gameObject);
-        }
+        return trash.TrashState.Float;
     }
     private void HandleOutline()
     {
@@ -43,7 +34,7 @@ public class SwimFishState : AbstractFishState
         //if (_outlineCounter.Remaining(0.33f)) _blink = true;
         if (_outlineCounter.Done())
         {
-            _fish.Hide();
+            _trash.Hide();
             //_blink = false;
             _outlineCounter.Reset();
         }
