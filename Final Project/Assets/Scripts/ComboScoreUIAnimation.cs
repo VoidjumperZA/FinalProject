@@ -31,7 +31,7 @@ public class ComboScoreUIAnimation : MonoBehaviour {
             {
                 fading = true;
                 ScoreHandler scoreHandler = GameObject.Find("Manager").GetComponent<ScoreHandler>();
-                scoreHandler.AddScore(scoreHandler.GetComboScoreValue(), false);
+                scoreHandler.AddScore(scoreHandler.GetComboScoreValue(), false, false);
             }
         }
         //Fading out

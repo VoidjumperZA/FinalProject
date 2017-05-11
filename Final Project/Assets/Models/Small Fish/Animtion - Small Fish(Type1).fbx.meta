@@ -1,0 +1,222 @@
+fileFormatVersion: 2
+guid: 7f1fa167ea45b8f448519522ed01a7bd
+timeCreated: 1494497785
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Global_CTRL
+    100004: Head
+    100006: Neck
+    100008: NullGRP
+    100010: Origin
+    100012: Small_Fish_1_Correct_UV_:polySurface16
+    100014: Spine_1
+    100016: Spine_2
+    100018: Spine_3
+    100020: Spine_4
+    100022: Spine_5
+    100024: Spine_6
+    100026: Spine_7
+    400000: //RootNode
+    400002: Global_CTRL
+    400004: Head
+    400006: Neck
+    400008: NullGRP
+    400010: Origin
+    400012: Small_Fish_1_Correct_UV_:polySurface16
+    400014: Spine_1
+    400016: Spine_2
+    400018: Spine_3
+    400020: Spine_4
+    400022: Spine_5
+    400024: Spine_6
+    400026: Spine_7
+    4300000: Small_Fish_1_Correct_UV_:polySurface16
+    7400000: Swimming(SF1)
+    7400002: Death(SF1)
+    9500000: //RootNode
+    13700000: Small_Fish_1_Correct_UV_:polySurface16
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Swimming(SF1)
+      takeName: Take 001
+      firstFrame: 1
+      lastFrame: 235
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Global_CTRL
+        weight: 1
+      - path: Global_CTRL/NullGRP
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Neck
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Neck/Head
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2/Spine_3
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4/Spine_5
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4/Spine_5/Spine_6
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4/Spine_5/Spine_6/Spine_7
+        weight: 1
+      - path: Small_Fish_1_Correct_UV_:polySurface16
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Death(SF1)
+      takeName: Take 001
+      firstFrame: 245
+      lastFrame: 320
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Global_CTRL
+        weight: 1
+      - path: Global_CTRL/NullGRP
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Neck
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Neck/Head
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2/Spine_3
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4/Spine_5
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4/Spine_5/Spine_6
+        weight: 1
+      - path: Global_CTRL/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4/Spine_5/Spine_6/Spine_7
+        weight: 1
+      - path: Small_Fish_1_Correct_UV_:polySurface16
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1.5
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

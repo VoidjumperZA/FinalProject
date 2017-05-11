@@ -67,7 +67,7 @@ public class FishHookState : AbstractHookState
             if (!theFish.Visible) return;
             theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
-            basic.Scorehandler.AddScore(theFish.GetScore(), true);
+            basic.Scorehandler.AddScore(theFish.GetScore(), true, true);
             basic.combo.CheckComboProgress(theFish.fishType);
             if (theFish.fishType == fish.FishType.Large)
             {

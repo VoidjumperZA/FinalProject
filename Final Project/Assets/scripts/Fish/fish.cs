@@ -13,14 +13,20 @@ public class fish : general
     [SerializeField] private int _score;
     [SerializeField] private float _speed;
     public enum FishType { Small, Medium, Large};
+    [SerializeField]
+    [Range(0, 100)]
+    private int _rarity;
     public FishType fishType;
     // Radar related
     [SerializeField] private SkinnedMeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
     [SerializeField] private float _revealDuration;
+    [HideInInspector] public Animator Animator;
 
     // Use this for initialization
-    public override void Start() {
+    public override void Start()
+    {
+        Animator = GetComponent<Animator>();
         InitializeStateMachine();
     }
 
@@ -60,6 +66,10 @@ public class fish : general
         return fishType;
     }
 
+    public int GetFishRarity()
+    {
+        return _rarity;
+    }
     public void SetDirection(float pPolarity)
     {
         _speed *= pPolarity;

@@ -17,21 +17,18 @@ public class basic : MonoBehaviour
 
     private int cameraHandlerUpdateKey;
     private static List<general> _generals = new List<general>(); public static List<general> Generals { get { return _generals; } }
-    public static boat Boat; //{ get { return (boat)_generals[0]; }  set {  _generals[0] = (boat)value; } }
-    public static hook Hook; //{ get { return (hook)_generals[1]; } set {  _generals[1] = (hook)value; } }
-    public static Radar Radar; //{ get { return (Radar)_generals[2]; } set { _generals[2] = (Radar)value; } }
+    public static boat Boat;
+    public static hook Hook;
+    public static Radar Radar;
 
     void Start()
     {
         Boat = SpawnBoat();
         Hook = SpawnHook();
         Radar = SpawnRadar();
-        //_generals.Add(SpawnBoat()); // _generals[0]
-        //_generals.Add(SpawnHook()); // _generals[1]
-        //_generals.Add(SpawnRadar());
 
         Boat.AssignHook(Hook);
-        Boat.AssignRadar(Radar); // _generals[3]
+        Boat.AssignRadar(Radar);
         Hook.AssignBoat(Boat);
         //Debug.Log(_generals.Count + " generals");
 
