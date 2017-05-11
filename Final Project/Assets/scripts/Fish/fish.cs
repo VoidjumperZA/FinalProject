@@ -15,20 +15,18 @@ public class fish : general
     public enum FishType { Small, Medium, Large};
     [SerializeField]
     [Range(0, 100)]
-    private int rarity;
+    private int _rarity;
     public FishType fishType;
     // Radar related
-    [SerializeField]
-    private SkinnedMeshRenderer _renderer;
-    [SerializeField]
-    private cakeslice.Outline _outliner;
-    [HideInInspector]
-    public Animator Animator;
+    [SerializeField] private SkinnedMeshRenderer _renderer;
+    [SerializeField] private cakeslice.Outline _outliner;
+    [SerializeField] private float _revealDuration;
+    [HideInInspector] public Animator Animator;
 
     // Use this for initialization
-    public override void Start() {
+    public override void Start()
+    {
         Animator = GetComponent<Animator>();
-        base.Start();
         InitializeStateMachine();
     }
 
@@ -47,7 +45,7 @@ public class fish : general
     {
         _stateCache.Clear();
         _stateCache[FishState.None] = new NoneFishState(this);
-        _stateCache[FishState.Swim] = new SwimFishState(this, _speed);
+        _stateCache[FishState.Swim] = new SwimFishState(this, _speed, _revealDuration);
         _stateCache[FishState.FollowHook] = new FollowHookFishState(this);
         _stateCache[FishState.PiledUp] = new PiledUpFishState(this);
         SetState(_fishState);
@@ -70,7 +68,7 @@ public class fish : general
 
     public int GetFishRarity()
     {
-        return rarity;
+        return _rarity;
     }
     public void SetDirection(float pPolarity)
     {
@@ -88,6 +86,20 @@ public class fish : general
     public void OnTriggerEnter(Collider other)
     {
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
+    }
+    public override void Reveal()
+    {
+        if (Revealed) return;
+
+        ToggleOutliner(true);
+        ToggleRenderer(true);
+        Revealed = true;
+    }
+    public override void Hide()
+    {
+        ToggleOutliner(false);
+        ToggleRenderer(false);
+        Revealed = false;
     }
     public int GetScore()
     {

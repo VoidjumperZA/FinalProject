@@ -5,16 +5,20 @@ using UnityEngine;
 public class general : MonoBehaviour
 {
     [HideInInspector]
-    public bool Visible;
+    public bool Visible = false;
+    [HideInInspector]
+    public bool Revealed = false;
 
 
 
-	public virtual void Start () {
+    public virtual void Start()
+    {
 
-	}
-	public virtual void Update () {
+    }
+    public virtual void Update()
+    {
 
-	}
+    }
     public string GetTag()
     {
         return gameObject.tag;
@@ -26,5 +30,13 @@ public class general : MonoBehaviour
     public virtual void ToggleRenderer(bool pBool)
     {
         Visible = pBool;
+    }
+    public virtual void Reveal()
+    {
+
+    }
+    public virtual void Hide()
+    {
+
     }
 }
