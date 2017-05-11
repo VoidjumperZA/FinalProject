@@ -10,7 +10,7 @@ public class fish : general
     public enum FishState { None, Swim, FollowHook, PiledUp }
     [SerializeField] private FishState _fishState = FishState.None;
     // Fish type related
-    public int Score;
+    [SerializeField] private int _score;
     [SerializeField] private float _speed;
     public enum FishType { Small, Medium, Large};
     public FishType fishType;
@@ -78,5 +78,9 @@ public class fish : general
     public void OnTriggerEnter(Collider other)
     {
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
+    }
+    public int GetScore()
+    {
+        return _score;
     }
 }
