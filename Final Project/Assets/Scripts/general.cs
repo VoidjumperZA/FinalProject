@@ -9,8 +9,6 @@ public class general : MonoBehaviour
     [HideInInspector]
     public bool Revealed = false;
 
-
-
     public virtual void Start()
     {
 
