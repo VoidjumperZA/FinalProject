@@ -19,6 +19,10 @@ public class general : MonoBehaviour
     {
 
     }
+    public virtual void FixedUpdate()
+    {
+
+    }
     public string GetTag()
     {
         return gameObject.tag;
