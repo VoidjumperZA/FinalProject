@@ -158,7 +158,8 @@ public class FishHookState : AbstractHookState
             if (!theTrash.Visible) return;
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
-            
+            basic.Scorehandler.AddScore(theTrash.GetScore(), true, false);
+
         }
     }
 }
