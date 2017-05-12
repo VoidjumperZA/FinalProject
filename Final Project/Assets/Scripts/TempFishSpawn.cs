@@ -26,7 +26,6 @@ public class TempFishSpawn : MonoBehaviour
     private Transform _leftSpawn;
     [SerializeField]
     private Transform _rightSpawn;
-    [SerializeField]
     private float _verticalSpawnFluctuation;
     private float _timePassed;
     private bool _valid;
@@ -49,7 +48,8 @@ public class TempFishSpawn : MonoBehaviour
         rightSpawnPos.y -= (_verticalSpawnFluctuation);
         _rightSpawn.transform.position = rightSpawnPos;
         //Max our time to start
-        _timePassed = minTimeBetweenSpawns;
+        timeBetweenSpawns = minTimeBetweenSpawns;
+        _timePassed = timeBetweenSpawns;
         _spawnWidth /= 2;
 
         //Is our game valid, if there is disparity between how many fish types we have and the levels of spawning
