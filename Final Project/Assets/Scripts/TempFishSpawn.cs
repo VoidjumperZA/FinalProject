@@ -26,7 +26,6 @@ public class TempFishSpawn : MonoBehaviour
     private Transform _leftSpawn;
     [SerializeField]
     private Transform _rightSpawn;
-    [SerializeField]
     private float _verticalSpawnFluctuation;
     private float _timePassed;
     private bool _valid;

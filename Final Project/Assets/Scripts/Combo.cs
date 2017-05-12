@@ -166,20 +166,20 @@ public class Combo : MonoBehaviour
 
     public void CreateNewCombo()
     {
-        Debug.Log("Combo Size: " + combo.Count);
+        //Debug.Log("Combo Size: " + combo.Count);
         ClearPreviousCombo(true);
 
         if (comboCanBeGenerated == true)
         {
             comboLength = Random.Range(minComboSize, maxComboSize);
-            Debug.Log("New Combo [" + (comboLength + 1) + "]: ");
+            //Debug.Log("New Combo [" + (comboLength + 1) + "]: ");
             int numberOfFish = System.Enum.GetNames(typeof(fish.FishType)).Length;
-            Debug.Log("There are " + numberOfFish + " types.");
+           // Debug.Log("There are " + numberOfFish + " types.");
             for (int i = comboLength; i > -1; i--)
             {
                 int fishTypeIndex = Random.Range(0, numberOfFish);
                 combo.Add((fish.FishType)fishTypeIndex);
-                Debug.Log("-> (" + fishTypeIndex + ")" + combo[combo.Count - 1].ToString());
+                //Debug.Log("-> (" + fishTypeIndex + ")" + combo[combo.Count - 1].ToString());
                 Image newComboIconBackground = GameObject.Instantiate(comboBackgroundImageToInstantiate, canvas.transform);
                 Image newComboIconFish = GameObject.Instantiate(comboFishImageToInstantiate, canvas.transform);
                 newComboIconFish.sprite = comboFishIconSprites[fishTypeIndex];
@@ -202,7 +202,7 @@ public class Combo : MonoBehaviour
             }
             for (int i = 0; i < comboLength + 1; i++)
             {
-                Debug.Log("- " + combo[i].ToString());
+                //Debug.Log("- " + combo[i].ToString());
             }
         }       
     }

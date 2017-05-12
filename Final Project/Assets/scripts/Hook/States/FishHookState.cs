@@ -10,6 +10,12 @@ public class FishHookState : AbstractHookState
     private Vector3 _xyOffset;
     private float _xOffsetDamping;
     private Vector3 _velocity;
+    private GameplayValues _gameplayValues;
+
+    //Screen shake
+    private bool camShaking;
+    private int screenShakeDuration;
+    private int screenShakeCounter;
 
     public FishHookState(hook pHook, float pSpeed, float pOffsetDamping, float pFallSpeed) : base(pHook)
     {
@@ -17,10 +23,17 @@ public class FishHookState : AbstractHookState
         _xOffsetDamping = pOffsetDamping;
         _fallSpeed = pFallSpeed;
     }
+
+    //
     public override void Start()
     {
-
+        camShaking = false;
+        screenShakeCounter = 0;
+        _gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
+        screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
     }
+
+    //
     public override void Update()
     {
         if (Input.GetMouseButton(0))
@@ -29,40 +42,72 @@ public class FishHookState : AbstractHookState
         }
         ApplyVelocity();
         DampXVelocityAfterDeselected();
+        if (camShaking == true)
+        {
+            shakeCameraOnCollect();
+        }
     }
+
+    //
     public override void Refresh()
     {
         _xyOffset = Vector2.zero;
     }
+
+    //
     public override hook.HookState StateType()
     {
         return hook.HookState.Fish;
     }
+
+    //
     private void SetXYAxisOffset(Vector3 pPosition)
     {
         _xyOffset = new Vector3(pPosition.x - _hook.gameObject.transform.position.x, pPosition.y - _hook.gameObject.transform.position.y, 0);
         _xyOffset.Normalize();
     }
+
+    //
     private void ApplyVelocity()
     {
         _velocity = new Vector3(_xyOffset.x * _speed, Mathf.Min(_xyOffset.y * _speed / 2, -_fallSpeed), 0);
         _hook.gameObject.transform.Translate(_velocity);
     }
+
+    //
     private void DampXVelocityAfterDeselected()
     {
         if (_xyOffset.magnitude > 0) _xyOffset *= _xOffsetDamping;
     }
+
+    //
+    private void shakeCameraOnCollect()
+    {
+        screenShakeCounter++;
+        if (screenShakeCounter >= screenShakeDuration)
+        {
+            camShaking = false;
+            screenShakeCounter = 0;
+            CameraHandler.ResetScreenShake(true);
+        }
+    }
+
+    //
     public override void OnTriggerEnter(Collider other)
     {
         if (!_hook || !other) return;
         //Reel the hook in if you touch the floor
         if (other.gameObject.CompareTag("Floor"))
-        {
+        {CameraHandler.ApplyScreenShake(true);
             SetState(hook.HookState.Reel);
             GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
         } //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
         {
+            //Screen shake
+            CameraHandler.ApplyScreenShake(true);
+            camShaking = true;
+
             fish theFish = other.gameObject.GetComponent<fish>();
             if (!theFish.Visible) return;
             theFish.SetState(fish.FishState.FollowHook);

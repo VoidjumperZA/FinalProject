@@ -17,7 +17,7 @@ public class hook : general
     // Class references
     private GameObject _manager;
     private InputTimer _inputTimer;
-    private GameplayValues _gameplayValues;
+   
     private GlobalUI _globalUI;
     private Camera _mainCamera;
     // Components
@@ -42,11 +42,6 @@ public class hook : general
 
     [SerializeField] private Button _reelButton;
 
-    //Screen shake
-    private bool camShaking;
-    private int screenShakeDuration;
-    private int screenShakeCounter;
-
     private bool valid;
     public override void Start()
     {
@@ -57,20 +52,14 @@ public class hook : general
         currentHookRotation = 0.0f;
         maxHookRotation = 25.0f;
 
-        camShaking = false;
-        screenShakeCounter = 0;
-
-        //screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
+       
     }
 
     //
     public override void Update()
     {
         _abstractState.Update();
-        if (camShaking == true)
-        {
-            //shakeCameraOnCollect();
-        }
+       
         // SetCameraAndHookAngle();   
     }
     public void SetState(HookState pState)
@@ -89,17 +78,7 @@ public class hook : general
         _stateCache[HookState.SetFree] = new SetFreeHookState(this);
         SetState(_hookState);
     }
-    //
-    private void shakeCameraOnCollect()
-    {
-        screenShakeCounter++;
-        if (screenShakeCounter >= screenShakeDuration)
-        {
-            camShaking = false;
-            screenShakeCounter = 0;
-            CameraHandler.ResetScreenShake(true);
-        }
-    }
+    
     // -------- Movement --------
     private void SetCameraAndHookAngle()
     {
@@ -131,12 +110,6 @@ public class hook : general
             //On contact with a fish
             if (other.gameObject.CompareTag("Fish"))
             {
-                //Screen shake
-                CameraHandler.ApplyScreenShake(true);
-                camShaking = true;
-
-                
-
                 //ATTACH FISH TO HOOK
                 //Rotate the fish by a small degree
                 float fishAngle = Random.Range(-fishRotationAngle, fishRotationAngle);

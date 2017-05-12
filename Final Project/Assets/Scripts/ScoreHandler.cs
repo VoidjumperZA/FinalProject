@@ -58,6 +58,7 @@ public class ScoreHandler : MonoBehaviour {
         bankedScore = 0;
         caughtFishCurrecy = 0;
         currentHookScore.text = playerCurrentScore + "";
+        currentHookScore.enabled = false;
         totalScore.text = bankedScore + "";
         currencyText.text = caughtFishCurrecy + "";
         timeColourHasBeenFlashing = 0.0f;
@@ -191,5 +192,10 @@ public class ScoreHandler : MonoBehaviour {
     {
         caughtFishCurrecy++;
         currencyText.text = "" + caughtFishCurrecy;
+    }
+
+    public void ToggleHookScoreUI(bool pState)
+    {
+        currentHookScore.enabled = pState;
     }
 }

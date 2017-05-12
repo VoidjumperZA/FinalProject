@@ -23,6 +23,7 @@ public class GlobalUI : MonoBehaviour {
     public void DeployHook()
     {
         basic.Boat.SetState(boat.BoatState.Fish);
+        basic.Scorehandler.ToggleHookScoreUI(true);
         CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.ZoomedHook, true);
         GameObject.Find("Manager").GetComponent<Combo>().CreateNewCombo();
         _deployHookButton.gameObject.SetActive(false);

@@ -46,4 +46,8 @@ public class boat : general
         _radar = pRadar;
         _radar.gameObject.transform.SetParent(gameObject.transform);
     }
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
+    }
 }
