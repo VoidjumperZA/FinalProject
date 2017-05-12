@@ -7,16 +7,19 @@ public class Jellyfish : general
 
     //Movement
     [SerializeField] private float _speed;
-    [SerializeField] private float _maxSteerAngle; //45f
+    //[SerializeField] private float _maxSteerAngle; //45f
 
-    [SerializeField] private Rigidbody _jellyrigidbody;
+    private Rigidbody _jellyrigidbody;
 
     //Distance from the jellyfish to the point it is going to.
-    [SerializeField] private float _distance;
+    private float _distance;
 
-    private Transform targetPoint;
-    private float seaDepth;
-    
+    private Vector3 targetPoint;
+    private float _seaDepth;
+    private float distanceToNewPoint;
+    private bool positive;
+
+    public GameObject target;
     //Score
     [SerializeField] private int _penalization;
 
@@ -29,16 +32,23 @@ public class Jellyfish : general
     public override void Start ()
     {
         _jellyrigidbody = GetComponent<Rigidbody>();
+        
+        _seaDepth = basic.GetSeaDepth();
+        //Debug.Log("Seadepth: " + _seaDepth);
+        distanceToNewPoint = _seaDepth * -1 / 6;
+        _distance = 0.1f;
 
-        /*seaDepth = basic.getSeaDepth();*/
         //Llamar a generarPunto()
-	}
+        targetPoint = transform.position;
+        positive = true;
+        createNewPoint();
+}
 	
 	// Update is called once per frame
 	public override void Update ()
     {
-		
-	}
+
+    }
 
     public void FixedUpdate()
     {
@@ -51,30 +61,63 @@ public class Jellyfish : general
     {
 
         Vector3 _movement = transform.forward * _speed * Time.deltaTime;
-
-        _jellyrigidbody.MovePosition(_jellyrigidbody.position + _movement);
+        _jellyrigidbody.MovePosition(transform.position + _movement);
+        if (Vector3.Distance(transform.position, targetPoint) <= _distance)
+        {
+            createNewPoint();
+        }
     }
 
     private void turn()
     {
+        Transform trans = gameObject.transform;
+        trans.LookAt(target.transform);
+        Quaternion.Lerp(gameObject.transform.rotation, trans.rotation, 0.01f);
 
-        if (Vector3.Distance(transform.position, targetPoint.position) <= _distance)
-        {
-            //Llamar a generarPunto()
+        /*Vector3 previousRotation = transform.eulerAngles;
 
-        }
+        Vector3 auxPosition = new Vector3(targetPoint.x, targetPoint.y, transform.position.z);
+        transform.LookAt(auxPosition);
 
-        Vector3 previousRotation = transform.eulerAngles;
+
+        Vector3 targetRotation = transform.eulerAngles;
+
+        Vector3 currentRotation = new Vector3(Mathf.LerpAngle(previousRotation.x, targetRotation.x, Time.deltaTime * 3), previousRotation.y, previousRotation.z );
+
+        transform.eulerAngles = currentRotation;*/
 
     }
 
-    private Transform createNewPoint()
+    private void createNewPoint()
     {
+        bool firstTime = true;
+        //float x = 0f;
+        //float y = 0f;
 
-        float newlenght = Random.Range(seaDepth/2 , seaDepth);
-        float angle;
+        while (firstTime || !(targetPoint.y < _seaDepth/3 && targetPoint.y > (_seaDepth * 2) / 3 ) )
+        { 
 
+            float angle = Random.Range( 0, Mathf.PI);
 
+            if (positive)
+            {
+                angle *= -1;
+                positive = false;
+            }
+            else
+            {
+                positive = true;
+            }
+
+            float x = targetPoint.x + Mathf.Cos(angle) * distanceToNewPoint; 
+            float y = targetPoint.y + Mathf.Sin(angle) * distanceToNewPoint;
+
+            firstTime = false;
+            targetPoint = new Vector3(x, y, 0);
+        }
+        
+
+        target.transform.position = targetPoint;
 
     }
     public void OnTriggerEnter(Collider other)
@@ -85,7 +128,7 @@ public class Jellyfish : general
             GameObject.Destroy(gameObject);
         }
     }
-
+    /*
     public override void ToggleOutliner(bool pBool)
     {
         _outliner.enabled = pBool;
@@ -94,5 +137,5 @@ public class Jellyfish : general
     {
         Visible = pBool;
         _renderer.enabled = pBool;
-    }
+    }*/
 }
