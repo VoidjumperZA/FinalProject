@@ -17,6 +17,11 @@ public class FishHookState : AbstractHookState
     private int screenShakeDuration;
     private int screenShakeCounter;
 
+    // Rotation
+    private float hookRotationAmount;
+    private float maxHookRotation;
+    private float currentHookRotation;
+
     public FishHookState(hook pHook, float pSpeed, float pOffsetDamping, float pFallSpeed) : base(pHook)
     {
         _speed = pSpeed;
@@ -31,6 +36,10 @@ public class FishHookState : AbstractHookState
         screenShakeCounter = 0;
         _gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
         screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
+
+        hookRotationAmount = 1.0f;
+        currentHookRotation = 0.0f;
+        maxHookRotation = 25.0f;
     }
 
     //
@@ -42,9 +51,33 @@ public class FishHookState : AbstractHookState
         }
         ApplyVelocity();
         DampXVelocityAfterDeselected();
+        //SetCameraAndHookAngle();
         if (camShaking == true)
         {
             shakeCameraOnCollect();
+        }
+    }
+
+    // -------- Movement --------
+    private void SetCameraAndHookAngle()
+    {
+        if (_xyOffset.x < 0)
+        {
+            if (currentHookRotation < maxHookRotation)
+            {
+                currentHookRotation += hookRotationAmount;
+                _hook.gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
+                Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
+            }
+        }
+        else if (_xyOffset.x > 0)
+        {
+            if (currentHookRotation > -maxHookRotation)
+            {
+                currentHookRotation -= hookRotationAmount;
+                _hook.gameObject.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
+                Camera.main.transform.Rotate(0.0f, 0.0f, currentHookRotation);
+            }
         }
     }
 

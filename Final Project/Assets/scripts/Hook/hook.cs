@@ -35,10 +35,7 @@ public class hook : general
     private Vector3 _xyOffset;
     private Vector3 _velocity;
     // X Velocity damping
-    // Rotation
-    private float hookRotationAmount;
-    private float maxHookRotation;
-    private float currentHookRotation;
+    
 
     [SerializeField] private Button _reelButton;
 
@@ -48,9 +45,7 @@ public class hook : general
         valid = true;
         InitializeStateMachine();
 
-        hookRotationAmount = 1.0f;
-        currentHookRotation = 0.0f;
-        maxHookRotation = 25.0f;
+        
 
        
     }
@@ -79,28 +74,7 @@ public class hook : general
         SetState(_hookState);
     }
     
-    // -------- Movement --------
-    private void SetCameraAndHookAngle()
-    {
-        if (_xyOffset.x < 0)
-        {
-            if (currentHookRotation < maxHookRotation)
-            {
-                currentHookRotation += hookRotationAmount;
-                gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
-                Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
-            }
-        }
-        else if (_xyOffset.x > 0)
-        {
-            if (currentHookRotation > -maxHookRotation)
-            {
-                currentHookRotation -= hookRotationAmount;
-                gameObject.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
-                Camera.main.transform.Rotate(0.0f, 0.0f, currentHookRotation);
-            }
-        }
-    }
+ 
     private void OnTriggerEnter(Collider other)
     {
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
