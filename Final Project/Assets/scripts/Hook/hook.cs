@@ -17,7 +17,7 @@ public class hook : general
     // Class references
     private GameObject _manager;
     private InputTimer _inputTimer;
-    private GameplayValues _gameplayValues;
+   
     private GlobalUI _globalUI;
     private Camera _mainCamera;
     // Components
@@ -35,17 +35,9 @@ public class hook : general
     private Vector3 _xyOffset;
     private Vector3 _velocity;
     // X Velocity damping
-    // Rotation
-    private float hookRotationAmount;
-    private float maxHookRotation;
-    private float currentHookRotation;
+    
 
     [SerializeField] private Button _reelButton;
-
-    //Screen shake
-    private bool camShaking;
-    private int screenShakeDuration;
-    private int screenShakeCounter;
 
     private bool valid;
     public override void Start()
@@ -53,24 +45,16 @@ public class hook : general
         valid = true;
         InitializeStateMachine();
 
-        hookRotationAmount = 1.0f;
-        currentHookRotation = 0.0f;
-        maxHookRotation = 25.0f;
+        
 
-        camShaking = false;
-        screenShakeCounter = 0;
-
-        //screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
+       
     }
 
     //
     public override void Update()
     {
         _abstractState.Update();
-        if (camShaking == true)
-        {
-            //shakeCameraOnCollect();
-        }
+       
         // SetCameraAndHookAngle();   
     }
     public void SetState(HookState pState)
@@ -89,39 +73,8 @@ public class hook : general
         _stateCache[HookState.SetFree] = new SetFreeHookState(this);
         SetState(_hookState);
     }
-    //
-    private void shakeCameraOnCollect()
-    {
-        screenShakeCounter++;
-        if (screenShakeCounter >= screenShakeDuration)
-        {
-            camShaking = false;
-            screenShakeCounter = 0;
-            CameraHandler.ResetScreenShake(true);
-        }
-    }
-    // -------- Movement --------
-    private void SetCameraAndHookAngle()
-    {
-        if (_xyOffset.x < 0)
-        {
-            if (currentHookRotation < maxHookRotation)
-            {
-                currentHookRotation += hookRotationAmount;
-                gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
-                Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
-            }
-        }
-        else if (_xyOffset.x > 0)
-        {
-            if (currentHookRotation > -maxHookRotation)
-            {
-                currentHookRotation -= hookRotationAmount;
-                gameObject.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
-                Camera.main.transform.Rotate(0.0f, 0.0f, currentHookRotation);
-            }
-        }
-    }
+    
+ 
     private void OnTriggerEnter(Collider other)
     {
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
@@ -131,12 +84,6 @@ public class hook : general
             //On contact with a fish
             if (other.gameObject.CompareTag("Fish"))
             {
-                //Screen shake
-                CameraHandler.ApplyScreenShake(true);
-                camShaking = true;
-
-                
-
                 //ATTACH FISH TO HOOK
                 //Rotate the fish by a small degree
                 float fishAngle = Random.Range(-fishRotationAngle, fishRotationAngle);
