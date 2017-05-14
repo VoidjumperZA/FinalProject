@@ -6,7 +6,9 @@ public class Jellyfish : general
 {
 
     //Movement
-    [SerializeField] private float _speed;
+    [SerializeField] private float _movementSpeed;
+    [SerializeField] private float _lerpSpeed;
+
     //[SerializeField] private float _maxSteerAngle; //45f
 
     private Rigidbody _jellyrigidbody;
@@ -19,7 +21,7 @@ public class Jellyfish : general
     private float distanceToNewPoint;
     private bool positive;
 
-    public GameObject target;
+    public GameObject _lerpHelp;
     //Score
     [SerializeField] private int _penalization;
 
@@ -60,7 +62,7 @@ public class Jellyfish : general
     private void move()
     {
 
-        Vector3 _movement = transform.forward * _speed * Time.deltaTime;
+        Vector3 _movement = transform.forward * _movementSpeed * Time.deltaTime;
         _jellyrigidbody.MovePosition(transform.position + _movement);
         if (Vector3.Distance(transform.position, targetPoint) <= _distance)
         {
@@ -70,22 +72,8 @@ public class Jellyfish : general
 
     private void turn()
     {
-        Transform trans = gameObject.transform;
-        trans.LookAt(target.transform);
-        Quaternion.Lerp(gameObject.transform.rotation, trans.rotation, 0.01f);
-
-        /*Vector3 previousRotation = transform.eulerAngles;
-
-        Vector3 auxPosition = new Vector3(targetPoint.x, targetPoint.y, transform.position.z);
-        transform.LookAt(auxPosition);
-
-
-        Vector3 targetRotation = transform.eulerAngles;
-
-        Vector3 currentRotation = new Vector3(Mathf.LerpAngle(previousRotation.x, targetRotation.x, Time.deltaTime * 3), previousRotation.y, previousRotation.z );
-
-        transform.eulerAngles = currentRotation;*/
-
+        _lerpHelp.transform.LookAt(targetPoint);
+        gameObject.transform.rotation = Quaternion.Lerp(gameObject.transform.rotation, _lerpHelp.transform.rotation, _lerpSpeed);
     }
 
     private void createNewPoint()
@@ -116,9 +104,6 @@ public class Jellyfish : general
             targetPoint = new Vector3(x, y, 0);
         }
         
-
-        target.transform.position = targetPoint;
-
     }
     public void OnTriggerEnter(Collider other)
     {

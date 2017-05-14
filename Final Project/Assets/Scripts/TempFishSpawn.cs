@@ -39,7 +39,7 @@ public class TempFishSpawn : MonoBehaviour
     {
         possiblePolarities = PossiblePolarities.Niether;
         _basic = GetComponent<basic>();
-        _verticalSpawnFluctuation = (_basic.GetSeaDepth() / 2);
+        _verticalSpawnFluctuation = (basic.GetSeaDepth() / 2);
         Vector3 leftSpawnPos = new Vector3(_leftSpawn.transform.position.x, GameObject.FindGameObjectWithTag("Boat").transform.position.y, _leftSpawn.transform.position.z);
         leftSpawnPos.y -= (_verticalSpawnFluctuation);
         _leftSpawn.transform.position = leftSpawnPos;
