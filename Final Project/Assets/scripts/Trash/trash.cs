@@ -10,7 +10,8 @@ public class trash : general
     public enum TrashState { None, Float, FollowHook, PiledUp }
     [SerializeField] private TrashState _trashState = TrashState.None;
     [SerializeField] private int _score;
-    [SerializeField] private float _speed;
+    [SerializeField] private float _spinsPerSecond;
+    [SerializeField] private float _spinRadius;
     [SerializeField] private MeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
     [SerializeField] private float _revealDuration;
@@ -32,7 +33,7 @@ public class trash : general
     {
         _stateCache.Clear();
         _stateCache[TrashState.None] = new NoneTrashState(this);
-        _stateCache[TrashState.Float] = new FloatTrashState(this, _speed, _revealDuration);
+        _stateCache[TrashState.Float] = new FloatTrashState(this, _spinsPerSecond, _revealDuration, _spinRadius);
         _stateCache[TrashState.FollowHook] = new FollowHookTrashState(this);
         _stateCache[TrashState.PiledUp] = new PiledUpTrashState(this);
         SetState(_trashState);

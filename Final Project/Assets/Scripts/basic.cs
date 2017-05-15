@@ -12,6 +12,7 @@ public class basic : MonoBehaviour
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
     [SerializeField] private GameObject _boatPrefab;
+    [SerializeField] private GameObject _trailerPrefab;
     [SerializeField] private GameObject _radarPrefab;
     [SerializeField] private GameObject _hookPrefab;
 
@@ -19,7 +20,8 @@ public class basic : MonoBehaviour
     private static List<general> _generals = new List<general>(); public static List<general> Generals { get { return _generals; } }
     public static boat Boat;
     public static hook Hook;
-    public static Radar Radar;
+    public static radar Radar;
+    public static trailer Trailer;
 
     private GameObject boat;
     private GameObject floor;
@@ -30,10 +32,12 @@ public class basic : MonoBehaviour
         Boat = SpawnBoat();
         Hook = SpawnHook();
         Radar = SpawnRadar();
+        Trailer = SpawnTrailer();
 
         Boat.AssignHook(Hook);
         Boat.AssignRadar(Radar);
         Hook.AssignBoat(Boat);
+        
         //Debug.Log(_generals.Count + " generals");
 
         //InputTimer and basic should be on the same object, but I'm explictly calling in case they ever aren't
@@ -73,11 +77,18 @@ public class basic : MonoBehaviour
         _generals.Add(theHook);
         return theHook;
     }
-    private Radar SpawnRadar()
+    private radar SpawnRadar()
     {
-        Radar theRadar = Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,-5f,0.25f), Quaternion.identity).GetComponent<Radar>();
+        radar theRadar = Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,-5f,0.25f), Quaternion.identity).GetComponent<radar>();
         _generals.Add(theRadar);
         return theRadar;
+    }
+    private trailer SpawnTrailer()
+    {
+        trailer theTrailer = Instantiate(_trailerPrefab, Boat.transform.position + new Vector3(-10,0,0), _trailerPrefab.transform.rotation).GetComponent<trailer>();
+        theTrailer.gameObject.transform.SetParent(Boat.gameObject.transform);
+        _generals.Add(theTrailer);
+        return theTrailer;
     }
     private void RenderTrail(Vector3 pPositionOne, Vector3 pPositionTwo)
     {

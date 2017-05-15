@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Radar : general {
+public class radar : general {
     // Pulse visualisation
     private bool _active = false;
     [SerializeField] private float _cooldownDuration;

@@ -11,7 +11,7 @@ public class PiledUpFishState : AbstractFishState
     public override void Start()
     {
         basic.Generals.Remove(_fish);
-        GameObject.Destroy(_fish.gameObject);
+        basic.Trailer.StuffOnTrailer.Add(_fish);
     }
     public override void Update()
     {

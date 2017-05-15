@@ -5,12 +5,19 @@ using UnityEngine;
 
 public class MoveBoatState : AbstractBoatState {
     private float _acceleration;
+    private float _maxVelocity;
+    private float _deceleration;
     private float _velocity;
-    private Vector3 _destination = Vector3.zero;
 
-    public MoveBoatState(boat pBoat, float pSpeed) : base(pBoat)
+    private Vector3 _destination = Vector3.zero;
+    private float _alreadyTraveledDistance = 0;
+    private float _distanceToTravel = 0;
+
+    public MoveBoatState(boat pBoat, float pAcceleration, float pMaxVelocity, float pDeceleration) : base(pBoat)
     {
-        _acceleration = pSpeed;
+        _acceleration = pAcceleration;
+        _maxVelocity = pMaxVelocity;
+        _deceleration = pDeceleration;
     }
 
     public override void Start()
@@ -25,7 +32,7 @@ public class MoveBoatState : AbstractBoatState {
         {
             basic.Hook.SetState(hook.HookState.None);
             _boat.SetState(boat.BoatState.None);
-
+            
         }
     }
     private void SetDestination(Vector3 pPosition)
@@ -35,20 +42,13 @@ public class MoveBoatState : AbstractBoatState {
     }
     private bool MoveToDestination()
     {
-        Vector3 differenceVector = _destination - _boat.gameObject.transform.position;
-        if (differenceVector.magnitude < _velocity)
-        {
-            _velocity = 0;
-            return false;
-        }
-        else
-        {
-            _velocity += _acceleration * Time.deltaTime;
-            _boat.gameObject.transform.Translate(differenceVector.normalized * _velocity);
-            basic.Hook.SetState(hook.HookState.FollowBoat);
-            return true;
-        }
+        if (Input.GetMouseButton(0) && _velocity < _maxVelocity) _velocity += _acceleration;
+        else if (_velocity > 0 || _velocity >= _maxVelocity) _velocity -= _deceleration;
+        if (_velocity < 0) _velocity = 0;
 
+        Vector3 differenceVector = _destination - _boat.gameObject.transform.position;
+        _boat.gameObject.transform.Translate(differenceVector.normalized * _velocity * Time.deltaTime);
+        return (differenceVector.magnitude > _velocity);
     }
     public override void Refresh()
     {

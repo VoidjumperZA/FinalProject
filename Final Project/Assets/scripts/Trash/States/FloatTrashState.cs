@@ -6,11 +6,15 @@ using UnityEngine;
 public class FloatTrashState : AbstractTrashState
 {
     private counter _outlineCounter;
-    private float _speed;
-    public FloatTrashState(trash pTrash, float pSpeed, float pRevealDuration) : base(pTrash)
+    private float _spinsPerSecond;
+    private float _spinRadius;
+    private int _spinDirection;
+    public FloatTrashState(trash pTrash, float pSpinsPerSeconds, float pRevealDuration, float pSpinRadius) : base(pTrash)
     {
-        _speed = pSpeed;
+        _spinsPerSecond = pSpinsPerSeconds;
+        _spinRadius = pSpinRadius;
         _outlineCounter = new counter(pRevealDuration);
+        _spinDirection = UnityEngine.Random.Range(0, 2) == 0 ? 1 : -1;
     }
     public override void Start()
     {
@@ -19,6 +23,7 @@ public class FloatTrashState : AbstractTrashState
     public override void Update()
     {
         if (_trash.Revealed) HandleOutline();
+        FloatAround();
     }
     public override void Refresh()
     {
@@ -31,17 +36,16 @@ public class FloatTrashState : AbstractTrashState
     private void HandleOutline()
     {
         _outlineCounter.Count();
-        //if (_outlineCounter.Remaining(0.33f)) _blink = true;
         if (_outlineCounter.Done())
         {
             _trash.Hide();
-            //_blink = false;
             _outlineCounter.Reset();
         }
-
-        /*if (_blink)
-        {
-
-        }*/
+    }
+    private void FloatAround()
+    {
+        _trash.gameObject.transform.Translate(new Vector3(0, 
+                                                          Mathf.Sin(2*Mathf.PI * Time.time * _spinsPerSecond) * _spinDirection, 
+                                                          Mathf.Cos(2 * Mathf.PI * Time.time * _spinsPerSecond) * _spinDirection).normalized * _spinRadius);
     }
 }

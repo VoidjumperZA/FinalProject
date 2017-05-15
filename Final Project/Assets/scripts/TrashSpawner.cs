@@ -22,9 +22,11 @@ public class TrashSpawner : MonoBehaviour {
     public void SpawnTrash()
     {
         Vector3 area = _rightSpawn.position - _leftSpawn.position;
+        Vector3 spawnPosition;
         for (int i = 0; i < _trashAmount; i++)
         {
-            trash theTrash = Instantiate(_trashPrefabs[0], _leftSpawn.position + (area - (area / _trashAmount) * i), Quaternion.identity).GetComponent<trash>();
+            spawnPosition = new Vector3(_leftSpawn.position.x + (area.x - (area.x / _trashAmount) * i) - area.x / _trashAmount, _leftSpawn.position.y + (_trashAmount / 12.0f) * i, _leftSpawn.position.z);
+            trash theTrash = Instantiate(_trashPrefabs[0], spawnPosition, _trashPrefabs[0].transform.rotation).GetComponent<trash>();
             _basic.AddTrash(theTrash);
         }
     }
