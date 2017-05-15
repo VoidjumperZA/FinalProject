@@ -58,7 +58,7 @@ public class MoveBoatState : AbstractBoatState {
 
     public override void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Overriding");
+        //Debug.Log("Overriding");
         if (other.gameObject.tag == "FishingArea")
         {
             GameObject.Find("Manager").GetComponent<TempFishSpawn>().CalculateNewSpawnDensity();
