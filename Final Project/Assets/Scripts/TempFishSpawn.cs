@@ -45,11 +45,11 @@ public class TempFishSpawn : MonoBehaviour
         _basic = GetComponent<basic>();
         _verticalSpawnFluctuation = (-1.0f * (basic.GetSeaDepth() / 2));
         Vector3 leftSpawnPos = new Vector3(_leftSpawn.transform.position.x, GameObject.FindGameObjectWithTag("Boat").transform.position.y, _leftSpawn.transform.position.z);
-        leftSpawnPos.y += (_verticalSpawnFluctuation);
+        leftSpawnPos.y -= (_verticalSpawnFluctuation);
         _leftSpawn.transform.position = leftSpawnPos;
 
         Vector3 rightSpawnPos = new Vector3(_rightSpawn.transform.position.x, GameObject.FindGameObjectWithTag("Boat").transform.position.y, _rightSpawn.transform.position.z);
-        rightSpawnPos.y += (_verticalSpawnFluctuation);
+        rightSpawnPos.y -= (_verticalSpawnFluctuation);
         _rightSpawn.transform.position = rightSpawnPos;
         //Max our time to start
         timeBetweenSpawns = lowerSpawningRateHigherValue;

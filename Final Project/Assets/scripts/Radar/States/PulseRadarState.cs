@@ -40,6 +40,7 @@ public class PulseRadarState : AbstractRadarState {
     }
     private void DetectCollectables()
     {
+        if (basic.Generals == null) Debug.Log("IS NULL");
         foreach (general collectable in basic.Generals)
         {
             bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (collectable.transform.position - _radar.gameObject.transform.position).normalized) > Mathf.Cos(_radarAngle);
