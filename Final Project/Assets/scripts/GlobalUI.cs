@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class GlobalUI : MonoBehaviour {
+    [SerializeField] private Button _playGameButton;
+
 
     [SerializeField] private Button _deployHookButton;
     [SerializeField] private Button _reelUpHook;
@@ -16,28 +18,32 @@ public class GlobalUI : MonoBehaviour {
         if (!_reelUpHook) Debug.Log("Warning: You need to assign ReelUpButton to GlobalUI.");
         if (!_radarButton) Debug.Log("Warning: You need to assign RadarButton to GlobalUI.");
 
-        _reelUpHook.gameObject.SetActive(false);
+        DeployHookButton(false);
+        RadarButton(false);
+        ReelUpHookButton(false);
     }
-	
+    public void OnPlayGameClick()
+    {
+        CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.OceanOverview, true);
+        basic.Boat.SetState(boat.BoatState.SetUp);
+        basic.Shoppinglist.Show(true);
+        _playGameButton.gameObject.SetActive(false);
+    }
+	public void DeployHookButton(bool pBool) {  _deployHookButton.gameObject.SetActive(pBool); }
+    public void ReelUpHookButton(bool pBool) { _reelUpHook.gameObject.SetActive(pBool); }
+    public void RadarButton(bool pBool) { _radarButton.gameObject.SetActive(pBool); }
 	
     public void DeployHook()
     {
         basic.Boat.SetState(boat.BoatState.Fish);
         basic.Scorehandler.ToggleHookScoreUI(true);
-        CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.ZoomedHook, true);
         GameObject.Find("Manager").GetComponent<Combo>().CreateNewCombo();
-        _deployHookButton.gameObject.SetActive(false);
-        _radarButton.gameObject.SetActive(false);
-        _reelUpHook.gameObject.SetActive(true);
+        DeployHookButton(false);
+        //RadarButton(false);
+        ReelUpHookButton(true);
    
 
     }
-
-    /*public void SendRadarPulse()
-    {
-        Radar r = GameObject.FindGameObjectWithTag("Radar").GetComponent<Radar>();
-        r.SendPulse();
-    }*/
 
     public void ReelUpHook()
     {
@@ -47,9 +53,9 @@ public class GlobalUI : MonoBehaviour {
 
     public void SwitchHookButtons()
     {
-        _reelUpHook.gameObject.SetActive(false);
-        _deployHookButton.gameObject.SetActive(true);
-        _radarButton.gameObject.SetActive(true);    
+        DeployHookButton(true);
+        //RadarButton(true);
+        ReelUpHookButton(false); 
     }
 
     private void DisableButton(Button buttonToDisable)

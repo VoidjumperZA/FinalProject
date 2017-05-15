@@ -13,6 +13,7 @@ public class FishBoatState : AbstractBoatState {
     public override void Start()
     {
         basic.Hook.SetState(hook.HookState.Fish);
+        basic.Radar.SetState(radar.RadarState.None);
     }
     public override void Update()
     {

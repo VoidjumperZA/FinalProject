@@ -7,10 +7,12 @@ public class basic : MonoBehaviour
     private InputTimer _inputTimer;
     [HideInInspector] public static GlobalUI GlobalUi;
     [HideInInspector] public static ScoreHandler Scorehandler;
+    [HideInInspector] public static ShoppingList Shoppinglist;
     [HideInInspector] public static Combo combo;
 
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
+    [SerializeField] private Transform _boatSetUp;
     [SerializeField] private GameObject _boatPrefab;
     [SerializeField] private GameObject _trailerPrefab;
     [SerializeField] private GameObject _radarPrefab;
@@ -29,7 +31,7 @@ public class basic : MonoBehaviour
 
     void Start()
     {
-        Boat = SpawnBoat();
+        Boat = SpawnBoat(_boatSpawn.position, _boatSetUp.position);
         Hook = SpawnHook();
         Radar = SpawnRadar();
         Trailer = SpawnTrailer();
@@ -45,6 +47,7 @@ public class basic : MonoBehaviour
         _inputTimer = GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("ERROR: Cannot get a reference to InputTimer from the Manager object.");
         GlobalUi = GetComponent<GlobalUI>(); if (!GlobalUi) Debug.Log("ERROR: Cannot get a reference to GlobalUI from the Manager object.");
         Scorehandler = GetComponent<ScoreHandler>(); if (!Scorehandler) Debug.Log("ERROR: Cannot get reference to ScoreHandler from Manager object");
+        Shoppinglist = GetComponent<ShoppingList>(); if (!Shoppinglist) Debug.Log("ERROR: Cannot get reference to ShoppingList from Manager object");
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
 
         floor = GameObject.FindGameObjectWithTag("Floor");
@@ -65,9 +68,10 @@ public class basic : MonoBehaviour
     {
         CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
     }
-    private boat SpawnBoat()
+    private boat SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
     {
-        boat theBoat = Instantiate(_boatPrefab, _boatSpawn.position, Quaternion.identity).GetComponent<boat>();
+        boat theBoat = Instantiate(_boatPrefab, pSpawnPosition, Quaternion.identity).GetComponent<boat>();
+        theBoat.SetSetUpPosition(pSetUpPosition);
         _generals.Add(theBoat);
         return theBoat;
     }

@@ -12,7 +12,6 @@ public class ReelHookState : AbstractHookState {
     }
     public override void Start()
     {
-
     }
     public override void Update()
     {

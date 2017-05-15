@@ -40,6 +40,7 @@ public class FishHookState : AbstractHookState
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
         maxHookRotation = 25.0f;
+        CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.ZoomedHook, true);
     }
 
     //
@@ -137,20 +138,21 @@ public class FishHookState : AbstractHookState
         } //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
         {
-            //Screen shake
-            CameraHandler.ApplyScreenShake(true);
-            camShaking = true;
 
             fish theFish = other.gameObject.GetComponent<fish>();
             if (!theFish.Visible) return;
             theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
+            basic.Shoppinglist.AddFish(theFish);
             basic.Scorehandler.AddScore(theFish.GetScore(), true, true);
             basic.combo.CheckComboProgress(theFish.fishType);
             if (theFish.fishType == fish.FishType.Large)
             {
                 //SetState(hook.HookState.Reel);
             }
+            //Screen shake
+            CameraHandler.ApplyScreenShake(true);
+            camShaking = true;
         }
         if (other.gameObject.CompareTag("Trash"))
         {

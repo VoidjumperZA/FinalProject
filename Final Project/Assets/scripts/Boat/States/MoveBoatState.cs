@@ -10,8 +10,6 @@ public class MoveBoatState : AbstractBoatState {
     private float _velocity;
 
     private Vector3 _destination = Vector3.zero;
-    private float _alreadyTraveledDistance = 0;
-    private float _distanceToTravel = 0;
 
     public MoveBoatState(boat pBoat, float pAcceleration, float pMaxVelocity, float pDeceleration) : base(pBoat)
     {
@@ -22,16 +20,14 @@ public class MoveBoatState : AbstractBoatState {
 
     public override void Start()
     {
-
     }
     public override void Update()
     {
-        basic.Radar.SendPulse();
         SetDestination(mouse.GetWorldPoint());
         if (!MoveToDestination())
         {
             basic.Hook.SetState(hook.HookState.None);
-            _boat.SetState(boat.BoatState.None);
+            _boat.SetState(boat.BoatState.Stationary);
             
         }
     }
@@ -47,7 +43,7 @@ public class MoveBoatState : AbstractBoatState {
         if (_velocity < 0) _velocity = 0;
 
         Vector3 differenceVector = _destination - _boat.gameObject.transform.position;
-        _boat.gameObject.transform.Translate(differenceVector.normalized * _velocity * Time.deltaTime);
+        _boat.gameObject.transform.Translate(differenceVector.normalized * _velocity);
         return (differenceVector.magnitude > _velocity);
     }
     public override void Refresh()

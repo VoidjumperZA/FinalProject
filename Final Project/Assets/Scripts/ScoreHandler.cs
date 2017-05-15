@@ -5,40 +5,25 @@ using UnityEngine.UI;
 
 public class ScoreHandler : MonoBehaviour {
     [Header("UI Pieces")]
-    [SerializeField]
-    private GameObject scoreUI; //the appearing score ui
-    [SerializeField]
-    private Text totalScore; //the counter listing our total score
-    [SerializeField]
-    private Text currentHookScore;
-    [SerializeField]
-    private GameObject comboScoreUI;
-    [SerializeField]
-    private Text currencyText;
+    [SerializeField] private GameObject scoreUI; //the appearing score ui
+    [SerializeField] private Text totalScore; //the counter listing our total score
+    [SerializeField] private Text currentHookScore;
+    [SerializeField] private GameObject comboScoreUI;
+    [SerializeField] private Text currencyText;
 
 
     [Header("Flashing")]
-    [SerializeField]
-    Color flashColour;  //which colour the text flashes when it updates
-    [SerializeField]
-    private float colourFlashTime; //how long does it flash that colour
+    [SerializeField] Color flashColour;  //which colour the text flashes when it updates
+    [SerializeField] private float colourFlashTime; //how long does it flash that colour
     [Header("Values")]
-    [SerializeField]
-    private GameObject UISpawnPosition; //where are we spawning that ui
-    [SerializeField]
-    private GameObject ConboUISpawnPosition; //where are we spawning the combo notifier ui
-    [SerializeField]
-    private int comboScoreValue;
-    [SerializeField]
-    private float minimumUIScale; //our size is random, what is the minimum bound for scaling
-    [SerializeField]
-    private float maximumUIScale; //maximum bound for scaling
-    [SerializeField]
-    private float UIRotationAngle; //rotating our ui a little for effect
-    [SerializeField]
-    private float hookScoreXOffset;
-    [SerializeField]
-    private float hookScoreYOffset;
+    [SerializeField] private GameObject UISpawnPosition; //where are we spawning that ui
+    [SerializeField] private GameObject ConboUISpawnPosition; //where are we spawning the combo notifier ui
+    [SerializeField] private int comboScoreValue;
+    [SerializeField] private float minimumUIScale; //our size is random, what is the minimum bound for scaling
+    [SerializeField] private float maximumUIScale; //maximum bound for scaling
+    [SerializeField] private float UIRotationAngle; //rotating our ui a little for effect
+    [SerializeField] private float hookScoreXOffset;
+    [SerializeField] private float hookScoreYOffset;
     private Transform UIPosition;
     private int playerCurrentScore;
     private int caughtFishCurrecy;
