@@ -11,9 +11,9 @@ public class TempFishSpawn : MonoBehaviour
     private GameObject[] _fishPrefabs;
     [Header("Spawns")]
     [SerializeField]
-    private float minTimeBetweenSpawns;
+    private float higherSpawningRateLowerValue;
     [SerializeField]
-    private float maxTimeBetweenSpawns;
+    private float lowerSpawningRateHigherValue;
     [SerializeField]
     private int minimumPercentChangeInDensity;
     [SerializeField]
@@ -39,7 +39,7 @@ public class TempFishSpawn : MonoBehaviour
     {
         possiblePolarities = PossiblePolarities.Niether;
         _basic = GetComponent<basic>();
-        _verticalSpawnFluctuation = (_basic.GetSeaDepth() / 2);
+        _verticalSpawnFluctuation = (basic.GetSeaDepth() / 2);
         Vector3 leftSpawnPos = new Vector3(_leftSpawn.transform.position.x, GameObject.FindGameObjectWithTag("Boat").transform.position.y, _leftSpawn.transform.position.z);
         leftSpawnPos.y -= (_verticalSpawnFluctuation);
         _leftSpawn.transform.position = leftSpawnPos;
@@ -48,7 +48,7 @@ public class TempFishSpawn : MonoBehaviour
         rightSpawnPos.y -= (_verticalSpawnFluctuation);
         _rightSpawn.transform.position = rightSpawnPos;
         //Max our time to start
-        timeBetweenSpawns = minTimeBetweenSpawns;
+        timeBetweenSpawns = higherSpawningRateLowerValue;
         _timePassed = timeBetweenSpawns;
         _spawnWidth /= 2;
 
@@ -108,23 +108,23 @@ public class TempFishSpawn : MonoBehaviour
         we choose a new value that is at least x% larger or smaller than our old value.
         But first we need to make sure we can make a step that big in either direction*/
 
-        float negativeDiff = timeBetweenSpawns - minTimeBetweenSpawns;
-        float positiveDiff = maxTimeBetweenSpawns - timeBetweenSpawns;
-        float totalRange = maxTimeBetweenSpawns - minTimeBetweenSpawns;
+        float negativeDiff = timeBetweenSpawns - higherSpawningRateLowerValue;
+        float positiveDiff = lowerSpawningRateHigherValue - timeBetweenSpawns;
+        float totalRange = lowerSpawningRateHigherValue - higherSpawningRateLowerValue;
         Debug.Log("Hit a spawning area. Current value: [" + timeBetweenSpawns + "]  |  totalRange: [" + totalRange + "]  |  posDiff: [" + positiveDiff + "]  |  negDiff: [" + negativeDiff + "]");
 
         //If the available range on the negative "axis" is greater than the min % of the total range
-        if (negativeDiff > minimumPercentChangeInDensity * (maxTimeBetweenSpawns / 100))
+        if (negativeDiff > minimumPercentChangeInDensity * (lowerSpawningRateHigherValue / 100))
         {
             possiblePolarities = PossiblePolarities.Negative;
         }
         //If the available range on the positive "axis" is greater than the min % of the total range
-        if (positiveDiff > minimumPercentChangeInDensity * (maxTimeBetweenSpawns / 100))
+        if (positiveDiff > minimumPercentChangeInDensity * (lowerSpawningRateHigherValue / 100))
         {
             possiblePolarities = PossiblePolarities.Positive;
         }
         //If the available range on both "axes" are greater than the min % of the total range
-        if (positiveDiff > minimumPercentChangeInDensity * (maxTimeBetweenSpawns / 100) && negativeDiff > minimumPercentChangeInDensity * (maxTimeBetweenSpawns / 100))
+        if (positiveDiff > minimumPercentChangeInDensity * (lowerSpawningRateHigherValue / 100) && negativeDiff > minimumPercentChangeInDensity * (lowerSpawningRateHigherValue / 100))
         {
             possiblePolarities = PossiblePolarities.Either;
         }
@@ -180,7 +180,7 @@ public class TempFishSpawn : MonoBehaviour
         //wait for an amount of time then make this spawn area infertile
         Debug.Log("Couting  " + timeBeforeSpawnFertilityDegrade + "seconds before making this area overfished.");
         yield return new WaitForSeconds(timeBeforeSpawnFertilityDegrade);
-        timeBetweenSpawns = minTimeBetweenSpawns;
+        timeBetweenSpawns = higherSpawningRateLowerValue;
         Debug.Log("TimeDiff: " + (timeCo - Time.time));
     }
 }

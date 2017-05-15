@@ -25,7 +25,7 @@ public class basic : MonoBehaviour
 
     private GameObject boat;
     private GameObject floor;
-    private float seaDepth;
+    private static float seaDepth;
 
     void Start()
     {
@@ -49,7 +49,7 @@ public class basic : MonoBehaviour
 
         floor = GameObject.FindGameObjectWithTag("Floor");
         boat = GameObject.FindGameObjectWithTag("Boat");
-        Vector3 difference = boat.transform.position - floor.transform.position;
+        Vector3 difference = floor.transform.position - boat.transform.position;
         seaDepth = difference.y;
         //
         CameraHandler.ArtificialStart();
@@ -103,7 +103,7 @@ public class basic : MonoBehaviour
         _generals.Add(pTrash);
     }
 
-    public float GetSeaDepth()
+    public static float GetSeaDepth()
     {
         return seaDepth;
     }
