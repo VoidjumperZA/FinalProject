@@ -144,7 +144,7 @@ public class FishHookState : AbstractHookState
             theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
             basic.Shoppinglist.AddFish(theFish);
-            basic.Scorehandler.AddScore(theFish.GetScore(), true, true);
+            basic.Scorehandler.AddScore(GameObject.Find("Manager").GetComponent<ScoreHandler>().GetFishScore(theFish.fishType), true, true);
             basic.combo.CheckComboProgress(theFish.fishType);
             if (theFish.fishType == fish.FishType.Large)
             {
@@ -160,7 +160,7 @@ public class FishHookState : AbstractHookState
             if (!theTrash.Visible) return;
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
-            basic.Scorehandler.AddScore(theTrash.GetScore(), true, false);
+            basic.Scorehandler.AddScore(GameObject.Find("Manager").GetComponent<ScoreHandler>().GetTrashScore(), true, false);
 
         }
     }

@@ -25,6 +25,10 @@ public class GameplayValues : MonoBehaviour
     [SerializeField]
     private float zoomSpeed;
 
+    [Header("Ability Statistics")]
+    [SerializeField]
+    private float sonarFadeTime;
+
     // Use this for initialization
     void Start()
     {
