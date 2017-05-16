@@ -34,7 +34,7 @@ public class ScoreHandler : MonoBehaviour {
     [SerializeField]
     private int trashScoreValue;
     [SerializeField]
-    private int jellyfishPenaltyValue;
+    private int jellyfishPenaltyPercentage;
     private Transform UIPosition;
     private int playerCurrentScore;
     private int caughtFishCurrecy;
@@ -218,6 +218,11 @@ public class ScoreHandler : MonoBehaviour {
     public int GetTrashScore()
     {
         return trashScoreValue;
+    }
+
+    public int GetJellyfishPenalty()
+    {
+        return jellyfishPenaltyPercentage;
     }
 
     /// <summary>
