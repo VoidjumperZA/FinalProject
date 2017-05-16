@@ -33,7 +33,7 @@ public class general : MonoBehaviour
     {
         Visible = pBool;
     }
-    public virtual void Reveal()
+    public virtual void Reveal(float pRevealDuration)
     {
 
     }

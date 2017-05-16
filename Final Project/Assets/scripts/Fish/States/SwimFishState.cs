@@ -7,10 +7,11 @@ public class SwimFishState : AbstractFishState
 {
     private counter _outlineCounter;
     private float _speed;
-    public SwimFishState(fish pFish, float pSpeed, float pRevealDuration) : base(pFish)
+    public float RevealDuration;
+    public SwimFishState(fish pFish, float pSpeed) : base(pFish)
     {
         _speed = pSpeed;
-        _outlineCounter = new counter(pRevealDuration);
+        _outlineCounter = new counter(0);
     }
     public override void Start()
     {
@@ -41,7 +42,6 @@ public class SwimFishState : AbstractFishState
     private void HandleOutline()
     {
         _outlineCounter.Count();
-        //if (_outlineCounter.Remaining(0.33f)) _blink = true;
         if (_outlineCounter.Done())
         {
             _fish.Hide();
@@ -53,5 +53,9 @@ public class SwimFishState : AbstractFishState
         {
 
         }*/
+    }
+    public void ResetOutLineCounter(float pRevealDuration)
+    {
+        _outlineCounter.Reset(pRevealDuration);
     }
 }
