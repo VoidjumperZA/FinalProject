@@ -4,116 +4,71 @@ using UnityEngine;
 
 public class Jellyfish : general
 {
+    // States
+    private Dictionary<JellyfishState, AbstractJellyfishState> _stateCache = new Dictionary<JellyfishState, AbstractJellyfishState>();
+    private AbstractJellyfishState _abstractState = null;
+    public enum JellyfishState { None, Swim}
+    [SerializeField]
+    private JellyfishState _jellyfishState = JellyfishState.None;
 
     //Movement
-    [SerializeField] private float _movementSpeed;
-    [SerializeField] private float _lerpSpeed;
+    [SerializeField]
+    private float _movementSpeed;
+    [SerializeField]
+    private float _lerpSpeed;
+    
+    // Radar related
+    [SerializeField]
+    private SkinnedMeshRenderer _renderer;
+    [SerializeField]
+    private cakeslice.Outline _outliner;
+    [SerializeField]
+    private float _revealDuration;
+    [HideInInspector]
+    public Animator Animator;
 
-    //[SerializeField] private float _maxSteerAngle; //45f
-
-    private Rigidbody _jellyrigidbody;
-
-    //Distance from the jellyfish to the point it is going to.
-    private float _distance;
-
-    private Vector3 targetPoint;
-    private float _seaDepth;
-    private float distanceToNewPoint;
-    private bool positive;
-
-    public GameObject _lerpHelp;
+ 
     //Score
     [SerializeField] private int _penalization;
-
-    // Radar related
-    [SerializeField] private SkinnedMeshRenderer _renderer;
-    [SerializeField] private cakeslice.Outline _outliner;
-
-
+    
     // Use this for initialization
     public override void Start ()
     {
-        _jellyrigidbody = GetComponent<Rigidbody>();
-        
-        _seaDepth = basic.GetSeaDepth();
-        //Debug.Log("Seadepth: " + _seaDepth);
-        distanceToNewPoint = _seaDepth * -1 / 6;
-        _distance = 0.1f;
-
-        //Llamar a generarPunto()
-        targetPoint = transform.position;
-        positive = true;
-        createNewPoint();
+        Animator = GetComponent<Animator>();
+        InitializeStateMachine();
 }
 	
 	// Update is called once per frame
 	public override void Update ()
     {
-
+        _abstractState.Update();
     }
 
-    public void FixedUpdate()
+    public void SetState(JellyfishState pState)
     {
-        move();
-        turn();
+        if (_abstractState != null) _abstractState.Refresh();
+        _abstractState = _stateCache[pState];
+        _abstractState.Start();
+    }
+
+    private void InitializeStateMachine()
+    {
+        _stateCache.Clear();
+        _stateCache[JellyfishState.None] = new NoneJellyfishState(this);
+        _stateCache[JellyfishState.Swim] = new SwimJellyfishState(this, _movementSpeed, _lerpSpeed ,_revealDuration);
+        SetState(_jellyfishState);
     }
     
-
-    private void move()
+    public int GetPenalization()
     {
-
-        Vector3 _movement = transform.forward * _movementSpeed * Time.deltaTime;
-        _jellyrigidbody.MovePosition(transform.position + _movement);
-        if (Vector3.Distance(transform.position, targetPoint) <= _distance)
-        {
-            createNewPoint();
-        }
+        return _penalization;
     }
 
-    private void turn()
-    {
-        _lerpHelp.transform.LookAt(targetPoint);
-        gameObject.transform.rotation = Quaternion.Lerp(gameObject.transform.rotation, _lerpHelp.transform.rotation, _lerpSpeed);
-    }
-
-    private void createNewPoint()
-    {
-        bool firstTime = true;
-        //float x = 0f;
-        //float y = 0f;
-
-        while (firstTime || !(targetPoint.y < _seaDepth/3 && targetPoint.y > (_seaDepth * 2) / 3 ) )
-        { 
-
-            float angle = Random.Range( 0, Mathf.PI);
-
-            if (positive)
-            {
-                angle *= -1;
-                positive = false;
-            }
-            else
-            {
-                positive = true;
-            }
-
-            float x = targetPoint.x + Mathf.Cos(angle) * distanceToNewPoint; 
-            float y = targetPoint.y + Mathf.Sin(angle) * distanceToNewPoint;
-
-            firstTime = false;
-            targetPoint = new Vector3(x, y, 0);
-        }
-        
-    }
     public void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Fish Despawner" || other.gameObject.tag == "Floor")
-        {
-            basic.Generals.Remove(this);
-            GameObject.Destroy(gameObject);
-        }
+        if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
     }
-    /*
+
     public override void ToggleOutliner(bool pBool)
     {
         _outliner.enabled = pBool;
@@ -122,5 +77,20 @@ public class Jellyfish : general
     {
         Visible = pBool;
         _renderer.enabled = pBool;
-    }*/
+    }
+
+    public override void Reveal()
+    {
+        if (Revealed) return;
+
+        ToggleOutliner(true);
+        ToggleRenderer(true);
+        Revealed = true;
+    }
+    public override void Hide()
+    {
+        ToggleOutliner(false);
+        ToggleRenderer(false);
+        Revealed = false;
+    }
 }

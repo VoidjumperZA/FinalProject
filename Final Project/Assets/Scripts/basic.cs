@@ -20,8 +20,7 @@ public class basic : MonoBehaviour
     public static boat Boat;
     public static hook Hook;
     public static Radar Radar;
-
-    private GameObject boat;
+    
     private GameObject floor;
     private static float seaDepth;
 
@@ -44,9 +43,8 @@ public class basic : MonoBehaviour
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
 
         floor = GameObject.FindGameObjectWithTag("Floor");
-        boat = GameObject.FindGameObjectWithTag("Boat");
-        Vector3 difference = floor.transform.position - boat.transform.position;
-        seaDepth = difference.y;
+        Vector3 difference = floor.transform.position - Boat.transform.position;
+        seaDepth = Mathf.Abs(difference.y);
         //
         CameraHandler.ArtificialStart();
         cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
