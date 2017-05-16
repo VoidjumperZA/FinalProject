@@ -27,6 +27,10 @@ public class Jellyfish : general
     [HideInInspector]
     public Animator Animator;
 
+    public GameObject _lerpHelp;
+    public GameObject _jellyfishZone;
+    public GameObject _point;
+
  
     //Score
     [SerializeField] private int _penalization;
@@ -42,6 +46,10 @@ public class Jellyfish : general
 	public override void Update ()
     {
         _abstractState.Update();
+    }
+    public override void FixedUpdate()
+    {
+        _abstractState.FixedUpdate();
     }
 
     public void SetState(JellyfishState pState)
@@ -81,16 +89,16 @@ public class Jellyfish : general
 
     public override void Reveal()
     {
-        if (Revealed) return;
+        /*if (Revealed) return;
 
         ToggleOutliner(true);
         ToggleRenderer(true);
-        Revealed = true;
+        Revealed = true;*/
     }
     public override void Hide()
     {
-        ToggleOutliner(false);
+        /*ToggleOutliner(false);
         ToggleRenderer(false);
-        Revealed = false;
+        Revealed = false;*/
     }
 }

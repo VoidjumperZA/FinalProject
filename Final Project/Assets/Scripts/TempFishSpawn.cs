@@ -9,7 +9,7 @@ public class TempFishSpawn : MonoBehaviour
     [Header("Fish")]
     [SerializeField]
     private GameObject[] _fishPrefabs;
-    [Header("Spawns")]
+    [Header("Spawning Rates")]
     [SerializeField]
     private float higherSpawningRateLowerValue;
     [SerializeField]
@@ -18,6 +18,9 @@ public class TempFishSpawn : MonoBehaviour
     private int minimumPercentChangeInDensity;
     [SerializeField]
     private float timeBeforeSpawnFertilityDegrade;
+    [Header("Misc Values")]
+    [SerializeField]
+    private int maximumNumberOfOnscreenFish;
     [SerializeField]
     private float bufferSpaceUnderBoat;
     [SerializeField]
@@ -33,13 +36,14 @@ public class TempFishSpawn : MonoBehaviour
     private enum PossiblePolarities { Negative, Positive, Either, Niether }
     private PossiblePolarities possiblePolarities;
     private float timeCo;
+    private int totalNumberOfSpawnedFish;
 
     // Use this for initialization
     void Start()
     {
         possiblePolarities = PossiblePolarities.Niether;
         _basic = GetComponent<basic>();
-        _verticalSpawnFluctuation = (basic.GetSeaDepth() / 2);
+        _verticalSpawnFluctuation = (-1.0f * (basic.GetSeaDepth() / 2));
         Vector3 leftSpawnPos = new Vector3(_leftSpawn.transform.position.x, GameObject.FindGameObjectWithTag("Boat").transform.position.y, _leftSpawn.transform.position.z);
         leftSpawnPos.y -= (_verticalSpawnFluctuation);
         _leftSpawn.transform.position = leftSpawnPos;
@@ -48,9 +52,11 @@ public class TempFishSpawn : MonoBehaviour
         rightSpawnPos.y -= (_verticalSpawnFluctuation);
         _rightSpawn.transform.position = rightSpawnPos;
         //Max our time to start
-        timeBetweenSpawns = higherSpawningRateLowerValue;
+        timeBetweenSpawns = lowerSpawningRateHigherValue;
         _timePassed = timeBetweenSpawns;
         _spawnWidth /= 2;
+
+        totalNumberOfSpawnedFish = 0;
 
         //Is our game valid, if there is disparity between how many fish types we have and the levels of spawning
         //then mark that as invalid.
@@ -62,6 +68,7 @@ public class TempFishSpawn : MonoBehaviour
     {
         if (_valid == true)
         {
+            Debug.Log("No. of fish [" + totalNumberOfSpawnedFish + "]  |  maximum fish: [" + maximumNumberOfOnscreenFish + "]");
             MoveSpawnArea(basic.Boat.transform.position);
             //Always count down time
             _timePassed -= Time.deltaTime;
@@ -75,18 +82,35 @@ public class TempFishSpawn : MonoBehaviour
     }
     private fish CreateFish(int pPolarity)
     {
-        //Choose a random fish and direction
-        int randomFish = Random.Range(0, _fishPrefabs.Length);
-        float verticalOffset = Random.Range(-_verticalSpawnFluctuation, _verticalSpawnFluctuation - bufferSpaceUnderBoat);
+        if (totalNumberOfSpawnedFish < maximumNumberOfOnscreenFish)
+        {
+            //Choose a random fish and direction
+            int randomFish = Random.Range(0, _fishPrefabs.Length);
+            float verticalOffset = Random.Range(-_verticalSpawnFluctuation, _verticalSpawnFluctuation - bufferSpaceUnderBoat);
 
-        GameObject newFish = Instantiate(_fishPrefabs[randomFish],
-                                        (pPolarity == 0) ? _leftSpawn.position + new Vector3(0, verticalOffset, 0) : _rightSpawn.position + new Vector3(0, verticalOffset, 0),
-                                        (pPolarity == 0) ? _leftSpawn.rotation : _rightSpawn.rotation);
-        newFish.GetComponent<fish>().SetDirection(1.0f);
-        newFish.GetComponent<fish>().SetFishType(randomFish);
-        return newFish.GetComponent<fish>();
+
+            GameObject newFish = Instantiate(_fishPrefabs[randomFish],
+                                            (pPolarity == 0) ? _leftSpawn.position + new Vector3(0, verticalOffset, 0) : _rightSpawn.position + new Vector3(0, verticalOffset, 0),
+                                            (pPolarity == 0) ? _leftSpawn.rotation : _rightSpawn.rotation);
+
+            totalNumberOfSpawnedFish++;
+            newFish.GetComponent<fish>().SetDirection(1.0f);
+            newFish.GetComponent<fish>().SetFishType(randomFish);
+            return newFish.GetComponent<fish>();
+        }
+        else
+        {
+            return null;
+        }
     }
 
+    /// <summary>
+    /// Removes one from the total number of fish spawned, to allow space for another.
+    /// </summary>
+    public void RemoveOneFishFromTracked()
+    {
+        totalNumberOfSpawnedFish--;
+    }
 
     private void MoveSpawnArea(Vector3 pBoatPosition)
     {
@@ -111,25 +135,25 @@ public class TempFishSpawn : MonoBehaviour
         float negativeDiff = timeBetweenSpawns - higherSpawningRateLowerValue;
         float positiveDiff = lowerSpawningRateHigherValue - timeBetweenSpawns;
         float totalRange = lowerSpawningRateHigherValue - higherSpawningRateLowerValue;
+        float minPercentOfRange = minimumPercentChangeInDensity * (totalRange / 100);
         Debug.Log("Hit a spawning area. Current value: [" + timeBetweenSpawns + "]  |  totalRange: [" + totalRange + "]  |  posDiff: [" + positiveDiff + "]  |  negDiff: [" + negativeDiff + "]");
 
         //If the available range on the negative "axis" is greater than the min % of the total range
-        if (negativeDiff > minimumPercentChangeInDensity * (lowerSpawningRateHigherValue / 100))
+        if (negativeDiff > minPercentOfRange) // lowerspawningratehighervalue / 100
         {
             possiblePolarities = PossiblePolarities.Negative;
         }
         //If the available range on the positive "axis" is greater than the min % of the total range
-        if (positiveDiff > minimumPercentChangeInDensity * (lowerSpawningRateHigherValue / 100))
+        if (positiveDiff > minPercentOfRange)
         {
             possiblePolarities = PossiblePolarities.Positive;
         }
         //If the available range on both "axes" are greater than the min % of the total range
-        if (positiveDiff > minimumPercentChangeInDensity * (lowerSpawningRateHigherValue / 100) && negativeDiff > minimumPercentChangeInDensity * (lowerSpawningRateHigherValue / 100))
+        if (positiveDiff > minPercentOfRange && negativeDiff > minPercentOfRange)
         {
             possiblePolarities = PossiblePolarities.Either;
         }
         Debug.Log("possiblePol: " + possiblePolarities.ToString());
-
         //
         switch (possiblePolarities)
         {
@@ -137,50 +161,50 @@ public class TempFishSpawn : MonoBehaviour
                 Debug.Log("ERROR: No space to change spawn density to a difference either positive or negative. Incorrect maths applied.");
                 break;
             case PossiblePolarities.Positive:
-                calculatePositiveDifference(positiveDiff);
+                calculatePositiveDifference(positiveDiff, minPercentOfRange);
                 break;
             case PossiblePolarities.Negative:
-                calculateNegativeDifference(negativeDiff);
+                calculateNegativeDifference(negativeDiff, minPercentOfRange);
                 break;
             case PossiblePolarities.Either:
                 int roll = Random.Range(0, 2);
                 if (roll == 0)
                 {
-                    calculatePositiveDifference(positiveDiff);
+                    calculatePositiveDifference(positiveDiff, minPercentOfRange);
                 }
                 else if (roll == 1)
                 {
-                    calculateNegativeDifference(negativeDiff);
+                    calculateNegativeDifference(negativeDiff, minPercentOfRange);
                 }
                 break;
+        }
                 timeCo = Time.time;
                 Debug.Log("Calculated a new time of spawning which is: " + timeBetweenSpawns + "\nTime: " + timeCo);
                 StartCoroutine(ReduceFertilityOfSpawnArea());
-        }
     }
 
-    private void calculateNegativeDifference(float pDiff)
+    private void calculateNegativeDifference(float pDiff, float minPercentOfRange)
     {
         /*FROM the minimum value minus the x% step (because we only have a difference figure), TO our current minus the x% step
         and the end minus the step*/
-        timeBetweenSpawns = Random.Range(pDiff - minimumPercentChangeInDensity, timeBetweenSpawns - minimumPercentChangeInDensity);
-        Debug.Log("Calculated Negative Difference.");
+        timeBetweenSpawns = Random.Range(pDiff - minPercentOfRange, timeBetweenSpawns - minPercentOfRange);
+        Debug.Log("Calculated Negative Difference.\nNew density: " + timeBetweenSpawns);
     }
 
-    private void calculatePositiveDifference(float pDiff)
+    private void calculatePositiveDifference(float pDiff, float minPercentOfRange)
     {
         /*FROM our current number, PLUS a step of x% TO the amount of space between current 
         and the end minus the step (because we only have a difference figure)*/
-        timeBetweenSpawns = Random.Range(timeBetweenSpawns + minimumPercentChangeInDensity, pDiff - minimumPercentChangeInDensity);
-        Debug.Log("Calculated Positive Difference.");
+        timeBetweenSpawns = Random.Range(timeBetweenSpawns + minPercentOfRange, pDiff - minPercentOfRange);
+        Debug.Log("Calculated Positive Difference.\nNew density: " + timeBetweenSpawns);
     }
 
     IEnumerator ReduceFertilityOfSpawnArea()
     {
         //wait for an amount of time then make this spawn area infertile
-        Debug.Log("Couting  " + timeBeforeSpawnFertilityDegrade + "seconds before making this area overfished.");
+        Debug.Log("Counting  " + timeBeforeSpawnFertilityDegrade + "seconds before making this area overfished.");
         yield return new WaitForSeconds(timeBeforeSpawnFertilityDegrade);
-        timeBetweenSpawns = higherSpawningRateLowerValue;
-        Debug.Log("TimeDiff: " + (timeCo - Time.time));
+        timeBetweenSpawns = lowerSpawningRateHigherValue;
+        Debug.Log("TimeDiff: " + (timeCo - Time.time) + "This fishing area is now overfished, and has the minimal spawn rate (" + timeBetweenSpawns + ")");
     }
 }

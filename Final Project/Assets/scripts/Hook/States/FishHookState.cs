@@ -40,6 +40,7 @@ public class FishHookState : AbstractHookState
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
         maxHookRotation = 25.0f;
+        CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.ZoomedHook, true);
     }
 
     //
@@ -144,7 +145,8 @@ public class FishHookState : AbstractHookState
             if (!theFish.Visible) return;
             theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
-            basic.Scorehandler.AddScore(theFish.GetScore(), true, true);
+            basic.Shoppinglist.AddFish(theFish);
+            basic.Scorehandler.AddScore(GameObject.Find("Manager").GetComponent<ScoreHandler>().GetFishScore(theFish.fishType), true, true);
             basic.combo.CheckComboProgress(theFish.fishType);
             if (theFish.fishType == fish.FishType.Large)
             {
@@ -153,6 +155,7 @@ public class FishHookState : AbstractHookState
             //Screen shake
             CameraHandler.ApplyScreenShake(true);
             camShaking = true;
+
         }
         if (other.gameObject.CompareTag("Jellyfish"))
         {
@@ -168,7 +171,7 @@ public class FishHookState : AbstractHookState
             if (!theTrash.Visible) return;
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
-            basic.Scorehandler.AddScore(theTrash.GetScore(), true, false);
+            basic.Scorehandler.AddScore(GameObject.Find("Manager").GetComponent<ScoreHandler>().GetTrashScore(), true, false);
 
         }
     }

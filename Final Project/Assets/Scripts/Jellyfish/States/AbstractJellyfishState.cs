@@ -14,6 +14,7 @@ public abstract class AbstractJellyfishState
     public abstract void Start();
 
     public abstract void Update();
+    public virtual void FixedUpdate() { }
     public virtual void Refresh(){ }
 
     public abstract Jellyfish.JellyfishState StateType();

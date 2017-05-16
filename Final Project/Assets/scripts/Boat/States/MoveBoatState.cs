@@ -5,27 +5,30 @@ using UnityEngine;
 
 public class MoveBoatState : AbstractBoatState {
     private float _acceleration;
+    private float _maxVelocity;
+    private float _deceleration;
     private float _velocity;
+
     private Vector3 _destination = Vector3.zero;
 
-    public MoveBoatState(boat pBoat, float pSpeed) : base(pBoat)
+    public MoveBoatState(boat pBoat, float pAcceleration, float pMaxVelocity, float pDeceleration) : base(pBoat)
     {
-        _acceleration = pSpeed;
+        _acceleration = pAcceleration;
+        _maxVelocity = pMaxVelocity;
+        _deceleration = pDeceleration;
     }
 
     public override void Start()
     {
-
     }
     public override void Update()
     {
-        basic.Radar.SendPulse();
         SetDestination(mouse.GetWorldPoint());
         if (!MoveToDestination())
         {
             basic.Hook.SetState(hook.HookState.None);
-            _boat.SetState(boat.BoatState.None);
-
+            _boat.SetState(boat.BoatState.Stationary);
+            
         }
     }
     private void SetDestination(Vector3 pPosition)
@@ -35,20 +38,13 @@ public class MoveBoatState : AbstractBoatState {
     }
     private bool MoveToDestination()
     {
-        Vector3 differenceVector = _destination - _boat.gameObject.transform.position;
-        if (differenceVector.magnitude < _velocity)
-        {
-            _velocity = 0;
-            return false;
-        }
-        else
-        {
-            _velocity += _acceleration * Time.deltaTime;
-            _boat.gameObject.transform.Translate(differenceVector.normalized * _velocity);
-            basic.Hook.SetState(hook.HookState.FollowBoat);
-            return true;
-        }
+        if (Input.GetMouseButton(0) && _velocity < _maxVelocity) _velocity += _acceleration;
+        else if (_velocity > 0 || _velocity >= _maxVelocity) _velocity -= _deceleration;
+        if (_velocity < 0) _velocity = 0;
 
+        Vector3 differenceVector = _destination - _boat.gameObject.transform.position;
+        _boat.gameObject.transform.Translate(differenceVector.normalized * _velocity);
+        return (differenceVector.magnitude > _velocity);
     }
     public override void Refresh()
     {
@@ -62,7 +58,7 @@ public class MoveBoatState : AbstractBoatState {
 
     public override void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Overriding");
+        //Debug.Log("Overriding");
         if (other.gameObject.tag == "FishingArea")
         {
             GameObject.Find("Manager").GetComponent<TempFishSpawn>().CalculateNewSpawnDensity();

@@ -11,7 +11,7 @@ public class PiledUpTrashState : AbstractTrashState
     public override void Start()
     {
         basic.Generals.Remove(_trash);
-        GameObject.Destroy(_trash.gameObject);
+        basic.Trailer.StuffOnTrailer.Add(_trash);
     }
     public override void Update()
     {

@@ -5,40 +5,36 @@ using UnityEngine.UI;
 
 public class ScoreHandler : MonoBehaviour {
     [Header("UI Pieces")]
-    [SerializeField]
-    private GameObject scoreUI; //the appearing score ui
-    [SerializeField]
-    private Text totalScore; //the counter listing our total score
-    [SerializeField]
-    private Text currentHookScore;
-    [SerializeField]
-    private GameObject comboScoreUI;
-    [SerializeField]
-    private Text currencyText;
+    [SerializeField] private GameObject scoreUI; //the appearing score ui
+    [SerializeField] private Text totalScore; //the counter listing our total score
+    [SerializeField] private Text currentHookScore;
+    [SerializeField] private GameObject comboScoreUI;
+    [SerializeField] private Text currencyText;
 
 
     [Header("Flashing")]
+    [SerializeField] Color flashColour;  //which colour the text flashes when it updates
+    [SerializeField] private float colourFlashTime; //how long does it flash that colour
+    [Header("Visual Values")]
+    [SerializeField] private GameObject UISpawnPosition; //where are we spawning that ui
+    [SerializeField] private GameObject ConboUISpawnPosition; //where are we spawning the combo notifier ui
+    [SerializeField] private float minimumUIScale; //our size is random, what is the minimum bound for scaling
+    [SerializeField] private float maximumUIScale; //maximum bound for scaling
+    [SerializeField] private float UIRotationAngle; //rotating our ui a little for effect
+    [SerializeField] private float hookScoreXOffset;
+    [SerializeField] private float hookScoreYOffset;
+    [Header("Score Values")]
+    [SerializeField] private int comboScoreValue;
     [SerializeField]
-    Color flashColour;  //which colour the text flashes when it updates
+    private int smallFishScoreValue;
     [SerializeField]
-    private float colourFlashTime; //how long does it flash that colour
-    [Header("Values")]
+    private int mediumFishScoreValue;
     [SerializeField]
-    private GameObject UISpawnPosition; //where are we spawning that ui
+    private int largeFishScoreValue;
     [SerializeField]
-    private GameObject ConboUISpawnPosition; //where are we spawning the combo notifier ui
+    private int trashScoreValue;
     [SerializeField]
-    private int comboScoreValue;
-    [SerializeField]
-    private float minimumUIScale; //our size is random, what is the minimum bound for scaling
-    [SerializeField]
-    private float maximumUIScale; //maximum bound for scaling
-    [SerializeField]
-    private float UIRotationAngle; //rotating our ui a little for effect
-    [SerializeField]
-    private float hookScoreXOffset;
-    [SerializeField]
-    private float hookScoreYOffset;
+    private int jellyfishPenaltyPercentage;
     private Transform UIPosition;
     private int playerCurrentScore;
     private int caughtFishCurrecy;
@@ -197,5 +193,62 @@ public class ScoreHandler : MonoBehaviour {
     public void ToggleHookScoreUI(bool pState)
     {
         currentHookScore.enabled = pState;
+    }
+
+    public int GetFishScore(fish.FishType pType)
+    {
+        switch(pType)
+        {
+            case fish.FishType.Small:
+                return smallFishScoreValue;
+                break;
+            case fish.FishType.Medium:
+                return mediumFishScoreValue;
+                break;
+            case fish.FishType.Large:
+                return largeFishScoreValue;
+                break;
+            default:
+                return -999999;
+                break;
+        }
+
+    }
+
+    public int GetTrashScore()
+    {
+        return trashScoreValue;
+    }
+
+    public int GetJellyfishPenalty()
+    {
+        return jellyfishPenaltyPercentage;
+    }
+
+    /// <summary>
+    /// Remove score by a set value. If the value is greater than the available score, the score will be set to zero and not go into negative values.
+    /// </summary>
+    /// <param name="pHardValue"></param>
+    public void RemoveScore(int pHardValue)
+    {
+        if (pHardValue >= playerCurrentScore)
+        {
+            Debug.Log("WARNING: The removed score is greater than or equal to the player's current score. Capping the score to zero.");
+            playerCurrentScore = 0;
+        }
+        else
+        {
+            playerCurrentScore -= pHardValue;
+        }
+    }
+
+    /// <summary>
+    /// Remove score by a percentage. Percentage will be internally converted to an integer as well as an absolute value.
+    /// </summary>
+    /// <param name="pPercentage"></param>
+    public void RemoveScore(float pPercentage)
+    {
+        int percentageRemoved = playerCurrentScore * (Mathf.Abs((int)pPercentage) / 100);
+        playerCurrentScore -= percentageRemoved;
     }
 }

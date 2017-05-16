@@ -7,11 +7,14 @@ public class basic : MonoBehaviour
     private InputTimer _inputTimer;
     [HideInInspector] public static GlobalUI GlobalUi;
     [HideInInspector] public static ScoreHandler Scorehandler;
+    [HideInInspector] public static ShoppingList Shoppinglist;
     [HideInInspector] public static Combo combo;
 
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
+    [SerializeField] private Transform _boatSetUp;
     [SerializeField] private GameObject _boatPrefab;
+    [SerializeField] private GameObject _trailerPrefab;
     [SerializeField] private GameObject _radarPrefab;
     [SerializeField] private GameObject _hookPrefab;
 
@@ -19,20 +22,31 @@ public class basic : MonoBehaviour
     private static List<general> _generals = new List<general>(); public static List<general> Generals { get { return _generals; } }
     public static boat Boat;
     public static hook Hook;
-    public static Radar Radar;
-    
+
+    public static radar Radar;
+
+    //public static radar Radar;
+    public static trailer Trailer;
+
+    private GameObject boat;
     private GameObject floor;
     private static float seaDepth;
+    //private GameObject _docks;
+    //private GameObject _endOfLevel;
+    //private static float _seaWidth;
+   
 
     void Start()
     {
-        Boat = SpawnBoat();
+        Boat = SpawnBoat(_boatSpawn.position, _boatSetUp.position);
         Hook = SpawnHook();
         Radar = SpawnRadar();
+        Trailer = SpawnTrailer();
 
         Boat.AssignHook(Hook);
         Boat.AssignRadar(Radar);
         Hook.AssignBoat(Boat);
+        
         //Debug.Log(_generals.Count + " generals");
 
         //InputTimer and basic should be on the same object, but I'm explictly calling in case they ever aren't
@@ -40,11 +54,17 @@ public class basic : MonoBehaviour
         _inputTimer = GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("ERROR: Cannot get a reference to InputTimer from the Manager object.");
         GlobalUi = GetComponent<GlobalUI>(); if (!GlobalUi) Debug.Log("ERROR: Cannot get a reference to GlobalUI from the Manager object.");
         Scorehandler = GetComponent<ScoreHandler>(); if (!Scorehandler) Debug.Log("ERROR: Cannot get reference to ScoreHandler from Manager object");
+        Shoppinglist = GetComponent<ShoppingList>(); if (!Shoppinglist) Debug.Log("ERROR: Cannot get reference to ShoppingList from Manager object");
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
 
+        //Find out seaDepth
         floor = GameObject.FindGameObjectWithTag("Floor");
         Vector3 difference = floor.transform.position - Boat.transform.position;
         seaDepth = Mathf.Abs(difference.y);
+        //Find out seaWidth
+        //_docks = GameObject.FindGameObjectWithTag("Docks"); if (!_docks) Debug.Log("WARNING (Jellyfish uses this): You need to create the Docks and tag it with Docks");
+        //_endOfLevel = GameObject.FindGameObjectWithTag("EndOfLevel"); if (!_endOfLevel) Debug.Log("WARNING (Jellyfish uses this): You need to create an empy object, place it at the end of the level (x) and tag it with EndOfLevel");
+        //_seaWidth = Vector3.Distance(_docks.transform.position, _endOfLevel.transform.position);
         //
         CameraHandler.ArtificialStart();
         cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
@@ -59,9 +79,10 @@ public class basic : MonoBehaviour
     {
         CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
     }
-    private boat SpawnBoat()
+    private boat SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
     {
-        boat theBoat = Instantiate(_boatPrefab, _boatSpawn.position, Quaternion.identity).GetComponent<boat>();
+        boat theBoat = Instantiate(_boatPrefab, pSpawnPosition, Quaternion.identity).GetComponent<boat>();
+        theBoat.SetSetUpPosition(pSetUpPosition);
         _generals.Add(theBoat);
         return theBoat;
     }
@@ -71,11 +92,18 @@ public class basic : MonoBehaviour
         _generals.Add(theHook);
         return theHook;
     }
-    private Radar SpawnRadar()
+    private radar SpawnRadar()
     {
-        Radar theRadar = Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,-5f,0.25f), Quaternion.identity).GetComponent<Radar>();
+        radar theRadar = Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,-5f,0.25f), Quaternion.identity).GetComponent<radar>();
         _generals.Add(theRadar);
         return theRadar;
+    }
+    private trailer SpawnTrailer()
+    {
+        trailer theTrailer = Instantiate(_trailerPrefab, Boat.transform.position + new Vector3(-10,0,0), _trailerPrefab.transform.rotation).GetComponent<trailer>();
+        theTrailer.gameObject.transform.SetParent(Boat.gameObject.transform);
+        _generals.Add(theTrailer);
+        return theTrailer;
     }
     private void RenderTrail(Vector3 pPositionOne, Vector3 pPositionTwo)
     {
@@ -94,4 +122,9 @@ public class basic : MonoBehaviour
     {
         return seaDepth;
     }
+
+    /*public static float GetSeaWidth()
+    {
+        return _seaWidth;
+    }*/
 }
