@@ -14,7 +14,7 @@ public class trash : general
     [SerializeField] private float _spinRadius;
     [SerializeField] private MeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
-    [SerializeField] private float _revealDuration;
+    private float _revealDuration;
     public override void Start()
     {
         InitializeStateMachine();
@@ -42,8 +42,9 @@ public class trash : general
     {
         return _score;
     }
-    public override void Reveal()
+    public override void Reveal(float pRevealDuration)
     {
+        _revealDuration = pRevealDuration;
         if (Revealed) return;
 
         ToggleOutliner(true);

@@ -7,10 +7,13 @@ public class PulseRadarState : AbstractRadarState {
 
     // Fish detector
     private float _radarAngle;
-    private float scrollSpeed = 0.5F;
-    public PulseRadarState(radar pRadar, float pRadarAngle) : base(pRadar)
+    private float _scrollSpeed;
+    private float _revealDuration;
+    public PulseRadarState(radar pRadar, float pRadarAngle, float pScrollSpeed, float pRevealDuration) : base(pRadar)
     {
         _radarAngle = pRadarAngle;
+        _scrollSpeed = pScrollSpeed;
+        _revealDuration = pRevealDuration;
     }
 	public override void Start () {
         _radar.Renderer.enabled = true;
@@ -29,7 +32,7 @@ public class PulseRadarState : AbstractRadarState {
     }
     private void VisualiseRadarCone()
     {
-        float offset = Time.time * scrollSpeed;
+        float offset = Time.time * _scrollSpeed;
         _radar.Renderer.material.mainTextureOffset = new Vector2(0, offset);
         DetectCollectables();
         /*if (_cooldown.Done())
@@ -43,8 +46,11 @@ public class PulseRadarState : AbstractRadarState {
         if (basic.Generals == null) Debug.Log("IS NULL");
         foreach (general collectable in basic.Generals)
         {
-            bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (collectable.transform.position - _radar.gameObject.transform.position).normalized) > Mathf.Cos(_radarAngle);
-            if (visible) collectable.Reveal();
+            if (collectable != _radar && collectable != basic.Hook && collectable != basic.Boat && collectable)
+            {
+                bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (collectable.transform.position - _radar.gameObject.transform.position).normalized) > Mathf.Cos(_radarAngle);
+                if (visible) collectable.Reveal(_revealDuration);
+            }
         }
     }
 }

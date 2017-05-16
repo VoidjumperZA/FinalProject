@@ -10,8 +10,9 @@ public class radar : general
     public enum RadarState { None, Pulse }
     [SerializeField] private RadarState _radarState = RadarState.None;
     // Fish detector
-    [SerializeField]
-    private float _radarAngle;
+    [SerializeField] private float _scrollSpeed;
+    [SerializeField] private float _revealDuration;
+    [SerializeField] private GameObject _radarAngleSlider;
     [SerializeField] private Renderer _renderer; [HideInInspector] public Renderer Renderer { get { return _renderer; } }
 	public override void Start() {
         InitializeStateMachine();
@@ -29,7 +30,11 @@ public class radar : general
     {
         _stateCache.Clear();
         _stateCache[RadarState.None] = new NoneRadarState(this);
-        _stateCache[RadarState.Pulse] = new PulseRadarState(this, _radarAngle);
+        _stateCache[RadarState.Pulse] = new PulseRadarState(this, GetRadarAngle(), _scrollSpeed, _revealDuration);
         SetState(_radarState);
+    }
+    private float GetRadarAngle()
+    {
+        return Vector3.Dot((_radarAngleSlider.transform.position - gameObject.transform.position).normalized, -gameObject.transform.up);
     }
 }
