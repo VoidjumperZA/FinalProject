@@ -289,6 +289,8 @@ public static class CameraHandler
             {
                 //Explicit call to avoid accidentally overriding transform.setparent
                 CameraHandler.SetParent(cameraParents[(int)cameraFocus].transform, true);
+                Vector3 zeroed = new Vector3(0.0f, 0.0f, Camera.main.transform.position.z);
+                //Camera.main.transform.position = zeroed;
             }
         }
         else

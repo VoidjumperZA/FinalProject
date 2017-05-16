@@ -11,8 +11,13 @@ public class SetFreeHookState : AbstractHookState {
     {
         basic.Scorehandler.BankScore();
         basic.Scorehandler.ToggleHookScoreUI(false);
-        for (int i = 0; i < _hook.FishOnHook.Count; i++) _hook.FishOnHook[i].SetState(fish.FishState.PiledUp);
+        for (int i = 0; i < _hook.FishOnHook.Count; i++)
+        {
+            _hook.FishOnHook[i].SetState(fish.FishState.PiledUp);
+            
+        }
         for (int i = 0; i < _hook.TrashOnHook.Count; i++) _hook.TrashOnHook[i].SetState(trash.TrashState.PiledUp);
+
         _hook.FishOnHook.Clear();
         if ((!basic.GlobalUi.MoveBoatCompleted && basic.GlobalUi.DropHookCompleted && !basic.GlobalUi.ReelUpHookCompleted) || basic.GlobalUi.MoveBoatCompleted)
         {
