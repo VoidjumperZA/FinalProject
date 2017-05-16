@@ -151,16 +151,11 @@ public class FishHookState : AbstractHookState
             theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
             basic.Shoppinglist.AddFish(theFish);
-<<<<<<< HEAD
-            basic.Scorehandler.AddScore(theFish.GetScore(), true, true);
+            basic.Scorehandler.AddScore(basic.Scorehandler.GetFishScore(theFish.fishType), true, true);
             if (!basic.GlobalUi.InTutorial)
             {
                 basic.combo.CheckComboProgress(theFish.fishType);
             }
-=======
-            basic.Scorehandler.AddScore(GameObject.Find("Manager").GetComponent<ScoreHandler>().GetFishScore(theFish.fishType), true, true);
-            basic.combo.CheckComboProgress(theFish.fishType);
->>>>>>> 9a945fa681fa604d4242342a6bb8ddf903c7a95d
             if (theFish.fishType == fish.FishType.Large)
             {
                 //SetState(hook.HookState.Reel);

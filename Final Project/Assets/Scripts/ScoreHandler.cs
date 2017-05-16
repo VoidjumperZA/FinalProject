@@ -205,7 +205,7 @@ public class ScoreHandler : MonoBehaviour {
             case fish.FishType.Medium:
                 return mediumFishScoreValue;
                 break;
-                case fish.FishType.Large;
+            case fish.FishType.Large:
                 return largeFishScoreValue;
                 break;
             default:
