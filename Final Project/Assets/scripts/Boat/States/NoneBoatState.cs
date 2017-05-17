@@ -12,7 +12,7 @@ public class NoneBoatState : AbstractBoatState {
 
     public override void Start()
     {
-        CameraHandler.SetDestination(CameraHandler.CameraFocus.FocusBoat, true);
+        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Boat, true);
     }
     
     public override void Update ()

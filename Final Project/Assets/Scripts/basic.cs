@@ -60,7 +60,7 @@ public class basic : MonoBehaviour
         Gameplayvalues = GetComponent<GameplayValues>(); Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
 
         CameraHandler.InitializeCameraHandler();
-        CameraHandler.SetDestination(CameraHandler.CameraFocus.FocusBoat);
+        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Boat);
 
         //Find out seaDepth
         floor = GameObject.FindGameObjectWithTag("Floor");

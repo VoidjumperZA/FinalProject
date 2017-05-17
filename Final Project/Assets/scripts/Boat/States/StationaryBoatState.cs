@@ -12,7 +12,7 @@ public class StationaryBoatState : AbstractBoatState {
 	public override void Start ()
     {
         basic.Radar.SetState(radar.RadarState.Pulse);
-        CameraHandler.SetDestination(CameraHandler.CameraFocus.OceanOverview);
+        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
     }
 	
 	public override void Update ()
@@ -32,7 +32,7 @@ public class StationaryBoatState : AbstractBoatState {
     }
     private bool Dragging()
     {
-        if (!basic.GlobalUi.ReelUpHookCompleted) return false;
+        if (basic.GlobalUi.InTutorial && !basic.GlobalUi.ReelUpHookCompleted) return false;
         if (!Input.GetMouseButton(0) || !mouse.GameObjectTagIs("Boat")) return false;
         Vector3 mouseWorldPoint = mouse.GetWorldPoint();
         return Mathf.Abs(mouseWorldPoint.x - _boat.gameObject.transform.position.x) > 0;

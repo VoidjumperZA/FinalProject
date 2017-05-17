@@ -39,8 +39,8 @@ public class FishHookState : AbstractHookState
 
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
-        maxHookRotation = 5.0f;
-        CameraHandler.SetDestination(CameraHandler.CameraFocus.ZoomedHook);
+        maxHookRotation = 25.0f;
+        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Hook);
     }
 
     //
@@ -49,11 +49,11 @@ public class FishHookState : AbstractHookState
         if (Input.GetMouseButton(0))
         {
             SetXYAxisOffset(mouse.GetWorldPoint());
-            //Debug.Log(mouse.GetWorldPoint().ToString());
+            Debug.Log(mouse.GetWorldPoint().ToString());
         }
         ApplyVelocity();
         DampXVelocity();
-        SetCameraAndHookAngle();
+        //SetCameraAndHookAngle();
         if (camShaking == true)
         {
             shakeCameraOnCollect();
@@ -63,25 +63,22 @@ public class FishHookState : AbstractHookState
     // -------- Movement --------
     private void SetCameraAndHookAngle()
     {
-        //Debug.Log("current hook rot:  " + currentHookRotation + "max rot: " + maxHookRotation);
-        if(_xyOffset.x > 0)
+        if (_xyOffset.x < 0)
         {
             if (currentHookRotation < maxHookRotation)
             {
-                Debug.Log("in +rot");
                 currentHookRotation += hookRotationAmount;
                 _hook.gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
                 Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
             }
         }
-        else if (_xyOffset.x < 0)
+        else if (_xyOffset.x > 0)
         {
             if (currentHookRotation > -maxHookRotation)
             {
-                Debug.Log("in -rot");
                 currentHookRotation -= hookRotationAmount;
-                _hook.gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
-                Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
+                _hook.gameObject.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
+                Camera.main.transform.Rotate(0.0f, 0.0f, currentHookRotation);
             }
         }
     }
@@ -160,13 +157,7 @@ public class FishHookState : AbstractHookState
             {
                 basic.combo.CheckComboProgress(theFish.fishType);
             }
-            if (theFish.fishType == fish.FishType.Large)
-            {
-                //SetState(hook.HookState.Reel);
-            }
-            //Screen shake
-            //CameraHandler.ApplyScreenShake(true);
-            //camShaking = true;
+            CameraHandler.CreateShakePoint();
         }
         if (other.gameObject.CompareTag("Jellyfish"))
         {

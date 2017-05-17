@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class GlobalUI : MonoBehaviour {
     [SerializeField] private Button _playGameButton;
+    [SerializeField] private Button _skipTutorialButton;
 
 
     [SerializeField] private Button _deployHookButton;
@@ -29,9 +30,17 @@ public class GlobalUI : MonoBehaviour {
     }
     public void OnPlayGameClick()
     {
-        CameraHandler.SetDestination(CameraHandler.CameraFocus.OceanOverview);
+        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
+    }
+    public void OnSkipTutorialClick()
+    {
+        InTutorial = false;
+        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
+        basic.Boat.SetState(boat.BoatState.SetUp);
+        _playGameButton.gameObject.SetActive(false);
+        _skipTutorialButton.gameObject.SetActive(false);
     }
 	public void DeployHookButton(bool pBool) {  _deployHookButton.gameObject.SetActive(pBool); }
     public void ReelUpHookButton(bool pBool) { _reelUpHook.gameObject.SetActive(pBool); }
@@ -44,6 +53,7 @@ public class GlobalUI : MonoBehaviour {
         DeployHookButton(false);
         if (!InTutorial)
         {
+            ReelUpHookButton(true);
             GameObject.Find("Manager").GetComponent<Combo>().CreateNewCombo();
         }
         else
