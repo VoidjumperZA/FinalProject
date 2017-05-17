@@ -53,7 +53,7 @@ public class FishHookState : AbstractHookState
         }
         ApplyVelocity();
         DampXVelocity();
-        //SetCameraAndHookAngle();
+        SetCameraAndHookAngle();
         if (camShaking == true)
         {
             shakeCameraOnCollect();
@@ -69,7 +69,7 @@ public class FishHookState : AbstractHookState
             {
                 currentHookRotation += hookRotationAmount;
                 _hook.gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
-                Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
+                //Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
             }
         }
         else if (_xyOffset.x > 0)
@@ -78,7 +78,7 @@ public class FishHookState : AbstractHookState
             {
                 currentHookRotation -= hookRotationAmount;
                 _hook.gameObject.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
-                Camera.main.transform.Rotate(0.0f, 0.0f, currentHookRotation);
+                //Camera.main.transform.Rotate(0.0f, 0.0f, currentHookRotation);
             }
         }
     }
