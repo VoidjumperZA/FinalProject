@@ -36,8 +36,7 @@ public class MoveBoatState : AbstractBoatState {
         if (!MoveToDestination())
         {
             basic.Hook.SetState(hook.HookState.None);
-            _boat.SetState(boat.BoatState.Stationary);
-            
+            _boat.SetState(boat.BoatState.Stationary);          
         }
     }
     private void setPolarity()
@@ -55,11 +54,11 @@ public class MoveBoatState : AbstractBoatState {
     }
     private bool MoveToDestination()
     {
-        if (Input.GetMouseButton(0) && _velocity < _maxVelocity)
+        if (Input.GetMouseButton(0) && _velocity < _maxVelocity && direction == polarity)
         {
             _velocity += _acceleration;
         }
-        else if (_velocity > 0 || _velocity >= _maxVelocity || Mathf.Sign(_velocity) != polarity)
+        else if (_velocity > 0 || _velocity >= _maxVelocity /*|| direction != polarity*/)
         {
             _velocity -= _deceleration;
             if (_velocity <= 0)
@@ -81,6 +80,8 @@ public class MoveBoatState : AbstractBoatState {
     {
         _destination = _boat.gameObject.transform.position;
         _velocity = 0;
+        polarity = 0.0f;
+        direction = 0.0f;
     }
     public override boat.BoatState StateType()
     {
