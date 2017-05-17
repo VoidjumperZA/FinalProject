@@ -44,6 +44,7 @@ public static class CameraHandler
         _lookAtPoints[CameraFocus.ZoomedHook] = basic.Hook.transform;
 
         _zoomSpeed = basic.Gameplayvalues.GetCamZoomSpeed();
+        _initialized = true;
     }
     public static void SetDestination(CameraFocus pFocusObject, bool pFirstTime = false)
     {
