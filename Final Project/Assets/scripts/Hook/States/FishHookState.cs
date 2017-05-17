@@ -34,13 +34,13 @@ public class FishHookState : AbstractHookState
     {
         camShaking = false;
         screenShakeCounter = 0;
-        _gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
+        _gameplayValues = basic.Gameplayvalues;
         screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
 
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
         maxHookRotation = 25.0f;
-        CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.ZoomedHook, true);
+        CameraHandler.SetDestination(CameraHandler.CameraFocus.ZoomedHook);
     }
 
     //
@@ -49,6 +49,7 @@ public class FishHookState : AbstractHookState
         if (Input.GetMouseButton(0))
         {
             SetXYAxisOffset(mouse.GetWorldPoint());
+            Debug.Log(mouse.GetWorldPoint().ToString());
         }
         ApplyVelocity();
         DampXVelocity();
@@ -114,9 +115,6 @@ public class FishHookState : AbstractHookState
         if (_xyOffset.magnitude > 0)
             _xyOffset *= _xOffsetDamping;
 
-        if (_xyOffset.magnitude <= 0.01f)
-            _xyOffset = Vector2.zero;
-
         if (_xyOffset.x == 0 && basic.Boat.gameObject.transform.position.x - _hook.gameObject.transform.position.x > 0)
             _hook.gameObject.transform.Translate(new Vector3(basic.Boat.gameObject.transform.position.x - _hook.gameObject.transform.position.x, 0, 0));
     }
@@ -129,7 +127,7 @@ public class FishHookState : AbstractHookState
         {
             camShaking = false;
             screenShakeCounter = 0;
-            CameraHandler.ResetScreenShake(true);
+            //CameraHandler.ResetScreenShake(true);
         }
     }
 
@@ -140,7 +138,8 @@ public class FishHookState : AbstractHookState
         //Reel the hook in if you touch the floor
         if (other.gameObject.CompareTag("Floor"))
         {
-            CameraHandler.ApplyScreenShake(true);
+
+            //CameraHandler.ApplyScreenShake(true);
             SetState(hook.HookState.Reel);
             GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
         } 
@@ -163,9 +162,8 @@ public class FishHookState : AbstractHookState
                 //SetState(hook.HookState.Reel);
             }
             //Screen shake
-            CameraHandler.ApplyScreenShake(true);
-            camShaking = true;
-
+            //CameraHandler.ApplyScreenShake(true);
+            //camShaking = true;
         }
         if (other.gameObject.CompareTag("Jellyfish"))
         {
@@ -173,7 +171,6 @@ public class FishHookState : AbstractHookState
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
             if (!theJellyfish.Visible) return;
             //Remove some fish
-
         }
         if (other.gameObject.CompareTag("Trash"))
         {
@@ -184,11 +181,7 @@ public class FishHookState : AbstractHookState
             basic.Scorehandler.AddScore(GameObject.Find("Manager").GetComponent<ScoreHandler>().GetTrashScore(), true, false);
 
         }
-        if (other.gameObject.CompareTag("Fish") || 
-            other.gameObject.CompareTag("Trash") || 
-            other.gameObject.CompareTag("JellyFish") || 
-            other.gameObject.CompareTag("Shark") || 
-            other.gameObject.CompareTag("SpecialItem"))
+        if (other.gameObject.CompareTag("Fish"))
         {
             if (!basic.Shoppinglist.Introduced)
             {

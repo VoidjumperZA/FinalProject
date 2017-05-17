@@ -33,7 +33,7 @@ public class radar : general
         _stateCache[RadarState.Pulse] = new PulseRadarState(this, GetRadarAngle(), _scrollSpeed, _revealDuration);
         SetState(_radarState);
     }
-    private float GetRadarAngle()
+    public float GetRadarAngle()
     {
         return Vector3.Dot((_radarAngleSlider.transform.position - gameObject.transform.position).normalized, -gameObject.transform.up);
     }
