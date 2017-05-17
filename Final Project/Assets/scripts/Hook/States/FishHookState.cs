@@ -34,7 +34,7 @@ public class FishHookState : AbstractHookState
     {
         camShaking = false;
         screenShakeCounter = 0;
-        _gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
+        _gameplayValues = basic.Gameplayvalues;
         screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
 
         hookRotationAmount = 1.0f;
@@ -138,10 +138,12 @@ public class FishHookState : AbstractHookState
         //Reel the hook in if you touch the floor
         if (other.gameObject.CompareTag("Floor"))
         {
+
             //CameraHandler.ApplyScreenShake(true);
             SetState(hook.HookState.Reel);
             GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
-        } //On contact with a fish
+        } 
+        //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
         {
 
@@ -162,6 +164,13 @@ public class FishHookState : AbstractHookState
             //Screen shake
             //CameraHandler.ApplyScreenShake(true);
             //camShaking = true;
+        }
+        if (other.gameObject.CompareTag("Jellyfish"))
+        {
+
+            Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
+            if (!theJellyfish.Visible) return;
+            //Remove some fish
         }
         if (other.gameObject.CompareTag("Trash"))
         {

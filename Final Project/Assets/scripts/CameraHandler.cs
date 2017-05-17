@@ -4,6 +4,7 @@ using UnityEngine;
 
 public static class CameraHandler
 {
+    private static bool _initialized = false;
     private static GameObject _manager { get { return GameObject.Find("Manager"); } }
     private static Camera _camera { get { return Camera.main; } }
 
@@ -15,7 +16,7 @@ public static class CameraHandler
     private static Vector3 _destination;
     private static float _zoomSpeed;
     //Screen shake
-    private static Vector2 shakePolarities;
+    /*private static Vector2 shakePolarities;
     private static GameplayValues gameplayValues;
     private static bool screenShakeLock;
 
@@ -28,7 +29,7 @@ public static class CameraHandler
     private static List<float> orthZoomLevel;
     private static bool hasStartBeenCalled = false;
     private static float originalOrthSize;
-    private static bool zooming;
+    private static bool zooming;*/
 
     public static void InitializeCameraHandler()
     {
@@ -46,6 +47,11 @@ public static class CameraHandler
     }
     public static void SetDestination(CameraFocus pFocusObject, bool pFirstTime = false)
     {
+        if (!_initialized)
+        {
+            Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
+            return;
+        }
         if (pFirstTime) _camera.transform.position = _perentPoints[_focusObject].position;
 
         _focusObject = pFocusObject;
@@ -53,6 +59,10 @@ public static class CameraHandler
     }
     public static void Update()
     {
+        if (!_initialized)
+        { Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
+            return;
+        }
         Vector3 directionVector = _perentPoints[_focusObject].position - _camera.transform.position;
         if (directionVector.magnitude > _zoomSpeed)
         {

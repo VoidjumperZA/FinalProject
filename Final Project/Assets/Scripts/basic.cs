@@ -23,11 +23,18 @@ public class basic : MonoBehaviour
     private static List<general> _generals = new List<general>(); public static List<general> Generals { get { return _generals; } }
     public static boat Boat;
     public static hook Hook;
+
     public static radar Radar;
+
+    //public static radar Radar;
     public static trailer Trailer;
     
     private GameObject floor;
     private static float seaDepth;
+    //private GameObject _docks;
+    //private GameObject _endOfLevel;
+    //private static float _seaWidth;
+   
 
     void Start()
     {
@@ -55,9 +62,15 @@ public class basic : MonoBehaviour
         CameraHandler.InitializeCameraHandler();
         CameraHandler.SetDestination(CameraHandler.CameraFocus.FocusBoat);
 
+        //Find out seaDepth
         floor = GameObject.FindGameObjectWithTag("Floor");
         Vector3 difference = floor.transform.position - Boat.transform.position;
-        seaDepth = difference.y;
+
+        seaDepth = Mathf.Abs(difference.y);
+        //Find out seaWidth
+        //_docks = GameObject.FindGameObjectWithTag("Docks"); if (!_docks) Debug.Log("WARNING (Jellyfish uses this): You need to create the Docks and tag it with Docks");
+        //_endOfLevel = GameObject.FindGameObjectWithTag("EndOfLevel"); if (!_endOfLevel) Debug.Log("WARNING (Jellyfish uses this): You need to create an empy object, place it at the end of the level (x) and tag it with EndOfLevel");
+        //_seaWidth = Vector3.Distance(_docks.transform.position, _endOfLevel.transform.position);
         //
         //CameraHandler.ArtificialStart();
         //cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
@@ -116,4 +129,9 @@ public class basic : MonoBehaviour
     {
         return seaDepth;
     }
+
+    /*public static float GetSeaWidth()
+    {
+        return _seaWidth;
+    }*/
 }
