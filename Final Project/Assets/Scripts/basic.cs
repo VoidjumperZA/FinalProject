@@ -78,12 +78,12 @@ public class basic : MonoBehaviour
     void Update()
     {
         RenderTrail(Boat.transform.position, Hook.gameObject.transform.position);
-        if (Input.GetMouseButton(0)) _inputTimer.ResetClock();    
+        if (Input.GetMouseButton(0)) _inputTimer.ResetClock();
+        CameraHandler.Update();
     }
 
     private void LateUpdate()
     {
-        CameraHandler.Update();
         //CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
     }
     private boat SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
