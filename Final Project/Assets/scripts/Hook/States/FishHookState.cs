@@ -51,7 +51,7 @@ public class FishHookState : AbstractHookState
             SetXYAxisOffset(mouse.GetWorldPoint());
         }
         ApplyVelocity();
-        DampXVelocityAfterDeselected();
+        DampXVelocity();
         //SetCameraAndHookAngle();
         if (camShaking == true)
         {
@@ -109,9 +109,16 @@ public class FishHookState : AbstractHookState
     }
 
     //
-    private void DampXVelocityAfterDeselected()
+    private void DampXVelocity()
     {
-        if (_xyOffset.magnitude > 0) _xyOffset *= _xOffsetDamping;
+        if (_xyOffset.magnitude > 0)
+            _xyOffset *= _xOffsetDamping;
+
+        if (_xyOffset.magnitude <= 0.01f)
+            _xyOffset = Vector2.zero;
+
+        if (_xyOffset.x == 0 && basic.Boat.gameObject.transform.position.x - _hook.gameObject.transform.position.x > 0)
+            _hook.gameObject.transform.Translate(new Vector3(basic.Boat.gameObject.transform.position.x - _hook.gameObject.transform.position.x, 0, 0));
     }
 
     //
@@ -132,10 +139,12 @@ public class FishHookState : AbstractHookState
         if (!_hook || !other) return;
         //Reel the hook in if you touch the floor
         if (other.gameObject.CompareTag("Floor"))
-        {CameraHandler.ApplyScreenShake(true);
+        {
+            CameraHandler.ApplyScreenShake(true);
             SetState(hook.HookState.Reel);
             GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
-        } //On contact with a fish
+        } 
+        //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
         {
 
@@ -144,8 +153,11 @@ public class FishHookState : AbstractHookState
             theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
             basic.Shoppinglist.AddFish(theFish);
-            basic.Scorehandler.AddScore(theFish.GetScore(), true, true);
-            basic.combo.CheckComboProgress(theFish.fishType);
+            basic.Scorehandler.AddScore(basic.Scorehandler.GetFishScore(theFish.fishType), true, true);
+            if (!basic.GlobalUi.InTutorial)
+            {
+                basic.combo.CheckComboProgress(theFish.fishType);
+            }
             if (theFish.fishType == fish.FishType.Large)
             {
                 //SetState(hook.HookState.Reel);
@@ -153,6 +165,15 @@ public class FishHookState : AbstractHookState
             //Screen shake
             CameraHandler.ApplyScreenShake(true);
             camShaking = true;
+
+        }
+        if (other.gameObject.CompareTag("Jellyfish"))
+        {
+
+            Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
+            if (!theJellyfish.Visible) return;
+            //Remove some fish
+
         }
         if (other.gameObject.CompareTag("Trash"))
         {
@@ -160,8 +181,20 @@ public class FishHookState : AbstractHookState
             if (!theTrash.Visible) return;
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
-            basic.Scorehandler.AddScore(theTrash.GetScore(), true, false);
+            basic.Scorehandler.AddScore(GameObject.Find("Manager").GetComponent<ScoreHandler>().GetTrashScore(), true, false);
 
+        }
+        if (other.gameObject.CompareTag("Fish") || 
+            other.gameObject.CompareTag("Trash") || 
+            other.gameObject.CompareTag("JellyFish") || 
+            other.gameObject.CompareTag("Shark") || 
+            other.gameObject.CompareTag("SpecialItem"))
+        {
+            if (!basic.Shoppinglist.Introduced)
+            {
+                basic.Shoppinglist.Show(true);
+                basic.Shoppinglist.Introduced = true;
+            }
         }
     }
 }

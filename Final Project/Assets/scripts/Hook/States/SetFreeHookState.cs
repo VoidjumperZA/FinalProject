@@ -19,7 +19,10 @@ public class SetFreeHookState : AbstractHookState {
         for (int i = 0; i < _hook.TrashOnHook.Count; i++) _hook.TrashOnHook[i].SetState(trash.TrashState.PiledUp);
 
         _hook.FishOnHook.Clear();
-        basic.GlobalUi.SwitchHookButtons();
+        if ((!basic.GlobalUi.MoveBoatCompleted && basic.GlobalUi.DropHookCompleted && !basic.GlobalUi.ReelUpHookCompleted) || basic.GlobalUi.MoveBoatCompleted)
+        {
+            basic.GlobalUi.SwitchHookButtons();
+        }
         basic.Boat.SetState(boat.BoatState.Stationary);
         SetState(hook.HookState.None);
     }
