@@ -24,19 +24,21 @@ public class FollowHookFishState : AbstractFishState
         // }
         //  }
         // _fish.gameObject.GetComponent<Animator>().speed = 0;
-
-        foreach (GameObject obj in _fish._head)
+        if (_fish._head.Length > 0)
         {
-            obj.GetComponent<Rigidbody>().isKinematic = false;
+            foreach (GameObject obj in _fish._head)
+            {
+                obj.GetComponent<Rigidbody>().isKinematic = false;
+            }
+            _fish._head[0].transform.rotation = Quaternion.LookRotation(Vector3.right, -Vector3.forward);
         }
-        _fish._head[0].transform.rotation = Quaternion.LookRotation(Vector3.right, -Vector3.forward);
 
 
     }
     public override void Update()
     {
         //_fish.RagdollJoints[4].transform.position = basic.Hook.transform.position;
-        _fish._head[0].gameObject.transform.position = basic.Hook.transform.position;
+        if (_fish._head.Length > 0) _fish._head[0].gameObject.transform.position = basic.Hook.transform.position;
     }
     public override void Refresh()
     {
