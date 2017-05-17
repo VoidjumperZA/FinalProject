@@ -11,14 +11,10 @@ public class SwimJellyfishState : AbstractJellyfishState
     private float _speed;
     private float _lerpSpeed;
 
-    //Distance from the jellyfish to the point it is going to.
+    //Target point related.
     private float _distance;
-
-    private Vector3 targetPoint;
-    //private float _seaDepth;
-    //private float _seaWidth;
-    //private float distanceToNewPoint;
-    private bool positive;
+    private Vector3 _targetPoint;
+    private bool _positive;
 
     //Variables for checking that the target point is inside the area 
     float jellyfishZoneX;
@@ -28,8 +24,8 @@ public class SwimJellyfishState : AbstractJellyfishState
     
 
 
-    private float _zoneX;
-    private float _zoneY;
+    //private float _zoneX;
+    //private float _zoneY;
 
     public SwimJellyfishState(Jellyfish pJellyfish, float pSpeed, float pLerpSpeed, float pRevealDuration) : base(pJellyfish)
     {
@@ -37,142 +33,123 @@ public class SwimJellyfishState : AbstractJellyfishState
         _lerpSpeed = pLerpSpeed;
         _outlineCounter = new counter(pRevealDuration);
     }
+
     // Use this for initialization
     public override void Start()
     {
+
         _outlineCounter.Reset();
 
+        //Getting the position and size of the zone where the jellyfish can move
         jellyfishZoneX = _jellyfish._jellyfishZone.transform.localScale.x / 2;
         jellyfishZoneXPos = _jellyfish._jellyfishZone.transform.position.x;
         jellyfishZoneY = _jellyfish._jellyfishZone.transform.localScale.y / 2;
         jellyfishZoneYPos = _jellyfish._jellyfishZone.transform.position.y;
         
-
-
-        //_seaDepth = basic.GetSeaDepth();
-        //_seaWidth = basic.GetSeaWidth();
-        //Debug.Log("SeaWidth: " + _seaWidth);
-        //distanceToNewPoint = _seaDepth * -1 / 6;
         _distance = 1.5f;
 
         //Creates a target from the position of the jellyfish 
-        targetPoint = _jellyfish.gameObject.transform.position;
-        positive = true;
-        createNewPoint();
+        _targetPoint = _jellyfish.gameObject.transform.position;
+        _positive = true;
+        createNewPoint('o');
     }
 
     // Update is called once per frame
     public override void Update()
     {
         move();
+
         if (_jellyfish.Revealed) HandleOutline();
     }
-    /*public override void FixedUpdate()
-    {
-        //turn();
-    }*/
-
-
+    
     private void move()
     {
         //Rotate to look at the target
-        _jellyfish.gameObject.transform.rotation = Quaternion.Slerp(_jellyfish.gameObject.transform.rotation, Quaternion.LookRotation(targetPoint - _jellyfish.gameObject.transform.position), _lerpSpeed * Time.deltaTime);
+        _jellyfish.gameObject.transform.rotation = Quaternion.Slerp(_jellyfish.gameObject.transform.rotation, Quaternion.LookRotation(_targetPoint - _jellyfish.gameObject.transform.position), _lerpSpeed * Time.deltaTime);
 
         //Move towards target
         _jellyfish.gameObject.transform.position += _jellyfish.gameObject.transform.forward * Time.deltaTime * _speed;
-
-        /*Vector3 _movement = transform.forward * _movementSpeed * Time.deltaTime;
-        _jellyrigidbody.MovePosition(transform.position + _movement);*/
-
-        //_jellyfish.gameObject.transform.Translate(Vector3.forward * _speed);
-        //Debug.Log("Distance: " + Vector3.Distance(_jellyfish.gameObject.transform.position, targetPoint));
-        if (Vector3.Distance(_jellyfish.gameObject.transform.position, targetPoint) <= _distance)
-        {
-            
-            createNewPoint();
-            
+        
+        //Checking if the jellyfish reached the target point
+        if (Vector3.Distance(_jellyfish.gameObject.transform.position, _targetPoint) <= _distance)
+        {   
+            createNewPoint('o');  
         }
     }
     private void turn()
     {
-        _jellyfish._lerpHelp.transform.LookAt(targetPoint);
+        _jellyfish._lerpHelp.transform.LookAt(_targetPoint);
         _jellyfish.gameObject.transform.rotation = Quaternion.Lerp(_jellyfish.gameObject.transform.rotation, _jellyfish._lerpHelp.transform.rotation, _lerpSpeed);
     }
    
     
-    private void createNewPoint()
+    private void createNewPoint(char side)
     {
         bool firstTime = true;
-   
+        float angle;
+        switch (side)
+        {
+            case 'l':
+                angle = Random.Range(0, Mathf.PI);
+                if (angle > Mathf.PI / 2) angle += Mathf.PI;
+                Debug.Log("Angle l: " + angle);
+                break;
+
+            case 'r':
+                angle = Random.Range(Mathf.PI / 2, Mathf.PI * 3 / 2);
+                Debug.Log("Angle r: " + angle);
+                break;
+
+            case 'u':
+                angle = Random.Range(0, Mathf.PI);
+                angle *= -1;
+                Debug.Log("Angle u: " + angle);
+                break;
+
+            case 'd':
+                angle = Random.Range(0, Mathf.PI);
+                Debug.Log("Angle d: " + angle);
+                break;
+
+            default:
+                Debug.Log("Please call createNewPoint function with one of the following values: l (left), r (right), d (down), u (up)");
+                angle = Random.Range(0, Mathf.PI);
+                break;
+        }
+
         //Calculate new point
-        float angle = Random.Range(0, Mathf.PI);
+        
         float distanceToNewPoint = Random.Range(jellyfishZoneY/2,jellyfishZoneY);
+        
+        float x = _targetPoint.x + Mathf.Cos(angle) * distanceToNewPoint;
+        float y = _targetPoint.y + Mathf.Sin(angle) * distanceToNewPoint;
 
-        if (positive)
-        {
-            angle *= -1;
-            positive = false;
-        }
-        else
-        {
-            positive = true;
-        }
-
-        float x = targetPoint.x + Mathf.Cos(angle) * distanceToNewPoint;
-        float y = targetPoint.y + Mathf.Sin(angle) * distanceToNewPoint;
-
-        targetPoint = new Vector3(x, y, 0);
+        _targetPoint = new Vector3(x, y, 0);
 
         //Point for visualizing
-        _jellyfish._point.transform.position = targetPoint;
+        _jellyfish._point.transform.position = _targetPoint;
 
         //Check if point is inside zone
-        if (targetPoint.x >  jellyfishZoneXPos + jellyfishZoneX)
+        if (_targetPoint.x >  jellyfishZoneXPos + jellyfishZoneX)
         {
-            createNewPoint();
-            Debug.Log("Call create new point from x >: Targetpointx = " + targetPoint.x);
+            createNewPoint('l');
+            Debug.Log("Call create new point from x >: Targetpointx = " + _targetPoint.x);
         }
-        if(targetPoint.x < jellyfishZoneXPos - jellyfishZoneX)
+        if(_targetPoint.x < jellyfishZoneXPos - jellyfishZoneX)
         {
-            createNewPoint();
-            Debug.Log("Call create new point from x <: Targetpointx = " + targetPoint.x);
+            createNewPoint('r');
+            Debug.Log("Call create new point from x <: Targetpointx = " + _targetPoint.x);
         }
-        if(targetPoint.y > jellyfishZoneYPos + jellyfishZoneY)
+        if(_targetPoint.y > jellyfishZoneYPos + jellyfishZoneY)
         {
-            createNewPoint();
-            Debug.Log("Call create new point from Y >: TargetpointY = " + targetPoint.y);
+            createNewPoint('u');
+            Debug.Log("Call create new point from Y >: TargetpointY = " + _targetPoint.y);
         }
-        if (targetPoint.y < jellyfishZoneYPos - jellyfishZoneY)
+        if (_targetPoint.y < jellyfishZoneYPos - jellyfishZoneY)
         {
-            createNewPoint();
-            Debug.Log("Call create new point from Y <: TargetpointY = " + targetPoint.y);
+            createNewPoint('d');
+            Debug.Log("Call create new point from Y <: TargetpointY = " + _targetPoint.y);
         }
-
-        /*
-        while (firstTime || !(targetPoint.y < _seaDepth / 3 && targetPoint.y > (_seaDepth * 2) / 3))
-        {
-
-            float angle = Random.Range(0, Mathf.PI);
-            //float distanceToNewPoint = 3;
-            //float distanceToNewPoint = Random.Range(_seaDepth * -1 / 12, _seaDepth * -1 / 6);
-
-            if (positive)
-            {
-                angle *= -1;
-                positive = false;
-            }
-            else
-            {
-                positive = true;
-            }
-
-            float x = targetPoint.x + Mathf.Cos(angle) * distanceToNewPoint;
-            float y = targetPoint.y + Mathf.Sin(angle) * distanceToNewPoint;
-
-            firstTime = false;
-            targetPoint = new Vector3(x, y, 0);
-            _jellyfish._point.transform.position = targetPoint;
-        }*/
 
     }
 
