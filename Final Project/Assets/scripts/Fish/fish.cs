@@ -13,9 +13,6 @@ public class fish : general
     [SerializeField] private int _score;
     [SerializeField] private float _speed;
     public enum FishType { Small, Medium, Large};
-    [SerializeField]
-    [Range(0, 100)]
-    private int _rarity;
     public FishType fishType;
     // Radar related
     [SerializeField] private SkinnedMeshRenderer _renderer;
@@ -69,11 +66,7 @@ public class fish : general
     {
         return fishType;
     }
-
-    public int GetFishRarity()
-    {
-        return _rarity;
-    }
+    
     public void SetDirection(float pPolarity)
     {
         _speed *= pPolarity;
