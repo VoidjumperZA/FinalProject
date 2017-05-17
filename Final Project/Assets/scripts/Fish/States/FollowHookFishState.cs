@@ -36,7 +36,7 @@ public class FollowHookFishState : AbstractFishState
     public override void Update()
     {
         //_fish.RagdollJoints[4].transform.position = basic.Hook.transform.position;
-        _fish._head[0].gameObject.transform.position = basic.Hook.transform.position;
+        _fish._head[0].GetComponent<Rigidbody>().MovePosition(basic.Hook.transform.position);
     }
     public override void Refresh()
     {
