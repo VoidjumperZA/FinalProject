@@ -14,8 +14,8 @@ public static class CameraHandler
     private static Dictionary<CameraFocus, Transform> _parentPoints;
     private static Dictionary<CameraFocus, Transform> _lookAtPoints;
     private static Vector3 _destination;
-    private static float _zoomSpeed;
-    private static bool _destinationReached = true;
+    private static float _cameraSpeed { get { return basic.Gameplayvalues.GetCameraSpeed(); } }
+    private static bool _viewPointReached = true;
     // ----------------------------
     private static List<Vector3> _shakePoints = new List<Vector3>();
 
@@ -46,11 +46,20 @@ public static class CameraHandler
         _lookAtPoints[CameraFocus.Boat] = basic.Boat.transform;
         _lookAtPoints[CameraFocus.Ocean] = basic.Boat.transform;
         _lookAtPoints[CameraFocus.Hook] = basic.Hook.transform;
-
-        _zoomSpeed = basic.Gameplayvalues.GetCamZoomSpeed();
+        
         _shakePoints = new List<Vector3>();
         _initialized = true;
-        
+
+    }
+    public static void Update()
+    {
+        if (!_initialized)
+        {
+            Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
+            return;
+        }
+        ReachViewPoint();
+        ReachShakePoint();
     }
     public static void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
     {
@@ -61,69 +70,59 @@ public static class CameraHandler
         }
         _focusObject = pFocusObject;
         _camera.transform.SetParent(_parentPoints[_focusObject]);
-        _destinationReached = false;
+        _viewPointReached = false;
         if (pFirstTime)
         {
             _camera.transform.position = _parentPoints[_focusObject].position;
-            _destinationReached = true;
+            _viewPointReached = true;
         }
     }
-    public static void Update()
+    public static void ReachViewPoint()
     {
-        if (!_initialized)
-        { Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
-            return;
-        }
-        ReachDestination();
-        ReachShakePoint();
-    }
-    public static void ReachDestination()
-    {
-        if (!_destinationReached)
+        if (!_viewPointReached)
         {
             Vector3 directionVector = _parentPoints[_focusObject].position - _camera.transform.position;
-            if (directionVector.magnitude > _zoomSpeed)
+            if (directionVector.magnitude > _cameraSpeed)
             {
-                _camera.transform.Translate(directionVector.normalized * _zoomSpeed);
+                _camera.transform.Translate(directionVector.normalized * _cameraSpeed);
                 _camera.transform.LookAt(_lookAtPoints[_focusObject]);
             }
             else
             {
                 _camera.transform.position = _parentPoints[_focusObject].position;
-                _destinationReached = true;
+                _viewPointReached = true;
             }
         }
     }
     private static void ReachShakePoint()
     {
-        if (_destinationReached)
+        if (_viewPointReached)
         {
             if (_shakePoints.Count > 0)
             {
-                float shakeSpeed = 0.2f;
                 Vector3 directionVector = (_parentPoints[_focusObject].position + _shakePoints[0]) - _camera.transform.position;
-                if (directionVector.magnitude > shakeSpeed)
+                if (directionVector.magnitude > _cameraSpeed)
                 {
-                    _camera.transform.Translate(directionVector.normalized * shakeSpeed);
-                    _camera.transform.LookAt(_lookAtPoints[_focusObject]);
+                    _camera.transform.Translate(directionVector.normalized * _cameraSpeed);
+                    if (basic.Gameplayvalues.GetApplyJellyFeel()) _camera.transform.LookAt(_lookAtPoints[_focusObject]);
                 }
                 else
                 {
                     _camera.transform.position = (_parentPoints[_focusObject].position + _shakePoints[0]);
                     _shakePoints.RemoveAt(0);
-                    if (_shakePoints.Count == 0) _destinationReached = false;
+                    if (_shakePoints.Count == 0) _viewPointReached = false;
                 }
             }
         }
     }
     public static void CreateShakePoint()
     {
-        float slider = 1f;
-        //Vector3 newPoint = new Vector3(_camera.transform.position.x, _camera.transform.position.y, _camera.transform.position.z);
-        Vector3 offset = new Vector3(Random.Range(-slider, slider), Random.Range(-slider, slider), Random.Range(slider, 2*slider));
-        //newPoint += offset.normalized * slider;
-
-        _shakePoints.Add(offset);
+        for (int i = 0; i < basic.Gameplayvalues.GetMaxShakePoints(); i++)
+        {
+            float slider = basic.Gameplayvalues.GetShakePointDistance();
+            Vector3 offset = new Vector3(Random.Range(-slider, slider), Random.Range(-slider, slider), 0);
+            _shakePoints.Add(offset);
+        }
     }
     /// <summary>
     /// Must be called at least once from another script to set the class up.

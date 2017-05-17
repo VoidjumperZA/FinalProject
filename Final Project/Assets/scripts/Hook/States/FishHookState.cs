@@ -10,7 +10,6 @@ public class FishHookState : AbstractHookState
     private Vector3 _xyOffset;
     private float _xOffsetDamping;
     private Vector3 _velocity;
-    private GameplayValues _gameplayValues;
 
     //Screen shake
     private bool camShaking;
@@ -34,8 +33,6 @@ public class FishHookState : AbstractHookState
     {
         camShaking = false;
         screenShakeCounter = 0;
-        _gameplayValues = basic.Gameplayvalues;
-        screenShakeDuration = _gameplayValues.GetScreenShakeDuration();
 
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
@@ -54,10 +51,6 @@ public class FishHookState : AbstractHookState
         ApplyVelocity();
         DampXVelocity();
         //SetCameraAndHookAngle();
-        if (camShaking == true)
-        {
-            shakeCameraOnCollect();
-        }
     }
 
     // -------- Movement --------
@@ -157,6 +150,11 @@ public class FishHookState : AbstractHookState
             {
                 basic.combo.CheckComboProgress(theFish.fishType);
             }
+            if (!basic.Shoppinglist.Introduced)
+            {
+                basic.Shoppinglist.Show(true);
+                basic.Shoppinglist.Introduced = true;
+            }
             CameraHandler.CreateShakePoint();
         }
         if (other.gameObject.CompareTag("Jellyfish"))
@@ -172,16 +170,9 @@ public class FishHookState : AbstractHookState
             if (!theTrash.Visible) return;
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
-            basic.Scorehandler.AddScore(GameObject.Find("Manager").GetComponent<ScoreHandler>().GetTrashScore(), true, false);
+            basic.Scorehandler.AddScore(basic.Scorehandler.GetTrashScore(), true, false);
+            CameraHandler.CreateShakePoint();
 
-        }
-        if (other.gameObject.CompareTag("Fish"))
-        {
-            if (!basic.Shoppinglist.Introduced)
-            {
-                basic.Shoppinglist.Show(true);
-                basic.Shoppinglist.Introduced = true;
-            }
         }
     }
 }
