@@ -17,6 +17,10 @@ public class NoneRadarState : AbstractRadarState {
     {
 
     }
+    public override void Refresh()
+    {
+        
+    }
     public override radar.RadarState StateType()
     {
         return radar.RadarState.None;

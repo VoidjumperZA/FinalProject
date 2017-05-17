@@ -20,6 +20,7 @@ public class fish : general
     // Radar related
     [SerializeField] private SkinnedMeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
+    [SerializeField] private ParticleSystem _bubbles;
     [HideInInspector] public Animator Animator;
     [SerializeField] public GameObject[] _head;
 
@@ -28,6 +29,7 @@ public class fish : general
     // Use this for initialization
     public override void Start()
     {
+        _bubbles.gameObject.SetActive(false);
         Animator = GetComponent<Animator>();
         InitializeStateMachine();
     }
@@ -92,18 +94,26 @@ public class fish : general
     }
     public override void Reveal(float pRevealDuration)
     {
-        (_stateCache[FishState.Swim] as SwimFishState).ResetOutLineCounter(pRevealDuration);
+         ((SwimFishState)_stateCache[FishState.Swim]).ResetOutLineCounter(pRevealDuration);
         if (Revealed) return;
+
+        ToggleBubbles(true);
         ToggleOutliner(true);
         ToggleRenderer(true);
     }
     public override void Hide()
     {
+        ToggleBubbles(false);
         ToggleOutliner(false);
         ToggleRenderer(false);
     }
     public int GetScore()
     {
         return _score;
+    }
+    private void ToggleBubbles(bool pBool)
+    {
+        if (!_bubbles) return;
+        _bubbles.gameObject.SetActive(pBool);
     }
 }

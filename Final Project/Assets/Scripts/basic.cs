@@ -9,6 +9,7 @@ public class basic : MonoBehaviour
     [HideInInspector] public static ScoreHandler Scorehandler;
     [HideInInspector] public static ShoppingList Shoppinglist;
     [HideInInspector] public static Combo combo;
+    [HideInInspector] public static GameplayValues Gameplayvalues;
 
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
@@ -27,8 +28,7 @@ public class basic : MonoBehaviour
 
     //public static radar Radar;
     public static trailer Trailer;
-
-    private GameObject boat;
+    
     private GameObject floor;
     private static float seaDepth;
     //private GameObject _docks;
@@ -46,7 +46,8 @@ public class basic : MonoBehaviour
         Boat.AssignHook(Hook);
         Boat.AssignRadar(Radar);
         Hook.AssignBoat(Boat);
-        
+
+
         //Debug.Log(_generals.Count + " generals");
 
         //InputTimer and basic should be on the same object, but I'm explictly calling in case they ever aren't
@@ -56,18 +57,23 @@ public class basic : MonoBehaviour
         Scorehandler = GetComponent<ScoreHandler>(); if (!Scorehandler) Debug.Log("ERROR: Cannot get reference to ScoreHandler from Manager object");
         Shoppinglist = GetComponent<ShoppingList>(); if (!Shoppinglist) Debug.Log("ERROR: Cannot get reference to ShoppingList from Manager object");
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
+        Gameplayvalues = GetComponent<GameplayValues>(); Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
+
+        CameraHandler.InitializeCameraHandler();
+        CameraHandler.SetDestination(CameraHandler.CameraFocus.FocusBoat);
 
         //Find out seaDepth
         floor = GameObject.FindGameObjectWithTag("Floor");
         Vector3 difference = floor.transform.position - Boat.transform.position;
+
         seaDepth = Mathf.Abs(difference.y);
         //Find out seaWidth
         //_docks = GameObject.FindGameObjectWithTag("Docks"); if (!_docks) Debug.Log("WARNING (Jellyfish uses this): You need to create the Docks and tag it with Docks");
         //_endOfLevel = GameObject.FindGameObjectWithTag("EndOfLevel"); if (!_endOfLevel) Debug.Log("WARNING (Jellyfish uses this): You need to create an empy object, place it at the end of the level (x) and tag it with EndOfLevel");
         //_seaWidth = Vector3.Distance(_docks.transform.position, _endOfLevel.transform.position);
         //
-        CameraHandler.ArtificialStart();
-        cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
+        //CameraHandler.ArtificialStart();
+        //cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
     }
     void Update()
     {
@@ -77,7 +83,8 @@ public class basic : MonoBehaviour
 
     private void LateUpdate()
     {
-        CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
+        CameraHandler.Update();
+        //CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
     }
     private boat SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
     {
