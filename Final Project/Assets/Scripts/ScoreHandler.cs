@@ -212,7 +212,6 @@ public class ScoreHandler : MonoBehaviour {
                 return -999999;
                 break;
         }
-
     }
 
     public int GetTrashScore()

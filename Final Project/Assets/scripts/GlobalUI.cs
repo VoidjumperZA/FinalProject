@@ -29,7 +29,7 @@ public class GlobalUI : MonoBehaviour {
     }
     public void OnPlayGameClick()
     {
-        CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.OceanOverview, true);
+        CameraHandler.SetDestination(CameraHandler.CameraFocus.OceanOverview);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
     }

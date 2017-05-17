@@ -68,7 +68,7 @@ public class TempFishSpawn : MonoBehaviour
     {
         if (_valid == true)
         {
-            Debug.Log("No. of fish [" + totalNumberOfSpawnedFish + "]  |  maximum fish: [" + maximumNumberOfOnscreenFish + "]");
+            //Debug.Log("No. of fish [" + totalNumberOfSpawnedFish + "]  |  maximum fish: [" + maximumNumberOfOnscreenFish + "]");
             MoveSpawnArea(basic.Boat.transform.position);
             //Always count down time
             _timePassed -= Time.deltaTime;
@@ -136,7 +136,7 @@ public class TempFishSpawn : MonoBehaviour
         float positiveDiff = lowerSpawningRateHigherValue - timeBetweenSpawns;
         float totalRange = lowerSpawningRateHigherValue - higherSpawningRateLowerValue;
         float minPercentOfRange = minimumPercentChangeInDensity * (totalRange / 100);
-        Debug.Log("Hit a spawning area. Current value: [" + timeBetweenSpawns + "]  |  totalRange: [" + totalRange + "]  |  posDiff: [" + positiveDiff + "]  |  negDiff: [" + negativeDiff + "]");
+        //Debug.Log("Hit a spawning area. Current value: [" + timeBetweenSpawns + "]  |  totalRange: [" + totalRange + "]  |  posDiff: [" + positiveDiff + "]  |  negDiff: [" + negativeDiff + "]");
 
         //If the available range on the negative "axis" is greater than the min % of the total range
         if (negativeDiff > minPercentOfRange) // lowerspawningratehighervalue / 100
@@ -153,12 +153,12 @@ public class TempFishSpawn : MonoBehaviour
         {
             possiblePolarities = PossiblePolarities.Either;
         }
-        Debug.Log("possiblePol: " + possiblePolarities.ToString());
+        //Debug.Log("possiblePol: " + possiblePolarities.ToString());
         //
         switch (possiblePolarities)
         {
             case PossiblePolarities.Niether:
-                Debug.Log("ERROR: No space to change spawn density to a difference either positive or negative. Incorrect maths applied.");
+                //Debug.Log("ERROR: No space to change spawn density to a difference either positive or negative. Incorrect maths applied.");
                 break;
             case PossiblePolarities.Positive:
                 calculatePositiveDifference(positiveDiff, minPercentOfRange);
@@ -179,7 +179,7 @@ public class TempFishSpawn : MonoBehaviour
                 break;
         }
                 timeCo = Time.time;
-                Debug.Log("Calculated a new time of spawning which is: " + timeBetweenSpawns + "\nTime: " + timeCo);
+                //Debug.Log("Calculated a new time of spawning which is: " + timeBetweenSpawns + "\nTime: " + timeCo);
                 StartCoroutine(ReduceFertilityOfSpawnArea());
     }
 
@@ -188,7 +188,7 @@ public class TempFishSpawn : MonoBehaviour
         /*FROM the minimum value minus the x% step (because we only have a difference figure), TO our current minus the x% step
         and the end minus the step*/
         timeBetweenSpawns = Random.Range(pDiff - minPercentOfRange, timeBetweenSpawns - minPercentOfRange);
-        Debug.Log("Calculated Negative Difference.\nNew density: " + timeBetweenSpawns);
+        //Debug.Log("Calculated Negative Difference.\nNew density: " + timeBetweenSpawns);
     }
 
     private void calculatePositiveDifference(float pDiff, float minPercentOfRange)
@@ -196,15 +196,15 @@ public class TempFishSpawn : MonoBehaviour
         /*FROM our current number, PLUS a step of x% TO the amount of space between current 
         and the end minus the step (because we only have a difference figure)*/
         timeBetweenSpawns = Random.Range(timeBetweenSpawns + minPercentOfRange, pDiff - minPercentOfRange);
-        Debug.Log("Calculated Positive Difference.\nNew density: " + timeBetweenSpawns);
+        //Debug.Log("Calculated Positive Difference.\nNew density: " + timeBetweenSpawns);
     }
 
     IEnumerator ReduceFertilityOfSpawnArea()
     {
         //wait for an amount of time then make this spawn area infertile
-        Debug.Log("Counting  " + timeBeforeSpawnFertilityDegrade + "seconds before making this area overfished.");
+        //Debug.Log("Counting  " + timeBeforeSpawnFertilityDegrade + "seconds before making this area overfished.");
         yield return new WaitForSeconds(timeBeforeSpawnFertilityDegrade);
         timeBetweenSpawns = lowerSpawningRateHigherValue;
-        Debug.Log("TimeDiff: " + (timeCo - Time.time) + "This fishing area is now overfished, and has the minimal spawn rate (" + timeBetweenSpawns + ")");
+        //Debug.Log("TimeDiff: " + (timeCo - Time.time) + "This fishing area is now overfished, and has the minimal spawn rate (" + timeBetweenSpawns + ")");
     }
 }

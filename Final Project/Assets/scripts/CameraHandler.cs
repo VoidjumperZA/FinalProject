@@ -5,9 +5,15 @@ using UnityEngine;
 public static class CameraHandler
 {
     private static GameObject _manager { get { return GameObject.Find("Manager"); } }
-    private static GameplayValues _gameplayValues;
     private static Camera _camera { get { return Camera.main; } }
 
+    //Camera zoom levels and focus points
+    public enum CameraFocus { FocusBoat, OceanOverview, ZoomedHook };
+    public static CameraFocus _focusObject;
+    private static Dictionary<CameraFocus, Transform> _perentPoints;
+    private static Dictionary<CameraFocus, Transform> _lookAtPoints;
+    private static Vector3 _destination;
+    private static float _zoomSpeed;
     //Screen shake
     private static Vector2 shakePolarities;
     private static GameplayValues gameplayValues;
@@ -19,19 +25,46 @@ public static class CameraHandler
     public static int maxKeyRange;
     public static int updateKey;
 
-    //Camera zoom levels and focus points
-    public enum CameraFocus { FocusBoat, OceanOverview, ZoomedHook };
-    public static CameraFocus cameraFocus;
     private static List<float> orthZoomLevel;
-    private static List<GameObject> cameraParents;
     private static bool hasStartBeenCalled = false;
     private static float originalOrthSize;
     private static bool zooming;
 
+    public static void InitializeCameraHandler()
+    {
+        _perentPoints = new Dictionary<CameraFocus, Transform>();
+        _perentPoints[CameraFocus.FocusBoat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
+        _perentPoints[CameraFocus.OceanOverview] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
+        _perentPoints[CameraFocus.ZoomedHook] = GameObject.FindGameObjectWithTag("HookCamHolder").transform;
+
+        _lookAtPoints = new Dictionary<CameraFocus, Transform>();
+        _lookAtPoints[CameraFocus.FocusBoat] = basic.Boat.transform;
+        _lookAtPoints[CameraFocus.OceanOverview] = basic.Boat.transform;
+        _lookAtPoints[CameraFocus.ZoomedHook] = basic.Hook.transform;
+
+        _zoomSpeed = basic.Gameplayvalues.GetCamZoomSpeed();
+    }
+    public static void SetDestination(CameraFocus pFocusObject, bool pFirstTime = false)
+    {
+        if (pFirstTime) _camera.transform.position = _perentPoints[_focusObject].position;
+
+        _focusObject = pFocusObject;
+        _camera.transform.SetParent(_perentPoints[_focusObject]);
+    }
+    public static void Update()
+    {
+        Vector3 directionVector = _perentPoints[_focusObject].position - _camera.transform.position;
+        if (directionVector.magnitude > _zoomSpeed)
+        {
+            _camera.transform.Translate(directionVector.normalized * _zoomSpeed);
+            _camera.transform.LookAt(_lookAtPoints[_focusObject]);
+        }
+    }
+
     /// <summary>
     /// Must be called at least once from another script to set the class up.
     /// </summary>
-    public static void ArtificialStart()
+    /*public static void ArtificialStart()
     {
         //Avoid duplicate calls
         if (hasStartBeenCalled == false)
@@ -42,7 +75,7 @@ public static class CameraHandler
             updateKey = 1000;
 
             //SCREEN SHAKE
-            gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
+            gameplayValues = _manager.GetComponent<GameplayValues>();
             screenShakeLock = false;
 
             //CAMERA POSITIONS
@@ -59,18 +92,14 @@ public static class CameraHandler
             //int enumSize = System.Enum.GetNames(typeof(CameraFocus)).Length;
 
             //CAMERA PARENTS
-            cameraParents = new List<GameObject>();
-            cameraParents.Add(GameObject.FindGameObjectWithTag("BoatCamHolder"));
-            cameraParents.Add(GameObject.FindGameObjectWithTag("OceanCamHolder"));
-            cameraParents.Add(GameObject.FindGameObjectWithTag("HookCamHolder"));
+            _cameraParents = new List<Transform>();
+            _cameraParents.Add(GameObject.FindGameObjectWithTag("BoatCamHolder").transform);
+            _cameraParents.Add(GameObject.FindGameObjectWithTag("OceanCamHolder").transform);
+            _cameraParents.Add(GameObject.FindGameObjectWithTag("HookCamHolder").transform);
 
-            for (int i = 0; i < cameraParents.Count; i++)
-            {
-                if (cameraParents[i] == null)
-                {
+            for (int i = 0; i < _cameraParents.Count; i++)
+                if (_cameraParents[i] == null)
                     Debug.Log("ERROR: Camera parent object [" + i + "], (which is likely related to " + (CameraFocus)i + ") does not exist or is not tagged correctly.");
-                }
-            }
 
             zooming = false;
 
@@ -80,9 +109,9 @@ public static class CameraHandler
         {
             Debug.Log("WARNING: Attempting to call ArtificialStart() for a second time. Unnecessary call.");
         }
-    }
+    }*/
 
-    public static void ArtificialUpdate(int pKey)
+    /*public static void ArtificialUpdate(int pKey)
     {
         if (hasStartBeenCalled == true && updateStatus == UpdateStatus.Taken && pKey == updateKey)
         {           
@@ -153,15 +182,9 @@ public static class CameraHandler
             {
                 //Don't do this check, if we're already calling from the internal SetFocus method
                 if (pCallingFromInternal == false)
-                {
-                    for (int i = 0; i < cameraParents.Count; i++)
-                    {
-                        if (cameraParents[i].transform == pTransform)
-                        {
-                            Debug.Log("WARNING: Given transform to parent is equal to one of the Cam Holders (Boat, Ocean or Hook) If you are attempting to focus the camera on that position, rather use SetCameraFocusPoint() instead.");
-                        }
-                    }
-                }
+                    for (int i = 0; i < _cameraParents.Count; i++)
+                        if (_cameraParents[i].transform == pTransform)
+                            Debug.Log("WARNING: Given transform to parent is equal to one of the Cam Holders (Boat, Ocean or Hook) If you are attempting to focus the camera on that position, rather use SetCameraFocusPoint() instead.");   
                 
                 _camera.transform.SetParent(pTransform);
             }
@@ -288,7 +311,7 @@ public static class CameraHandler
             if (pAttachToRelatedParent == true)
             {
                 //Explicit call to avoid accidentally overriding transform.setparent
-                CameraHandler.SetParent(cameraParents[(int)cameraFocus].transform, true);
+                CameraHandler.SetParent(_cameraParents[(int)cameraFocus].transform, true);
                 Vector3 zeroed = new Vector3(0.0f, 0.0f, Camera.main.transform.position.z);
                 //Camera.main.transform.position = zeroed;
             }
@@ -302,5 +325,5 @@ public static class CameraHandler
     private static void displayArtificialStartWarning()
     {
         Debug.Log("ERROR: Camera operations cannot be commenced until the CameraHandler.ArtificialStart() method is called.");
-    }
+    }*/
 }

@@ -44,18 +44,15 @@ public class trash : general
     }
     public override void Reveal(float pRevealDuration)
     {
-        _revealDuration = pRevealDuration;
+        ((FloatTrashState)_stateCache[TrashState.Float]).ResetOutLineCounter(pRevealDuration);
         if (Revealed) return;
-
         ToggleOutliner(true);
         ToggleRenderer(true);
-        Revealed = true;
     }
     public override void Hide()
     {
         ToggleOutliner(false);
         ToggleRenderer(false);
-        Revealed = false;
     }
     public override void ToggleOutliner(bool pBool)
     {

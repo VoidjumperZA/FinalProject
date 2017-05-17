@@ -9,6 +9,7 @@ public class basic : MonoBehaviour
     [HideInInspector] public static ScoreHandler Scorehandler;
     [HideInInspector] public static ShoppingList Shoppinglist;
     [HideInInspector] public static Combo combo;
+    [HideInInspector] public static GameplayValues Gameplayvalues;
 
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
@@ -24,8 +25,7 @@ public class basic : MonoBehaviour
     public static hook Hook;
     public static radar Radar;
     public static trailer Trailer;
-
-    private GameObject boat;
+    
     private GameObject floor;
     private static float seaDepth;
 
@@ -39,7 +39,8 @@ public class basic : MonoBehaviour
         Boat.AssignHook(Hook);
         Boat.AssignRadar(Radar);
         Hook.AssignBoat(Boat);
-        
+
+
         //Debug.Log(_generals.Count + " generals");
 
         //InputTimer and basic should be on the same object, but I'm explictly calling in case they ever aren't
@@ -49,14 +50,17 @@ public class basic : MonoBehaviour
         Scorehandler = GetComponent<ScoreHandler>(); if (!Scorehandler) Debug.Log("ERROR: Cannot get reference to ScoreHandler from Manager object");
         Shoppinglist = GetComponent<ShoppingList>(); if (!Shoppinglist) Debug.Log("ERROR: Cannot get reference to ShoppingList from Manager object");
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
+        Gameplayvalues = GetComponent<GameplayValues>(); Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
+
+        CameraHandler.InitializeCameraHandler();
+        CameraHandler.SetDestination(CameraHandler.CameraFocus.FocusBoat);
 
         floor = GameObject.FindGameObjectWithTag("Floor");
-        boat = GameObject.FindGameObjectWithTag("Boat");
-        Vector3 difference = floor.transform.position - boat.transform.position;
+        Vector3 difference = floor.transform.position - Boat.transform.position;
         seaDepth = difference.y;
         //
-        CameraHandler.ArtificialStart();
-        cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
+        //CameraHandler.ArtificialStart();
+        //cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
     }
     void Update()
     {
@@ -66,7 +70,8 @@ public class basic : MonoBehaviour
 
     private void LateUpdate()
     {
-        CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
+        CameraHandler.Update();
+        //CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
     }
     private boat SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
     {
