@@ -39,7 +39,7 @@ public class FishHookState : AbstractHookState
 
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
-        maxHookRotation = 25.0f;
+        maxHookRotation = 5.0f;
         CameraHandler.SetDestination(CameraHandler.CameraFocus.ZoomedHook);
     }
 
@@ -49,7 +49,7 @@ public class FishHookState : AbstractHookState
         if (Input.GetMouseButton(0))
         {
             SetXYAxisOffset(mouse.GetWorldPoint());
-            Debug.Log(mouse.GetWorldPoint().ToString());
+            //Debug.Log(mouse.GetWorldPoint().ToString());
         }
         ApplyVelocity();
         DampXVelocity();
@@ -63,22 +63,25 @@ public class FishHookState : AbstractHookState
     // -------- Movement --------
     private void SetCameraAndHookAngle()
     {
-        if (_xyOffset.x < 0)
+        //Debug.Log("current hook rot:  " + currentHookRotation + "max rot: " + maxHookRotation);
+        if(_xyOffset.x > 0)
         {
             if (currentHookRotation < maxHookRotation)
             {
+                Debug.Log("in +rot");
                 currentHookRotation += hookRotationAmount;
                 _hook.gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
-                //Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
+                Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
             }
         }
-        else if (_xyOffset.x > 0)
+        else if (_xyOffset.x < 0)
         {
             if (currentHookRotation > -maxHookRotation)
             {
+                Debug.Log("in -rot");
                 currentHookRotation -= hookRotationAmount;
-                _hook.gameObject.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
-                //Camera.main.transform.Rotate(0.0f, 0.0f, currentHookRotation);
+                _hook.gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
+                Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
             }
         }
     }
