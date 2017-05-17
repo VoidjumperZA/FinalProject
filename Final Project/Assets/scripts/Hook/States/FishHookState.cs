@@ -49,11 +49,11 @@ public class FishHookState : AbstractHookState
         if (Input.GetMouseButton(0))
         {
             SetXYAxisOffset(mouse.GetWorldPoint());
-            Debug.Log(mouse.GetWorldPoint().ToString());
+            //Debug.Log(mouse.GetWorldPoint().ToString());
         }
         ApplyVelocity();
         DampXVelocity();
-        //SetCameraAndHookAngle();
+        SetCameraAndHookAngle();
         if (camShaking == true)
         {
             shakeCameraOnCollect();
@@ -68,19 +68,23 @@ public class FishHookState : AbstractHookState
             if (currentHookRotation < maxHookRotation)
             {
                 currentHookRotation += hookRotationAmount;
-                _hook.gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
+
+                _hook.gameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, _hook.gameObject.transform.rotation.eulerAngles.z + currentHookRotation);
+                //_hook.gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
                 Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
             }
         }
         else if (_xyOffset.x > 0)
         {
-            if (currentHookRotation > -maxHookRotation)
+            if (currentHookRotation > -(maxHookRotation))
             {
                 currentHookRotation -= hookRotationAmount;
-                _hook.gameObject.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
+                //_hook.gameObject.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
+                _hook.gameObject.transform.rotation = Quaternion.Euler(0.0f, 0.0f, _hook.gameObject.transform.rotation.eulerAngles.z - currentHookRotation);
                 Camera.main.transform.Rotate(0.0f, 0.0f, currentHookRotation);
             }
         }
+        Debug.Log("Current rot: " + currentHookRotation);
     }
 
     //
