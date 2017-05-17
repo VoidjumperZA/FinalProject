@@ -20,8 +20,9 @@ public class fish : general
     // Radar related
     [SerializeField] private SkinnedMeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
-    [SerializeField] private float _revealDuration;
     [HideInInspector] public Animator Animator;
+
+    private float _revealDuration;
 
     // Use this for initialization
     public override void Start()
@@ -45,7 +46,7 @@ public class fish : general
     {
         _stateCache.Clear();
         _stateCache[FishState.None] = new NoneFishState(this);
-        _stateCache[FishState.Swim] = new SwimFishState(this, _speed, _revealDuration);
+        _stateCache[FishState.Swim] = new SwimFishState(this, _speed);
         _stateCache[FishState.FollowHook] = new FollowHookFishState(this);
         _stateCache[FishState.PiledUp] = new PiledUpFishState(this);
         SetState(_fishState);
@@ -76,6 +77,7 @@ public class fish : general
     }
     public override void ToggleOutliner(bool pBool)
     {
+        Revealed = pBool;
         _outliner.enabled = pBool;
     }
     public override void ToggleRenderer(bool pBool)
@@ -87,19 +89,17 @@ public class fish : general
     {
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
     }
-    public override void Reveal()
+    public override void Reveal(float pRevealDuration)
     {
+        (_stateCache[FishState.Swim] as SwimFishState).ResetOutLineCounter(pRevealDuration);
         if (Revealed) return;
-
         ToggleOutliner(true);
         ToggleRenderer(true);
-        Revealed = true;
     }
     public override void Hide()
     {
         ToggleOutliner(false);
         ToggleRenderer(false);
-        Revealed = false;
     }
     public int GetScore()
     {

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ShoppingList : MonoBehaviour {
+    [HideInInspector] public bool Introduced = false;
     private enum FishInfo { Field, Type, Collected, ToCollect }
     [SerializeField] private Text[] _listTextfields; private int amount { get { return 3/*_listTextfields.Length*/; } }
     private int[] _type = new int[3];

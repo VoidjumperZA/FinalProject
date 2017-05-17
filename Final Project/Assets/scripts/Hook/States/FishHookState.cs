@@ -51,7 +51,7 @@ public class FishHookState : AbstractHookState
             SetXYAxisOffset(mouse.GetWorldPoint());
         }
         ApplyVelocity();
-        DampXVelocityAfterDeselected();
+        DampXVelocity();
         //SetCameraAndHookAngle();
         if (camShaking == true)
         {
@@ -109,9 +109,16 @@ public class FishHookState : AbstractHookState
     }
 
     //
-    private void DampXVelocityAfterDeselected()
+    private void DampXVelocity()
     {
-        if (_xyOffset.magnitude > 0) _xyOffset *= _xOffsetDamping;
+        if (_xyOffset.magnitude > 0)
+            _xyOffset *= _xOffsetDamping;
+
+        if (_xyOffset.magnitude <= 0.01f)
+            _xyOffset = Vector2.zero;
+
+        if (_xyOffset.x == 0 && basic.Boat.gameObject.transform.position.x - _hook.gameObject.transform.position.x > 0)
+            _hook.gameObject.transform.Translate(new Vector3(basic.Boat.gameObject.transform.position.x - _hook.gameObject.transform.position.x, 0, 0));
     }
 
     //
@@ -146,8 +153,11 @@ public class FishHookState : AbstractHookState
             theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
             basic.Shoppinglist.AddFish(theFish);
-            basic.Scorehandler.AddScore(GameObject.Find("Manager").GetComponent<ScoreHandler>().GetFishScore(theFish.fishType), true, true);
-            basic.combo.CheckComboProgress(theFish.fishType);
+            basic.Scorehandler.AddScore(basic.Scorehandler.GetFishScore(theFish.fishType), true, true);
+            if (!basic.GlobalUi.InTutorial)
+            {
+                basic.combo.CheckComboProgress(theFish.fishType);
+            }
             if (theFish.fishType == fish.FishType.Large)
             {
                 //SetState(hook.HookState.Reel);
@@ -173,6 +183,18 @@ public class FishHookState : AbstractHookState
             _hook.TrashOnHook.Add(theTrash);
             basic.Scorehandler.AddScore(GameObject.Find("Manager").GetComponent<ScoreHandler>().GetTrashScore(), true, false);
 
+        }
+        if (other.gameObject.CompareTag("Fish") || 
+            other.gameObject.CompareTag("Trash") || 
+            other.gameObject.CompareTag("JellyFish") || 
+            other.gameObject.CompareTag("Shark") || 
+            other.gameObject.CompareTag("SpecialItem"))
+        {
+            if (!basic.Shoppinglist.Introduced)
+            {
+                basic.Shoppinglist.Show(true);
+                basic.Shoppinglist.Introduced = true;
+            }
         }
     }
 }

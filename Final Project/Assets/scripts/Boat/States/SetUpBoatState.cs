@@ -36,7 +36,6 @@ public class SetUpBoatState : AbstractBoatState
             _velocity = 0;
             _boat.gameObject.transform.position = _destination;
             SetState(boat.BoatState.Stationary);
-            //basic.Shoppinglist.Show(true);
         }
         _boat.transform.Translate(differenceVector.normalized * _velocity);
     }

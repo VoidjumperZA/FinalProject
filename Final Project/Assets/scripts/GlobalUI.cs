@@ -11,6 +11,11 @@ public class GlobalUI : MonoBehaviour {
     [SerializeField] private Button _reelUpHook;
     [SerializeField] private Button _radarButton;
 
+    [HideInInspector] public bool InTutorial = true;
+    [HideInInspector] public bool DropHookCompleted = false;
+    [HideInInspector] public bool ReelUpHookCompleted = false;
+    [HideInInspector] public bool MoveBoatCompleted = false;
+
     void Start ()
     {
         //Warnings
@@ -26,7 +31,6 @@ public class GlobalUI : MonoBehaviour {
     {
         CameraHandler.SetCameraFocusPoint(CameraHandler.CameraFocus.OceanOverview, true);
         basic.Boat.SetState(boat.BoatState.SetUp);
-        basic.Shoppinglist.Show(true);
         _playGameButton.gameObject.SetActive(false);
     }
 	public void DeployHookButton(bool pBool) {  _deployHookButton.gameObject.SetActive(pBool); }
@@ -37,10 +41,18 @@ public class GlobalUI : MonoBehaviour {
     {
         basic.Boat.SetState(boat.BoatState.Fish);
         basic.Scorehandler.ToggleHookScoreUI(true);
-        GameObject.Find("Manager").GetComponent<Combo>().CreateNewCombo();
         DeployHookButton(false);
+        if (!InTutorial)
+        {
+            GameObject.Find("Manager").GetComponent<Combo>().CreateNewCombo();
+        }
+        else
+        {
+            if (DropHookCompleted) ReelUpHookButton(true);
+            DropHookCompleted = true;
+        }
         //RadarButton(false);
-        ReelUpHookButton(true);
+        //ReelUpHookButton(true);
    
 
     }
@@ -48,9 +60,24 @@ public class GlobalUI : MonoBehaviour {
     public void ReelUpHook()
     {
         basic.Hook.SetState(hook.HookState.Reel);
-        GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+        if (!InTutorial)
+        {
+            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+        }
+        else
+        {
+            if (DropHookCompleted)
+            {
+                ReelUpHookCompleted = true;
+                WaitForBoatMove();
+            }
+        }
     }
-
+    public void WaitForBoatMove()
+    {
+        DeployHookButton(false);
+        ReelUpHookButton(false);
+    }
     public void SwitchHookButtons()
     {
         DeployHookButton(true);
