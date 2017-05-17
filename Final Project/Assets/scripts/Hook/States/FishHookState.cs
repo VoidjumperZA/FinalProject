@@ -40,7 +40,7 @@ public class FishHookState : AbstractHookState
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
         maxHookRotation = 25.0f;
-        CameraHandler.SetDestination(CameraHandler.CameraFocus.ZoomedHook);
+        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Hook);
     }
 
     //
@@ -157,13 +157,7 @@ public class FishHookState : AbstractHookState
             {
                 basic.combo.CheckComboProgress(theFish.fishType);
             }
-            if (theFish.fishType == fish.FishType.Large)
-            {
-                //SetState(hook.HookState.Reel);
-            }
-            //Screen shake
-            //CameraHandler.ApplyScreenShake(true);
-            //camShaking = true;
+            CameraHandler.CreateShakePoint();
         }
         if (other.gameObject.CompareTag("Jellyfish"))
         {

@@ -9,12 +9,16 @@ public static class CameraHandler
     private static Camera _camera { get { return Camera.main; } }
 
     //Camera zoom levels and focus points
-    public enum CameraFocus { FocusBoat, OceanOverview, ZoomedHook };
+    public enum CameraFocus { Boat, Ocean, Hook };
     public static CameraFocus _focusObject;
-    private static Dictionary<CameraFocus, Transform> _perentPoints;
+    private static Dictionary<CameraFocus, Transform> _parentPoints;
     private static Dictionary<CameraFocus, Transform> _lookAtPoints;
     private static Vector3 _destination;
     private static float _zoomSpeed;
+    private static bool _destinationReached = true;
+    // ----------------------------
+    private static List<Vector3> _shakePoints = new List<Vector3>();
+
     //Screen shake
     /*private static Vector2 shakePolarities;
     private static GameplayValues gameplayValues;
@@ -33,30 +37,36 @@ public static class CameraHandler
 
     public static void InitializeCameraHandler()
     {
-        _perentPoints = new Dictionary<CameraFocus, Transform>();
-        _perentPoints[CameraFocus.FocusBoat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
-        _perentPoints[CameraFocus.OceanOverview] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
-        _perentPoints[CameraFocus.ZoomedHook] = GameObject.FindGameObjectWithTag("HookCamHolder").transform;
+        _parentPoints = new Dictionary<CameraFocus, Transform>();
+        _parentPoints[CameraFocus.Boat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
+        _parentPoints[CameraFocus.Ocean] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
+        _parentPoints[CameraFocus.Hook] = GameObject.FindGameObjectWithTag("HookCamHolder").transform;
 
         _lookAtPoints = new Dictionary<CameraFocus, Transform>();
-        _lookAtPoints[CameraFocus.FocusBoat] = basic.Boat.transform;
-        _lookAtPoints[CameraFocus.OceanOverview] = basic.Boat.transform;
-        _lookAtPoints[CameraFocus.ZoomedHook] = basic.Hook.transform;
+        _lookAtPoints[CameraFocus.Boat] = basic.Boat.transform;
+        _lookAtPoints[CameraFocus.Ocean] = basic.Boat.transform;
+        _lookAtPoints[CameraFocus.Hook] = basic.Hook.transform;
 
         _zoomSpeed = basic.Gameplayvalues.GetCamZoomSpeed();
+        _shakePoints = new List<Vector3>();
         _initialized = true;
+        
     }
-    public static void SetDestination(CameraFocus pFocusObject, bool pFirstTime = false)
+    public static void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
     {
         if (!_initialized)
         {
             Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
             return;
         }
-        if (pFirstTime) _camera.transform.position = _perentPoints[_focusObject].position;
-
         _focusObject = pFocusObject;
-        _camera.transform.SetParent(_perentPoints[_focusObject]);
+        _camera.transform.SetParent(_parentPoints[_focusObject]);
+        _destinationReached = false;
+        if (pFirstTime)
+        {
+            _camera.transform.position = _parentPoints[_focusObject].position;
+            _destinationReached = true;
+        }
     }
     public static void Update()
     {
@@ -64,14 +74,57 @@ public static class CameraHandler
         { Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
             return;
         }
-        Vector3 directionVector = _perentPoints[_focusObject].position - _camera.transform.position;
-        if (directionVector.magnitude > _zoomSpeed)
+        ReachDestination();
+        ReachShakePoint();
+    }
+    public static void ReachDestination()
+    {
+        if (!_destinationReached)
         {
-            _camera.transform.Translate(directionVector.normalized * _zoomSpeed);
-            _camera.transform.LookAt(_lookAtPoints[_focusObject]);
+            Vector3 directionVector = _parentPoints[_focusObject].position - _camera.transform.position;
+            if (directionVector.magnitude > _zoomSpeed)
+            {
+                _camera.transform.Translate(directionVector.normalized * _zoomSpeed);
+                _camera.transform.LookAt(_lookAtPoints[_focusObject]);
+            }
+            else
+            {
+                _camera.transform.position = _parentPoints[_focusObject].position;
+                _destinationReached = true;
+            }
         }
     }
+    private static void ReachShakePoint()
+    {
+        if (_destinationReached)
+        {
+            if (_shakePoints.Count > 0)
+            {
+                float shakeSpeed = 0.2f;
+                Vector3 directionVector = (_parentPoints[_focusObject].position + _shakePoints[0]) - _camera.transform.position;
+                if (directionVector.magnitude > shakeSpeed)
+                {
+                    _camera.transform.Translate(directionVector.normalized * shakeSpeed);
+                    _camera.transform.LookAt(_lookAtPoints[_focusObject]);
+                }
+                else
+                {
+                    _camera.transform.position = (_parentPoints[_focusObject].position + _shakePoints[0]);
+                    _shakePoints.RemoveAt(0);
+                    if (_shakePoints.Count == 0) _destinationReached = false;
+                }
+            }
+        }
+    }
+    public static void CreateShakePoint()
+    {
+        float slider = 1f;
+        //Vector3 newPoint = new Vector3(_camera.transform.position.x, _camera.transform.position.y, _camera.transform.position.z);
+        Vector3 offset = new Vector3(Random.Range(-slider, slider), Random.Range(-slider, slider), Random.Range(slider, 2*slider));
+        //newPoint += offset.normalized * slider;
 
+        _shakePoints.Add(offset);
+    }
     /// <summary>
     /// Must be called at least once from another script to set the class up.
     /// </summary>

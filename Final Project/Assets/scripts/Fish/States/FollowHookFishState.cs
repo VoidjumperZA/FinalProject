@@ -32,6 +32,7 @@ public class FollowHookFishState : AbstractFishState
             }
             _fish._head[0].transform.rotation = Quaternion.LookRotation(Vector3.right, -Vector3.forward);
         }
+        _fish.Animator.enabled = false;
 
 
     }
