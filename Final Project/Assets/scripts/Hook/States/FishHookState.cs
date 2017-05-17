@@ -186,7 +186,7 @@ public class FishHookState : AbstractHookState
         }
         if (other.gameObject.CompareTag("Fish") || 
             other.gameObject.CompareTag("Trash") || 
-            other.gameObject.CompareTag("JellyFish") || 
+            other.gameObject.CompareTag("Jellyfish") || 
             other.gameObject.CompareTag("Shark") || 
             other.gameObject.CompareTag("SpecialItem"))
         {

@@ -21,6 +21,7 @@ public class fish : general
     [SerializeField] private SkinnedMeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
     [HideInInspector] public Animator Animator;
+    [SerializeField] public GameObject[] _head;
 
     private float _revealDuration;
 
