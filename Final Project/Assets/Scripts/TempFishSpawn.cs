@@ -68,7 +68,7 @@ public class TempFishSpawn : MonoBehaviour
     {
         if (_valid == true)
         {
-            Debug.Log("No. of fish [" + totalNumberOfSpawnedFish + "]  |  maximum fish: [" + maximumNumberOfOnscreenFish + "]");
+           // Debug.Log("No. of fish [" + totalNumberOfSpawnedFish + "]  |  maximum fish: [" + maximumNumberOfOnscreenFish + "]");
             MoveSpawnArea(basic.Boat.transform.position);
             //Always count down time
             _timePassed -= Time.deltaTime;
