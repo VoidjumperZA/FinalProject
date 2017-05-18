@@ -33,6 +33,7 @@ public class GlobalUI : MonoBehaviour {
         CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
+        _skipTutorialButton.gameObject.SetActive(false);
     }
     public void OnSkipTutorialClick()
     {

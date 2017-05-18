@@ -17,14 +17,16 @@ public class PulseRadarState : AbstractRadarState {
     }
 	public override void Start () {
         _radar.Renderer.enabled = true;
-		
-	}
+
+    }
 	public override void Update () {
-        VisualiseRadarCone();
 	}
+    public override void FixedUpdate()
+    {
+        VisualiseRadarCone();
+    }
     public override void Refresh()
     {
-
     }
     public override radar.RadarState StateType()
     {
@@ -44,18 +46,16 @@ public class PulseRadarState : AbstractRadarState {
     private void DetectCollectables()
     {
         if (basic.Generals == null) Debug.Log("IS NULL");
+        if (Time.time % 1.0f != 0) return;
         foreach (general collectable in basic.Generals)
         {
-            if (!collectable)
+            if (collectable == null)
             {
                 Debug.Log("Collectable NULL");
                 continue;
             }
-            if (collectable != _radar && collectable != basic.Hook && collectable != basic.Boat && collectable)
-            {
-                bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (collectable.transform.position - _radar.gameObject.transform.position).normalized) > Mathf.Cos(_radarAngle);
-                if (visible) collectable.Reveal(_revealDuration);
-            }
+            bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (collectable.transform.position - _radar.transform.position).normalized) > _radarAngle;
+            if (visible) collectable.Reveal(_revealDuration);
         }
     }
 }

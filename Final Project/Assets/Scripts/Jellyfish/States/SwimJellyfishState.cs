@@ -166,7 +166,7 @@ public class SwimJellyfishState : AbstractJellyfishState
     {
         if (other.gameObject.tag == "Floor")
         {
-            basic.Generals.Remove(_jellyfish);
+            basic.RemoveCollectable(_jellyfish);
             GameObject.Destroy(_jellyfish.gameObject);
         }
     }

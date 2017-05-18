@@ -87,7 +87,9 @@ public class fish : general
     }
     public override void Reveal(float pRevealDuration)
     {
-         ((SwimFishState)_stateCache[FishState.Swim]).ResetOutLineCounter(pRevealDuration);
+        SwimFishState swimFishState = _stateCache[FishState.Swim] as SwimFishState;
+        if (swimFishState is SwimFishState) Debug.Log("SWIMFISHSTATE !NULL");
+        swimFishState.ResetOutLineCounter(pRevealDuration);
         if (Revealed) return;
 
         ToggleBubbles(true);

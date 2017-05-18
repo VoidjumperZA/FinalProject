@@ -35,7 +35,7 @@ public class SwimFishState : AbstractFishState
         if (other.gameObject.name == "Fish Despawner" || other.gameObject.tag == "Floor")
         {
             GameObject.Find("Manager").GetComponent<TempFishSpawn>().RemoveOneFishFromTracked();
-            basic.Generals.Remove(_fish);
+            basic.RemoveCollectable(_fish);
             GameObject.Destroy(_fish.gameObject);
         }
     }

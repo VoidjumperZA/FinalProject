@@ -20,6 +20,10 @@ public class radar : general
 	public override void Update() {
         _abstractState.Update();
     }
+    public override void FixedUpdate()
+    {
+        _abstractState.FixedUpdate();
+    }
     public void SetState(RadarState pState)
     {
         if (_abstractState != null) _abstractState.Refresh();
