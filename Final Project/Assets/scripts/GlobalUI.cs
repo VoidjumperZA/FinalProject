@@ -109,6 +109,7 @@ public class GlobalUI : MonoBehaviour
         {
             if (DropHookCompleted) ReelUpHookButton(true);
             DropHookCompleted = true;
+            ShowHandHookButton(false);
         }
         //RadarButton(false);
         //ReelUpHookButton(true);

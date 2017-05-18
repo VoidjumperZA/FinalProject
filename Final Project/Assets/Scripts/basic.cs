@@ -79,7 +79,10 @@ public class basic : MonoBehaviour
         _jellyfishZoneSizeY = _jellyfishZone.transform.localScale.y / 2;
         _jellyfishZonePosY = _jellyfishZone.transform.position.y;
 
-
+        JellyfishSpawn.setJellyfishZoneDown(GetJellyfishZoneDown());
+        JellyfishSpawn.setJellyfishZoneUp(GetJellyfishZoneUp());
+        JellyfishSpawn.setJellyfishZoneLeft(GetJellyfishZoneLeft());
+        JellyfishSpawn.setJellyfishZoneRight(GetJellyfishZoneRight());
         //Find out seaWidth
         //_docks = GameObject.FindGameObjectWithTag("Docks"); if (!_docks) Debug.Log("WARNING (Jellyfish uses this): You need to create the Docks and tag it with Docks");
         //_endOfLevel = GameObject.FindGameObjectWithTag("EndOfLevel"); if (!_endOfLevel) Debug.Log("WARNING (Jellyfish uses this): You need to create an empy object, place it at the end of the level (x) and tag it with EndOfLevel");
