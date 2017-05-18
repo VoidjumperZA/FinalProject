@@ -49,6 +49,7 @@ public static class CameraHandler
         
         _shakePoints = new List<Vector3>();
         _initialized = true;
+        Debug.Log("CameraHandeler initialized: " + _initialized);
 
     }
     public static void Update()

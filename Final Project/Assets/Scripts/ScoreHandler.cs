@@ -68,9 +68,12 @@ public class ScoreHandler : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
-        Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + hookScoreXOffset, hookPosOnScreen.y + hookScoreYOffset, 0.0f);
-        currentHookScore.transform.position = offsetPosition;       
+        if (basic.Hook)
+        {
+            Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
+            Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + hookScoreXOffset, hookPosOnScreen.y + hookScoreYOffset, 0.0f);
+            currentHookScore.transform.position = offsetPosition;
+        }
 
         //if our colour is in flash mode
         if (colourFlashing == true)

@@ -10,6 +10,9 @@ public class GlobalUI : MonoBehaviour
     [SerializeField]
     private Button _skipTutorialButton;
 
+    [SerializeField]
+    private Image _handDeployHook;
+
 
     [SerializeField]
     private Button _deployHookButton;
@@ -68,12 +71,15 @@ public class GlobalUI : MonoBehaviour
         DeployHookButton(false);
         RadarButton(false);
         ReelUpHookButton(false);
+
+        ShowHandHookButton(false);
     }
     public void OnPlayGameClick()
     {
         CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
+        _skipTutorialButton.gameObject.SetActive(false);
     }
     public void OnSkipTutorialClick()
     {
@@ -86,6 +92,8 @@ public class GlobalUI : MonoBehaviour
     public void DeployHookButton(bool pBool) { _deployHookButton.gameObject.SetActive(pBool); }
     public void ReelUpHookButton(bool pBool) { _reelUpHook.gameObject.SetActive(pBool); }
     public void RadarButton(bool pBool) { _radarButton.gameObject.SetActive(pBool); }
+
+    public void ShowHandHookButton(bool pBool) { _handDeployHook.gameObject.SetActive(pBool); }
 
     public void DeployHook()
     {

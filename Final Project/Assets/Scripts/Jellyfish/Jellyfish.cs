@@ -73,7 +73,7 @@ public class Jellyfish : general
         _renderer.enabled = pBool;
     }
 
-    public override void Reveal(float pRevealDuration)
+    public override void Reveal(float pRevealDuration, int pCollectableStaysVisibleRange)
     {
         /*if (Revealed) return;
 

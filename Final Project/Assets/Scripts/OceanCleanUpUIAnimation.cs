@@ -10,7 +10,6 @@ public class OceanCleanUpUIAnimation : MonoBehaviour {
     {
         moving = false;
         originalPosition = gameObject.transform.position;
-        gameObject.transform.position = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
     }
 	
 	// Update is called once per frame

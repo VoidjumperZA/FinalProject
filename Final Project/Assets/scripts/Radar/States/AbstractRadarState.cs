@@ -14,6 +14,10 @@ public abstract class AbstractRadarState
     public abstract void Start();
 
     public abstract void Update();
+    public virtual void FixedUpdate()
+    {
+
+    }
     public virtual void Refresh()
     {
 

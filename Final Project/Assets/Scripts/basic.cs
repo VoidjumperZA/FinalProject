@@ -10,6 +10,7 @@ public class basic : MonoBehaviour
     [HideInInspector] public static ShoppingList Shoppinglist;
     [HideInInspector] public static Combo combo;
     [HideInInspector] public static GameplayValues Gameplayvalues;
+    [HideInInspector] public static TempFishSpawn Tempfishspawn;
 
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
@@ -20,13 +21,10 @@ public class basic : MonoBehaviour
     [SerializeField] private GameObject _hookPrefab;
 
     private int cameraHandlerUpdateKey;
-    private static List<general> _generals = new List<general>(); public static List<general> Generals { get { return _generals; } }
+    public static List<general> Generals = new List<general>();
     public static boat Boat;
     public static hook Hook;
-
     public static radar Radar;
-
-    //public static radar Radar;
     public static trailer Trailer;
     
     private GameObject floor;
@@ -43,10 +41,10 @@ public class basic : MonoBehaviour
 
     void Start()
     {
-        Boat = SpawnBoat(_boatSpawn.position, _boatSetUp.position);
-        Hook = SpawnHook();
-        Radar = SpawnRadar();
-        Trailer = SpawnTrailer();
+        SpawnBoat(_boatSpawn.position, _boatSetUp.position);
+        SpawnHook();
+        SpawnRadar();
+        SpawnTrailer();
 
         Boat.AssignHook(Hook);
         Boat.AssignRadar(Radar);
@@ -62,7 +60,8 @@ public class basic : MonoBehaviour
         Scorehandler = GetComponent<ScoreHandler>(); if (!Scorehandler) Debug.Log("ERROR: Cannot get reference to ScoreHandler from Manager object");
         Shoppinglist = GetComponent<ShoppingList>(); if (!Shoppinglist) Debug.Log("ERROR: Cannot get reference to ShoppingList from Manager object");
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
-        Gameplayvalues = GetComponent<GameplayValues>(); Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
+        Gameplayvalues = GetComponent<GameplayValues>(); if (!Gameplayvalues) Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
+        Tempfishspawn = GetComponent<TempFishSpawn>(); if (!Tempfishspawn) Debug.Log("ERROR: Cannot get reference to TempFishSpawn from Manager object");
 
         CameraHandler.InitializeCameraHandler();
         CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Boat);
@@ -71,7 +70,7 @@ public class basic : MonoBehaviour
         floor = GameObject.FindGameObjectWithTag("Floor");
         Vector3 difference = floor.transform.position - Boat.transform.position;
 
-        seaDepth = Mathf.Abs(difference.y);
+        seaDepth = Mathf.Abs(difference.y) - floor.transform.lossyScale.y/2;
  
 
         //Getting the position and size of the zone where the jellyfish can move
@@ -79,67 +78,55 @@ public class basic : MonoBehaviour
         _jellyfishZonePosX = _jellyfishZone.transform.position.x;
         _jellyfishZoneSizeY = _jellyfishZone.transform.localScale.y / 2;
         _jellyfishZonePosY = _jellyfishZone.transform.position.y;
-         
+
 
         //Find out seaWidth
         //_docks = GameObject.FindGameObjectWithTag("Docks"); if (!_docks) Debug.Log("WARNING (Jellyfish uses this): You need to create the Docks and tag it with Docks");
         //_endOfLevel = GameObject.FindGameObjectWithTag("EndOfLevel"); if (!_endOfLevel) Debug.Log("WARNING (Jellyfish uses this): You need to create an empy object, place it at the end of the level (x) and tag it with EndOfLevel");
         //_seaWidth = Vector3.Distance(_docks.transform.position, _endOfLevel.transform.position);
         //
-        //CameraHandler.ArtificialStart();
-        //cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
- 
     }
     void Update()
     {
-        RenderTrail(Boat.transform.position, Hook.gameObject.transform.position);
+        RenderTrail();
         if (Input.GetMouseButton(0)) _inputTimer.ResetClock();
-        CameraHandler.Update();
     }
 
     private void LateUpdate()
     {
-        //CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
+        CameraHandler.Update();
     }
-    private boat SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
+    private void SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
     {
-        boat theBoat = Instantiate(_boatPrefab, pSpawnPosition, Quaternion.identity).GetComponent<boat>();
-        theBoat.SetSetUpPosition(pSetUpPosition);
-        _generals.Add(theBoat);
-        return theBoat;
+        Boat = Instantiate(_boatPrefab, pSpawnPosition, Quaternion.identity).GetComponent<boat>();
+        Boat.SetSetUpPosition(pSetUpPosition);
     }
-    private hook SpawnHook()
+    private void SpawnHook()
     {
-        hook theHook = Instantiate(_hookPrefab, _generals[0].transform.position, Quaternion.identity).GetComponent<hook>();
-        _generals.Add(theHook);
-        return theHook;
+        Hook = Instantiate(_hookPrefab, Boat.transform.position, Quaternion.identity).GetComponent<hook>();
     }
-    private radar SpawnRadar()
+    private void SpawnRadar()
     {
-        radar theRadar = Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,-5f,0.25f), Quaternion.identity).GetComponent<radar>();
-        _generals.Add(theRadar);
-        return theRadar;
+        Radar = Instantiate(_radarPrefab, _boatSpawn.position + new Vector3(0,-5f,0.25f), Quaternion.identity).GetComponent<radar>();
     }
-    private trailer SpawnTrailer()
+    private void SpawnTrailer()
     {
-        trailer theTrailer = Instantiate(_trailerPrefab, Boat.transform.position + new Vector3(-10,0,0), _trailerPrefab.transform.rotation).GetComponent<trailer>();
-        theTrailer.gameObject.transform.SetParent(Boat.gameObject.transform);
-        _generals.Add(theTrailer);
-        return theTrailer;
+        Trailer = Instantiate(_trailerPrefab, Boat.transform.position + new Vector3(-10,0,0), _trailerPrefab.transform.rotation).GetComponent<trailer>();
+        Trailer.gameObject.transform.SetParent(Boat.gameObject.transform);
     }
-    private void RenderTrail(Vector3 pPositionOne, Vector3 pPositionTwo)
+    private void RenderTrail()
     {
-        _lineRenderer.SetPositions(new Vector3[] { pPositionOne, pPositionTwo });
+        if (!Boat && !Hook) return;
+        _lineRenderer.SetPositions(new Vector3[] { Boat.gameObject.transform.position, Hook.gameObject.transform.position });
     }
-    public void AddFish(fish pFish)
+    public static void AddCollectable(general pCollectable)
     {
-        _generals.Add(pFish);
+        Generals.Add(pCollectable);
     }
-    public void AddTrash(trash pTrash)
+    public static void RemoveCollectable(general pCollectable)
     {
-        _generals.Add(pTrash);
+        Generals.Remove(pCollectable);
     }
-
     public static float GetSeaDepth()
     {
         return seaDepth;
