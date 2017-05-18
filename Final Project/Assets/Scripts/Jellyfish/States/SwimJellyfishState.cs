@@ -14,7 +14,6 @@ public class SwimJellyfishState : AbstractJellyfishState
     //Target point related.
     private float _distance;
     private Vector3 _targetPoint;
-    private bool _positive;
 
     //Variables for checking that the target point is inside the area 
     private float _jellyfishZoneLeft;
@@ -33,9 +32,9 @@ public class SwimJellyfishState : AbstractJellyfishState
     // Use this for initialization
     public override void Start()
     {
-
+        Debug.Log("Jellyfih created");
         _outlineCounter.Reset();
-
+        
         //Getting the position and size of the zone where the jellyfish can move
         _jellyfishZoneUp = basic.GetJellyfishZoneUp();
         _jellyfishZoneDown = basic.GetJellyfishZoneDown();
@@ -44,10 +43,9 @@ public class SwimJellyfishState : AbstractJellyfishState
         _jellyfishZoneSizeY = basic.GetJellyfishZoneSizeY();
 
         _distance = 1.5f;
-
+        
         //Creates a target from the position of the jellyfish 
         _targetPoint = _jellyfish.gameObject.transform.position;
-        _positive = true;
         createNewPoint('u');
     }
 
@@ -110,7 +108,7 @@ public class SwimJellyfishState : AbstractJellyfishState
         }
 
         //Calculate new point
-        
+        Debug.Log("New point");
         float distanceToNewPoint = Random.Range(_jellyfishZoneSizeY/2,_jellyfishZoneSizeY);
         
         float x = _targetPoint.x + Mathf.Cos(angle) * distanceToNewPoint;
@@ -137,7 +135,7 @@ public class SwimJellyfishState : AbstractJellyfishState
             createNewPoint('u');
             Debug.Log("Call create new point from Y >: TargetpointY = " + _targetPoint.y);
         }
-        if (_targetPoint.y < _jellyfishZoneUp)
+        if (_targetPoint.y < _jellyfishZoneDown)
         {
             createNewPoint('d');
             Debug.Log("Call create new point from Y <: TargetpointY = " + _targetPoint.y);
