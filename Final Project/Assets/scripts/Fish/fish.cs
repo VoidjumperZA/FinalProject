@@ -73,7 +73,6 @@ public class fish : general
     }
     public override void ToggleOutliner(bool pBool)
     {
-        Revealed = pBool;
         _outliner.enabled = pBool;
     }
     public override void ToggleRenderer(bool pBool)
@@ -85,10 +84,14 @@ public class fish : general
     {
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
     }
-    public override void Reveal(float pRevealDuration)
+    public override void Reveal(float pFadeOutDuration, int pCollectableStaysVisibleRange)
     {
-         ((SwimFishState)_stateCache[FishState.Swim]).ResetOutLineCounter(pRevealDuration);
         if (Revealed) return;
+
+        Revealed = true;
+        SwimFishState swimFishState = _stateCache[FishState.Swim] as SwimFishState;
+        if (swimFishState is SwimFishState) Debug.Log("SWIMFISHSTATE !NULL");
+        swimFishState.ResetOutLineCounter(pFadeOutDuration, pCollectableStaysVisibleRange);
 
         ToggleBubbles(true);
         ToggleOutliner(true);
@@ -96,9 +99,9 @@ public class fish : general
     }
     public override void Hide()
     {
-        ToggleBubbles(false);
-        ToggleOutliner(false);
-        ToggleRenderer(false);
+        basic.Tempfishspawn.RemoveOneFishFromTracked();
+        basic.RemoveCollectable(this);
+        Destroy(gameObject);
     }
     public int GetScore()
     {

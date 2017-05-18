@@ -14,7 +14,6 @@ public class trash : general
     [SerializeField] private float _spinRadius;
     [SerializeField] private MeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
-    private float _revealDuration;
     public override void Start()
     {
         InitializeStateMachine();
@@ -33,7 +32,7 @@ public class trash : general
     {
         _stateCache.Clear();
         _stateCache[TrashState.None] = new NoneTrashState(this);
-        _stateCache[TrashState.Float] = new FloatTrashState(this, _spinsPerSecond, _revealDuration, _spinRadius);
+        _stateCache[TrashState.Float] = new FloatTrashState(this, _spinsPerSecond, _spinRadius);
         _stateCache[TrashState.FollowHook] = new FollowHookTrashState(this);
         _stateCache[TrashState.PiledUp] = new PiledUpTrashState(this);
         SetState(_trashState);
@@ -42,15 +41,18 @@ public class trash : general
     {
         return _score;
     }
-    public override void Reveal(float pRevealDuration)
+    public override void Reveal(float pFadeOutDuration, int pCollectableStaysVisibleRange)
     {
-        ((FloatTrashState)_stateCache[TrashState.Float]).ResetOutLineCounter(pRevealDuration);
         if (Revealed) return;
+
+        Revealed = true;
+        ((FloatTrashState)_stateCache[TrashState.Float]).ResetOutLineCounter(pFadeOutDuration, pCollectableStaysVisibleRange);
         ToggleOutliner(true);
         ToggleRenderer(true);
     }
     public override void Hide()
     {
+        Revealed = false;
         ToggleOutliner(false);
         ToggleRenderer(false);
     }

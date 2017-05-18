@@ -32,6 +32,7 @@ public class TempFishSpawn : MonoBehaviour
     private float _verticalSpawnFluctuation;
     private float _timePassed;
     private bool _valid;
+    [HideInInspector] public bool _boatSetUp = false;
     private float timeBetweenSpawns;
     private enum PossiblePolarities { Negative, Positive, Either, Niether }
     private PossiblePolarities possiblePolarities;
@@ -50,7 +51,6 @@ public class TempFishSpawn : MonoBehaviour
         _leftSpawn.transform.position = leftSpawnPos;
 
         Vector3 rightSpawnPos = new Vector3(_rightSpawn.transform.position.x, basic.Boat.transform.position.y, _rightSpawn.transform.position.z);
-
         rightSpawnPos.y += (_verticalSpawnFluctuation);
         _rightSpawn.transform.position = rightSpawnPos;
         //Max our time to start
@@ -68,7 +68,7 @@ public class TempFishSpawn : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (_valid == true)
+        if (_valid == true && _boatSetUp == true)
         {
             //Debug.Log("No. of fish [" + totalNumberOfSpawnedFish + "]  |  maximum fish: [" + maximumNumberOfOnscreenFish + "]");
             MoveSpawnArea(basic.Boat.transform.position);
@@ -77,7 +77,7 @@ public class TempFishSpawn : MonoBehaviour
             //Once our spawn timer is up
             if (_timePassed <= 0)
             {
-                _basic.AddFish(CreateFish(Random.Range(0, 2)));
+                basic.AddCollectable(CreateFish(Random.Range(0, 2)));
                 _timePassed = timeBetweenSpawns;
             }
         }
@@ -97,7 +97,6 @@ public class TempFishSpawn : MonoBehaviour
 
             totalNumberOfSpawnedFish++;
             newFish.GetComponent<fish>().SetDirection(1.0f);
-            newFish.GetComponent<fish>().SetFishType(randomFish);
             return newFish.GetComponent<fish>();
         }
         else

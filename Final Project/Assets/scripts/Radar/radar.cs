@@ -11,7 +11,8 @@ public class radar : general
     [SerializeField] private RadarState _radarState = RadarState.None;
     // Fish detector
     [SerializeField] private float _scrollSpeed;
-    [SerializeField] private float _revealDuration;
+    [SerializeField] private float _fadeOutDuration;
+    [SerializeField] private int _collectableStaysVisibleRange;
     [SerializeField] private GameObject _radarAngleSlider;
     [SerializeField] private Renderer _renderer; [HideInInspector] public Renderer Renderer { get { return _renderer; } }
 	public override void Start() {
@@ -19,6 +20,10 @@ public class radar : general
 	}
 	public override void Update() {
         _abstractState.Update();
+    }
+    public override void FixedUpdate()
+    {
+        _abstractState.FixedUpdate();
     }
     public void SetState(RadarState pState)
     {
@@ -30,7 +35,7 @@ public class radar : general
     {
         _stateCache.Clear();
         _stateCache[RadarState.None] = new NoneRadarState(this);
-        _stateCache[RadarState.Pulse] = new PulseRadarState(this, GetRadarAngle(), _scrollSpeed, _revealDuration);
+        _stateCache[RadarState.Pulse] = new PulseRadarState(this, GetRadarAngle(), _scrollSpeed, _fadeOutDuration, _collectableStaysVisibleRange);
         SetState(_radarState);
     }
     public float GetRadarAngle()

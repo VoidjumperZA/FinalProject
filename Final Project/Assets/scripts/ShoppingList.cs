@@ -5,73 +5,76 @@ using UnityEngine.UI;
 
 public class ShoppingList : MonoBehaviour {
     [HideInInspector] public bool Introduced = false;
-    private enum FishInfo { Field, Type, Collected, ToCollect }
-    [SerializeField] private Text[] _listTextfields; private int amount { get { return 3/*_listTextfields.Length*/; } }
-    private int[] _type = new int[3];
+    [SerializeField] private Text[] _listTextfields;
+    private Dictionary<int, int[]> _fishInfo = new Dictionary<int, int[]>();
+
+    private int[,] _toCollectPreset = new int[,] { { 10, 20, 30 }, { 20, 40, 60 }, { 40, 80, 120 } };//new int[,] { { 15, 10, 5 }, { 30, 20, 10 }, { 60, 40, 20 } };
+
+    /*private int[] _type = new int[3];
     private int[] _toCollect = new int[3];
     private int[] _collected = new int[3];
-    private int[,] _toCollectPreset = new int[,] { { 1, 2, 3 }, { 2, 4, 6 }, { 4, 8, 12 } };//new int[,] { { 15, 10, 5 }, { 30, 20, 10 }, { 60, 40, 20 } };
-    private int[] _fishLevel = new int[] { 0, 0, 0 };
+    private int[] _fishLevel = new int[] { 0, 0, 0 };*/
 
-	void Start () {
+    void Start () {
         CacheNewCollection();
-        SetUpLines();
+        SetUpTextFields();
         Show(false);
-	}
+    }
 	
-	void Update () {
-        if (Input.GetKeyDown(KeyCode.K)) CacheNewCollection();
-	}
+	public void Update () {
+        if (Input.GetKeyDown(KeyCode.Z)) CacheNewCollection();
+    }
 
     public void AddFish(fish pFish)
     {
-        //int pType = (int)pFish.GetFishType();
-        _collected[(int)pFish.GetFishType()] += 1;
-        /*_collected[(int)pFish.GetFishType()] = collected;
-
-        Debug.Log(pType + " FishType " + collected + " collected " + _toCollect[pType] + " tocollect ");
-        for (int i = 0; i < amount; i++)
-        {
-            if (_type[i] == pType)
-            {
-                if (_collected[pType] == _toCollect[pType])
-            {
-                     _fishLevel[pType] += 1;
-                    _toCollect[pType] = _toCollectPreset[_fishLevel[pType], pType];
-
-                    Debug.Log(pType + " FishType " + collected + " collected " + _toCollect[pType] + " tocollect ");
-                    break;
-                }
-            }
-        }*/
-        SetUpLines();
+        int type = (int)pFish.GetFishType();
+        _fishInfo[type][1] += 1;
+        SetUpTextFields();
     }
     private void CacheNewCollection()
     {
-        int a = Random.Range(0, amount);
-        int b = a;
-        while (b == a) { b = Random.Range(0, amount); }
-        int c = a;
-        while (c == a || c == b) { c = Random.Range(0, amount); }
-        //Debug.Log(a + " " + b + " " + c);
-        _type = new[] { a, b, c };
-        for (int i = 0; i < amount; i++) _toCollect[i] = GetToCollect(_type[i], _fishLevel[i]);
+        Debug.Log("Started generating");
+        _fishInfo = new Dictionary<int, int[]>();
+        List<int> chosen = new List<int>();
 
+        int tempType = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            bool again = true;
+            while (again)
+            {
+                tempType = Random.Range(0, 3);
+                if (!chosen.Contains(tempType))
+                {
+                    again = false;
+                    chosen.Add(tempType);
+                }
+            }
+            _fishInfo[chosen[i]] = new int[3] { Random.Range(0, 3), 0, _toCollectPreset[chosen[i], Random.Range(0, 3)] };
+        }
+        chosen.Clear();
+        //for (int i =0; i < 3; i++) Debug.Log(i + "  " + _fishType[i]);
     }
-    private int GetToCollect(int pType, int pLevel)
+    /*private int GetToCollect(int pType, int pLevel)
     {
         return _toCollectPreset[pLevel, pType];
-    }
-    private void SetUpLines()
+    }*/
+    private void SetUpTextFields()
     {
-        for (int i = 0; i < amount; i++) _listTextfields[i].text = "Fish " + (_type[i] + 1) + " collected: " + _collected[i] + "/" + _toCollect[i];
+        _listTextfields[0].text = "Small fish color: " + _fishInfo[0][0] + " collected: " + _fishInfo[0][1] + "/" + _fishInfo[0][2];
+        _listTextfields[1].text = "Medium fish color: " + _fishInfo[1][0] + " collected: " + _fishInfo[1][1] + "/" + _fishInfo[1][2];
+        _listTextfields[2].text = "Large fish color: " + _fishInfo[2][0] + " collected: " + _fishInfo[2][1] + "/" + _fishInfo[2][2];
     }
     private void EditLine(int pIndex)
     {
     }
     public void Show(bool pBool)
     {
-        foreach (Text text in _listTextfields) text.gameObject.SetActive(pBool);
+        for (int i = 0; i < 3; i++)
+        {
+            _listTextfields[i].gameObject.SetActive(pBool);
+        }
+        //Debug.Log("Shopping list is hidden");
     }
     /*private int GetInfo(FishInfo pList, FishInfo pInfo)
     {

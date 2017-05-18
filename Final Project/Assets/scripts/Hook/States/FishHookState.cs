@@ -31,8 +31,6 @@ public class FishHookState : AbstractHookState
     //
     public override void Start()
     {
-        camShaking = false;
-        screenShakeCounter = 0;
 
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;

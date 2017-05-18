@@ -27,7 +27,7 @@ public class TrashSpawner : MonoBehaviour {
         {
             spawnPosition = new Vector3(_leftSpawn.position.x + (area.x - (area.x / _trashAmount) * i) - area.x / _trashAmount, _leftSpawn.position.y + (_trashAmount / 12.0f) * i, _leftSpawn.position.z);
             trash theTrash = Instantiate(_trashPrefabs[0], spawnPosition, _trashPrefabs[0].transform.rotation).GetComponent<trash>();
-            _basic.AddTrash(theTrash);
+            basic.AddCollectable(theTrash);
         }
     }
 }

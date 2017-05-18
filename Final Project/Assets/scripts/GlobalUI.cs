@@ -79,6 +79,7 @@ public class GlobalUI : MonoBehaviour
         CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
+        _skipTutorialButton.gameObject.SetActive(false);
     }
     public void OnSkipTutorialClick()
     {
@@ -108,6 +109,7 @@ public class GlobalUI : MonoBehaviour
         {
             if (DropHookCompleted) ReelUpHookButton(true);
             DropHookCompleted = true;
+            ShowHandHookButton(false);
         }
         //RadarButton(false);
         //ReelUpHookButton(true);

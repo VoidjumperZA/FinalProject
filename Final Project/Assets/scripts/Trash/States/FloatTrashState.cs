@@ -9,11 +9,11 @@ public class FloatTrashState : AbstractTrashState
     private float _spinsPerSecond;
     private float _spinRadius;
     private int _spinDirection;
-    public FloatTrashState(trash pTrash, float pSpinsPerSeconds, float pRevealDuration, float pSpinRadius) : base(pTrash)
+    public FloatTrashState(trash pTrash, float pSpinsPerSeconds, float pSpinRadius) : base(pTrash)
     {
         _spinsPerSecond = pSpinsPerSeconds;
         _spinRadius = pSpinRadius;
-        _outlineCounter = new counter(pRevealDuration);
+        _outlineCounter = new counter(0);
         _spinDirection = UnityEngine.Random.Range(0, 2) == 0 ? 1 : -1;
     }
     public override void Start()
@@ -48,7 +48,7 @@ public class FloatTrashState : AbstractTrashState
                                                           Mathf.Sin(2*Mathf.PI * Time.time * _spinsPerSecond) * _spinDirection, 
                                                           Mathf.Cos(2 * Mathf.PI * Time.time * _spinsPerSecond) * _spinDirection).normalized * _spinRadius);
     }
-    public void ResetOutLineCounter(float pRevealDuration)
+    public void ResetOutLineCounter(float pRevealDuration, int pCollectableStaysVisibleRange)
     {
         _outlineCounter.Reset(pRevealDuration);
     }
