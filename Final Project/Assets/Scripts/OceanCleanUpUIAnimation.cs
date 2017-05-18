@@ -6,18 +6,19 @@ public class OceanCleanUpUIAnimation : MonoBehaviour {
     private bool moving;
     private Vector3 originalPosition;
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         moving = false;
         originalPosition = gameObject.transform.position;
-        gameObject.transform.position = Camera.main.WorldToScreenPoint(basic.Hook.transform.position); //
+        gameObject.transform.position = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
         if (moving == true)
-        {
-            float speed = basic.GlobalUI.GetOceanbarMovemenetSpeed();
+        {           
+            float speed = basic.GlobalUI.GetOceanBarMovementSpeed();
 
             Vector3 differenceVector = (originalPosition - gameObject.transform.position);
             if (differenceVector.magnitude >= speed) gameObject.transform.Translate(differenceVector.normalized * speed);
@@ -32,5 +33,10 @@ public class OceanCleanUpUIAnimation : MonoBehaviour {
     public void AnimateFirstTimeMovement()
     {
         moving = true;
+    }
+
+    public void SetBarPosition()
+    {
+        gameObject.transform.position = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
     }
 }

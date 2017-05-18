@@ -187,9 +187,13 @@ public class GlobalUI : MonoBehaviour
         }
     }
 
-    public float GetOceanbarMovemenetSpeed()
+    public float GetOceanBarMovementSpeed()
     {
         return oceanBarMovementSpeed;
     }
 
+    public Slider GetOceanCleanUpBar()
+    {
+        return oceanCleanUpProgressBar;
+    }
 }

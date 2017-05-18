@@ -32,6 +32,7 @@ public class hook : general
     [SerializeField] private float _speed;
     [SerializeField] private float _fallSpeed;
     [SerializeField] private float _xOffsetDamping;
+
     private Vector3 _xyOffset;
     private Vector3 _velocity;
     // X Velocity damping
@@ -44,10 +45,7 @@ public class hook : general
     {
         valid = true;
         InitializeStateMachine();
-
-        
-
-       
+        basic.GlobalUI.GetOceanCleanUpBar().gameObject.GetComponent<OceanCleanUpUIAnimation>().SetBarPosition();
     }
 
     //
