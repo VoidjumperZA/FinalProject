@@ -169,6 +169,6 @@ public class basic : MonoBehaviour
     }
     public static float GetJellyfishZoneDown()
     {
-        return _jellyfishZonePosY + _jellyfishZoneSizeY;
+        return _jellyfishZonePosY - _jellyfishZoneSizeY;
     }
 }
