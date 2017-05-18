@@ -31,10 +31,15 @@ public class basic : MonoBehaviour
     private GameObject boat;
     private GameObject floor;
     private static float seaDepth;
-    //private GameObject _docks;
-    //private GameObject _endOfLevel;
-    //private static float _seaWidth;
-   
+
+    //Zone for the jellyfish
+
+    [SerializeField] private GameObject _jellyfishZone;
+    private static float _jellyfishZonePosX;
+    private static float _jellyfishZonePosY;
+    private static float _jellyfishZoneSizeX;
+    private static float _jellyfishZoneSizeY;
+
 
     void Start()
     {
@@ -61,11 +66,13 @@ public class basic : MonoBehaviour
         floor = GameObject.FindGameObjectWithTag("Floor");
         Vector3 difference = floor.transform.position - Boat.transform.position;
         seaDepth = Mathf.Abs(difference.y);
-        //Find out seaWidth
-        //_docks = GameObject.FindGameObjectWithTag("Docks"); if (!_docks) Debug.Log("WARNING (Jellyfish uses this): You need to create the Docks and tag it with Docks");
-        //_endOfLevel = GameObject.FindGameObjectWithTag("EndOfLevel"); if (!_endOfLevel) Debug.Log("WARNING (Jellyfish uses this): You need to create an empy object, place it at the end of the level (x) and tag it with EndOfLevel");
-        //_seaWidth = Vector3.Distance(_docks.transform.position, _endOfLevel.transform.position);
-        //
+
+        //Getting the position and size of the zone where the jellyfish can move
+        _jellyfishZoneSizeX = _jellyfishZone.transform.localScale.x / 2;
+        _jellyfishZonePosX = _jellyfishZone.transform.position.x;
+        _jellyfishZoneSizeY = _jellyfishZone.transform.localScale.y / 2;
+        _jellyfishZonePosY = _jellyfishZone.transform.position.y;
+
         CameraHandler.ArtificialStart();
         cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
     }
@@ -123,8 +130,40 @@ public class basic : MonoBehaviour
         return seaDepth;
     }
 
-    /*public static float GetSeaWidth()
+    public static float GetJellyfishZonePosX()
     {
-        return _seaWidth;
-    }*/
+        return _jellyfishZonePosX;
+    }
+
+    public static float GetJellyfishZonePosY()
+    {
+        return _jellyfishZonePosY;
+    }
+
+    public static float GetJellyfishZoneSizeX()
+    {
+        return _jellyfishZoneSizeX;
+    }
+
+    public static float GetJellyfishZoneSizeY()
+    {
+        return _jellyfishZoneSizeY;
+    }
+
+    public static float GetJellyfishZoneLeft()
+    {
+        return _jellyfishZonePosX - _jellyfishZoneSizeX;
+    }
+    public static float GetJellyfishZoneRight()
+    {
+        return _jellyfishZonePosX + _jellyfishZoneSizeX;
+    }
+    public static float GetJellyfishZoneUp()
+    {
+        return _jellyfishZonePosY + _jellyfishZoneSizeY;
+    }
+    public static float GetJellyfishZoneDown()
+    {
+        return _jellyfishZonePosY + _jellyfishZoneSizeY;
+    }
 }
