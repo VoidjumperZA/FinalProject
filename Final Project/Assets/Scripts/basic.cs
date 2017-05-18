@@ -5,7 +5,7 @@ using UnityEngine;
 public class basic : MonoBehaviour
 {
     private InputTimer _inputTimer;
-    [HideInInspector] public static GlobalUI GlobalUi;
+    [HideInInspector] public static GlobalUI GlobalUI;
     [HideInInspector] public static ScoreHandler Scorehandler;
     [HideInInspector] public static ShoppingList Shoppinglist;
     [HideInInspector] public static Combo combo;
@@ -53,7 +53,7 @@ public class basic : MonoBehaviour
         //InputTimer and basic should be on the same object, but I'm explictly calling in case they ever aren't
         //and therefore I can still get the script
         _inputTimer = GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("ERROR: Cannot get a reference to InputTimer from the Manager object.");
-        GlobalUi = GetComponent<GlobalUI>(); if (!GlobalUi) Debug.Log("ERROR: Cannot get a reference to GlobalUI from the Manager object.");
+        GlobalUI = GetComponent<GlobalUI>(); if (!GlobalUI) Debug.Log("ERROR: Cannot get a reference to GlobalUI from the Manager object.");
         Scorehandler = GetComponent<ScoreHandler>(); if (!Scorehandler) Debug.Log("ERROR: Cannot get reference to ScoreHandler from Manager object");
         Shoppinglist = GetComponent<ShoppingList>(); if (!Shoppinglist) Debug.Log("ERROR: Cannot get reference to ShoppingList from Manager object");
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");

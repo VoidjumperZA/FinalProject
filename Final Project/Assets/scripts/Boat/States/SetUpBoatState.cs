@@ -41,7 +41,7 @@ public class SetUpBoatState : AbstractBoatState
     }
     public override void Refresh()
     {
-        basic.GlobalUi.DeployHookButton(true);
+        basic.GlobalUI.DeployHookButton(true);
     }
 
     public override boat.BoatState StateType()

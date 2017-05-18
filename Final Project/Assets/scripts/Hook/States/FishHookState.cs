@@ -146,7 +146,7 @@ public class FishHookState : AbstractHookState
             _hook.FishOnHook.Add(theFish);
             basic.Shoppinglist.AddFish(theFish);
             basic.Scorehandler.AddScore(basic.Scorehandler.GetFishScore(theFish.fishType), true, true);
-            if (!basic.GlobalUi.InTutorial)
+            if (!basic.GlobalUI.InTutorial)
             {
                 basic.combo.CheckComboProgress(theFish.fishType);
             }
@@ -170,7 +170,8 @@ public class FishHookState : AbstractHookState
             if (!theTrash.Visible) return;
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
-            basic.Scorehandler.AddScore(basic.Scorehandler.GetTrashScore(), true, false);
+            bool firstTime = basic.Scorehandler.CollectATrashPiece();
+            GameObject.Find("Manager").GetComponent<GlobalUI>().UpdateOceanProgressBar(firstTime);
             CameraHandler.CreateShakePoint();
 
         }

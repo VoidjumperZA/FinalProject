@@ -42,6 +42,7 @@ public class SeafloorSpawning : MonoBehaviour
             newTrash.SetActive(true);
             trashSpawns.Remove(trashSpawns[spawnNumber]);
         }
+        basic.Scorehandler.SetTotalNumberOfTrashPieces(spawnCount);
     }
 
     // Update is called once per frame
