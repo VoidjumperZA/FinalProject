@@ -11,7 +11,9 @@ public class PiledUpFishState : AbstractFishState
     public override void Start()
     {
         basic.Generals.Remove(_fish);
-        basic.Trailer.StuffOnTrailer.Add(_fish);
+        GameObject.Destroy(_fish.gameObject);
+        // Now objects are being destroyed but need to be replaced with low poly model / other model on the boat.
+        //basic.Trailer.StuffOnTrailer.Add(_fish);
     }
     public override void Update()
     {

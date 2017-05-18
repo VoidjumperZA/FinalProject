@@ -6,10 +6,11 @@ public class GameplayValues : MonoBehaviour
 {
     //Screen Shake
     [Header("Screen shake")]
-    [SerializeField]
-    [Range(0.0f, 3.0f)]
-    private float screenShakeIntensity;
-    [SerializeField]
+    [SerializeField] [Range(0.0f, 10.0f)] private float _shakePointDistance;
+    [SerializeField] [Range(1, 10)] private int _maxShakePoints;
+    [SerializeField] private float _cameraSpeed;
+    [SerializeField] private bool _applyJellyFeel;
+    /*[SerializeField]
     private int screenShakeDuration;
 
     [Header("Camera Zoom")]
@@ -20,10 +21,7 @@ public class GameplayValues : MonoBehaviour
     private float camOceanOverviewZoomLevel;
 
     [SerializeField]
-    private float camZoomedHookZoomLevel;
-
-    [SerializeField]
-    private float zoomSpeed;
+    private float camZoomedHookZoomLevel;*/
 
     [Header("Ability Statistics")]
     [SerializeField]
@@ -41,12 +39,25 @@ public class GameplayValues : MonoBehaviour
 
     }
 
-    public float GetScreenShakeIntensity()
+    public float GetShakePointDistance()
     {
-        return screenShakeIntensity;
+        return _shakePointDistance;
     }
 
-    public int GetScreenShakeDuration()
+    public float GetCameraSpeed()
+    {
+        return _cameraSpeed;
+    }
+
+    public bool GetApplyJellyFeel()
+    {
+        return _applyJellyFeel;
+    }
+    public int GetMaxShakePoints()
+    {
+        return _maxShakePoints;
+    }
+    /*public int GetScreenShakeDuration()
     {
         return screenShakeDuration;
     }
@@ -64,11 +75,6 @@ public class GameplayValues : MonoBehaviour
     public float GetCamZoomZoomedHook()
     {
         return camZoomedHookZoomLevel;
-    }
-
-    public float GetCamZoomSpeed()
-    {
-        return zoomSpeed;
-    }
+    }*/
 
 }

@@ -9,12 +9,16 @@ public static class CameraHandler
     private static Camera _camera { get { return Camera.main; } }
 
     //Camera zoom levels and focus points
-    public enum CameraFocus { FocusBoat, OceanOverview, ZoomedHook };
+    public enum CameraFocus { Boat, Ocean, Hook };
     public static CameraFocus _focusObject;
-    private static Dictionary<CameraFocus, Transform> _perentPoints;
+    private static Dictionary<CameraFocus, Transform> _parentPoints;
     private static Dictionary<CameraFocus, Transform> _lookAtPoints;
     private static Vector3 _destination;
-    private static float _zoomSpeed;
+    private static float _cameraSpeed { get { return basic.Gameplayvalues.GetCameraSpeed(); } }
+    private static bool _viewPointReached = true;
+    // ----------------------------
+    private static List<Vector3> _shakePoints = new List<Vector3>();
+
     //Screen shake
     /*private static Vector2 shakePolarities;
     private static GameplayValues gameplayValues;
@@ -33,45 +37,93 @@ public static class CameraHandler
 
     public static void InitializeCameraHandler()
     {
-        _perentPoints = new Dictionary<CameraFocus, Transform>();
-        _perentPoints[CameraFocus.FocusBoat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
-        _perentPoints[CameraFocus.OceanOverview] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
-        _perentPoints[CameraFocus.ZoomedHook] = GameObject.FindGameObjectWithTag("HookCamHolder").transform;
+        _parentPoints = new Dictionary<CameraFocus, Transform>();
+        _parentPoints[CameraFocus.Boat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
+        _parentPoints[CameraFocus.Ocean] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
+        _parentPoints[CameraFocus.Hook] = GameObject.FindGameObjectWithTag("HookCamHolder").transform;
 
         _lookAtPoints = new Dictionary<CameraFocus, Transform>();
-        _lookAtPoints[CameraFocus.FocusBoat] = basic.Boat.transform;
-        _lookAtPoints[CameraFocus.OceanOverview] = basic.Boat.transform;
-        _lookAtPoints[CameraFocus.ZoomedHook] = basic.Hook.transform;
-
-        _zoomSpeed = basic.Gameplayvalues.GetCamZoomSpeed();
+        _lookAtPoints[CameraFocus.Boat] = basic.Boat.transform;
+        _lookAtPoints[CameraFocus.Ocean] = basic.Boat.transform;
+        _lookAtPoints[CameraFocus.Hook] = basic.Hook.transform;
+        
+        _shakePoints = new List<Vector3>();
         _initialized = true;
+
     }
-    public static void SetDestination(CameraFocus pFocusObject, bool pFirstTime = false)
+    public static void Update()
     {
         if (!_initialized)
         {
             Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
             return;
         }
-        if (pFirstTime) _camera.transform.position = _perentPoints[_focusObject].position;
-
-        _focusObject = pFocusObject;
-        _camera.transform.SetParent(_perentPoints[_focusObject]);
+        ReachViewPoint();
+        ReachShakePoint();
     }
-    public static void Update()
+    public static void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
     {
         if (!_initialized)
-        { Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
+        {
+            Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
             return;
         }
-        Vector3 directionVector = _perentPoints[_focusObject].position - _camera.transform.position;
-        if (directionVector.magnitude > _zoomSpeed)
+        _focusObject = pFocusObject;
+        _camera.transform.SetParent(_parentPoints[_focusObject]);
+        _viewPointReached = false;
+        if (pFirstTime)
         {
-            _camera.transform.Translate(directionVector.normalized * _zoomSpeed);
-            _camera.transform.LookAt(_lookAtPoints[_focusObject]);
+            _camera.transform.position = _parentPoints[_focusObject].position;
+            _viewPointReached = true;
         }
     }
-
+    public static void ReachViewPoint()
+    {
+        if (!_viewPointReached)
+        {
+            Vector3 directionVector = _parentPoints[_focusObject].position - _camera.transform.position;
+            if (directionVector.magnitude > _cameraSpeed)
+            {
+                _camera.transform.Translate(directionVector.normalized * _cameraSpeed);
+                _camera.transform.LookAt(_lookAtPoints[_focusObject]);
+            }
+            else
+            {
+                _camera.transform.position = _parentPoints[_focusObject].position;
+                _viewPointReached = true;
+            }
+        }
+    }
+    private static void ReachShakePoint()
+    {
+        if (_viewPointReached)
+        {
+            if (_shakePoints.Count > 0)
+            {
+                Vector3 directionVector = (_parentPoints[_focusObject].position + _shakePoints[0]) - _camera.transform.position;
+                if (directionVector.magnitude > _cameraSpeed)
+                {
+                    _camera.transform.Translate(directionVector.normalized * _cameraSpeed);
+                    if (basic.Gameplayvalues.GetApplyJellyFeel()) _camera.transform.LookAt(_lookAtPoints[_focusObject]);
+                }
+                else
+                {
+                    _camera.transform.position = (_parentPoints[_focusObject].position + _shakePoints[0]);
+                    _shakePoints.RemoveAt(0);
+                    if (_shakePoints.Count == 0) _viewPointReached = false;
+                }
+            }
+        }
+    }
+    public static void CreateShakePoint()
+    {
+        for (int i = 0; i < basic.Gameplayvalues.GetMaxShakePoints(); i++)
+        {
+            float slider = basic.Gameplayvalues.GetShakePointDistance();
+            Vector3 offset = new Vector3(Random.Range(-slider, slider), Random.Range(-slider, slider), 0);
+            _shakePoints.Add(offset);
+        }
+    }
     /// <summary>
     /// Must be called at least once from another script to set the class up.
     /// </summary>
