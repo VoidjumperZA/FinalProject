@@ -8,12 +8,14 @@ public class PulseRadarState : AbstractRadarState {
     // Fish detector
     private float _radarAngle;
     private float _scrollSpeed;
-    private float _revealDuration;
-    public PulseRadarState(radar pRadar, float pRadarAngle, float pScrollSpeed, float pRevealDuration) : base(pRadar)
+    private float _fadeOutDuration;
+    private int _collectableStaysVisibleRange;
+    public PulseRadarState(radar pRadar, float pRadarAngle, float pScrollSpeed, float pFadeOutDuration, int pCollectableStaysVisibleRange) : base(pRadar)
     {
         _radarAngle = pRadarAngle;
         _scrollSpeed = pScrollSpeed;
-        _revealDuration = pRevealDuration;
+        _fadeOutDuration = pFadeOutDuration;
+        _collectableStaysVisibleRange = pCollectableStaysVisibleRange;
     }
 	public override void Start () {
         _radar.Renderer.enabled = true;
@@ -54,8 +56,8 @@ public class PulseRadarState : AbstractRadarState {
                 Debug.Log("Collectable NULL");
                 continue;
             }
-            bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (collectable.transform.position - _radar.transform.position).normalized) > _radarAngle;
-            if (visible) collectable.Reveal(_revealDuration);
+            bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (collectable.transform.position - _radar.transform.position).normalized) >= _radarAngle;
+            if (visible) collectable.Reveal(_fadeOutDuration, _collectableStaysVisibleRange);
         }
     }
 }

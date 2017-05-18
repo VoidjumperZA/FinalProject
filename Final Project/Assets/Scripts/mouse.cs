@@ -24,7 +24,7 @@ public static class mouse {
         
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out _hitInfo, 1 << 8))
         {
-            Debug.Log("RAYCAST HIT SUCCESSFUL");
+            //Debug.Log("RAYCAST HIT SUCCESSFUL");
             return _hitInfo;
         }
         return null;

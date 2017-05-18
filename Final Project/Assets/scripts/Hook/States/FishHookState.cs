@@ -31,8 +31,6 @@ public class FishHookState : AbstractHookState
     //
     public override void Start()
     {
-        camShaking = false;
-        screenShakeCounter = 0;
 
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
@@ -46,7 +44,7 @@ public class FishHookState : AbstractHookState
         if (Input.GetMouseButton(0))
         {
             SetXYAxisOffset(mouse.GetWorldPoint());
-            Debug.Log(mouse.GetWorldPoint().ToString());
+            //Debug.Log(mouse.GetWorldPoint().ToString());
         }
         ApplyVelocity();
         DampXVelocity();
@@ -146,7 +144,7 @@ public class FishHookState : AbstractHookState
             _hook.FishOnHook.Add(theFish);
             basic.Shoppinglist.AddFish(theFish);
             basic.Scorehandler.AddScore(basic.Scorehandler.GetFishScore(theFish.fishType), true, true);
-            if (!basic.GlobalUi.InTutorial)
+            if (!basic.GlobalUI.InTutorial)
             {
                 basic.combo.CheckComboProgress(theFish.fishType);
             }
@@ -162,6 +160,13 @@ public class FishHookState : AbstractHookState
 
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
             if (!theJellyfish.Visible) return;
+            basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty());
+            //Create a new list maybe
+            //Change animation for the fish and state
+            //Remove fish from list 
+            //Destroy fish
+            //Screen shake
+            
             //Remove some fish
         }
         if (other.gameObject.CompareTag("Trash"))
@@ -170,9 +175,11 @@ public class FishHookState : AbstractHookState
             if (!theTrash.Visible) return;
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
-            basic.Scorehandler.AddScore(basic.Scorehandler.GetTrashScore(), true, false);
+            bool firstTime = basic.Scorehandler.CollectATrashPiece();
+            basic.GlobalUI.UpdateOceanProgressBar(firstTime);
             CameraHandler.CreateShakePoint();
 
         }
+
     }
 }

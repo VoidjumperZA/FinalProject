@@ -7,6 +7,8 @@ public class SwimFishState : AbstractFishState
 {
     private counter _outlineCounter;
     private float _speed;
+
+    private int _stayVisibleRange;
     public float RevealDuration;
     public SwimFishState(fish pFish, float pSpeed) : base(pFish)
     {
@@ -32,30 +34,28 @@ public class SwimFishState : AbstractFishState
     }
     public override void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.name == "Fish Despawner" || other.gameObject.tag == "Floor")
+        if (other.gameObject.tag == "FishDespawner" || other.gameObject.tag == "Floor")
         {
-            GameObject.Find("Manager").GetComponent<TempFishSpawn>().RemoveOneFishFromTracked();
+            basic.Tempfishspawn.RemoveOneFishFromTracked();
             basic.RemoveCollectable(_fish);
             GameObject.Destroy(_fish.gameObject);
         }
     }
     private void HandleOutline()
     {
-        _outlineCounter.Count();
-        if (_outlineCounter.Done())
+        if (Mathf.Abs(basic.Radar.transform.position.x - _fish.transform.position.x) > _stayVisibleRange)
         {
-            _fish.Hide();
-            //_blink = false;
-            _outlineCounter.Reset();
+            _outlineCounter.Count();
+            if (_outlineCounter.Done())
+            {
+                _fish.Hide();
+                _outlineCounter.Reset();
+            }
         }
-
-        /*if (_blink)
-        {
-
-        }*/
     }
-    public void ResetOutLineCounter(float pRevealDuration)
+    public void ResetOutLineCounter(float pRevealDuration, int pStayVisibleRange)
     {
+        _stayVisibleRange = pStayVisibleRange;
         _outlineCounter.Reset(pRevealDuration);
     }
 }

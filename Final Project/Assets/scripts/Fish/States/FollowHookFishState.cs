@@ -11,28 +11,12 @@ public class FollowHookFishState : AbstractFishState
     public override void Start()
     {
         
+        basic.Tempfishspawn.RemoveOneFishFromTracked();
+        _fish.Animator.enabled = false;
         _fish.Animator.SetBool("Death", true);
         _fish.ToggleOutliner(false);
         _fish.gameObject.GetComponent<BoxCollider>().enabled = false;
-        GameObject.Find("Manager").GetComponent<TempFishSpawn>().RemoveOneFishFromTracked();
-        //for (int i = 0; i < _fish.RagdollJoints.Length; i++)
-        //{
-        // if (i != 4)
-        // {
-        //  _fish.RagdollJoints[i].GetComponent<Rigidbody>().useGravity = true;
-        //   _fish.RagdollJoints[i].GetComponent<BoxCollider>().enabled = true;
-        // }
-        //  }
-        // _fish.gameObject.GetComponent<Animator>().speed = 0;
-        if (_fish._head.Length > 0)
-        {
-            foreach (GameObject obj in _fish._head)
-            {
-                obj.GetComponent<Rigidbody>().isKinematic = false;
-            }
-            _fish._head[0].transform.rotation = Quaternion.LookRotation(Vector3.right, -Vector3.forward);
-        }
-        _fish.Animator.enabled = false;
+        HandleJointsRigidBodies();
 
 
     }
@@ -52,5 +36,16 @@ public class FollowHookFishState : AbstractFishState
     public override void OnTriggerEnter(Collider other)
     {
 
+    }
+    private void HandleJointsRigidBodies()
+    {
+        if (_fish._head.Length > 0)
+        {
+            foreach (GameObject obj in _fish._head)
+            {
+                obj.GetComponent<Rigidbody>().isKinematic = false;
+            }
+            _fish._head[0].transform.rotation = Quaternion.LookRotation(Vector3.right, -Vector3.forward);
+        }
     }
 }

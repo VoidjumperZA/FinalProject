@@ -26,14 +26,9 @@ public class Jellyfish : general
     private float _revealDuration;
     [HideInInspector]
     public Animator Animator;
-
-    public GameObject _lerpHelp;
-    public GameObject _jellyfishZone;
-    public GameObject _point;
-
- 
-    //Score
-    [SerializeField] private int _penalization;
+    
+    //Variable just for visualizign the target point
+    //public GameObject _point;
     
     // Use this for initialization
     public override void Start ()
@@ -47,11 +42,7 @@ public class Jellyfish : general
     {
         _abstractState.Update();
     }
-    public override void FixedUpdate()
-    {
-        _abstractState.FixedUpdate();
-    }
-
+ 
     public void SetState(JellyfishState pState)
     {
         if (_abstractState != null) _abstractState.Refresh();
@@ -65,11 +56,6 @@ public class Jellyfish : general
         _stateCache[JellyfishState.None] = new NoneJellyfishState(this);
         _stateCache[JellyfishState.Swim] = new SwimJellyfishState(this, _movementSpeed, _lerpSpeed ,_revealDuration);
         SetState(_jellyfishState);
-    }
-    
-    public int GetPenalization()
-    {
-        return _penalization;
     }
 
     public void OnTriggerEnter(Collider other)
@@ -87,7 +73,7 @@ public class Jellyfish : general
         _renderer.enabled = pBool;
     }
 
-    public override void Reveal(float pRevealDuration)
+    public override void Reveal(float pRevealDuration, int pCollectableStaysVisibleRange)
     {
         /*if (Revealed) return;
 
