@@ -22,8 +22,9 @@ public static class mouse {
     public static RaycastHit? GetRaycastHit()
     { 
         
-        if (Physics.Raycast(new Ray(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector3.forward), out _hitInfo, 1 << 8))
+        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out _hitInfo, 1 << 8))
         {
+            //Debug.Log("RAYCAST HIT SUCCESSFUL");
             return _hitInfo;
         }
         return null;

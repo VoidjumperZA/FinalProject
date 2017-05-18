@@ -24,10 +24,10 @@ public class MoveBoatState : AbstractBoatState {
 
     public override void Start()
     {
-        if (!basic.GlobalUi.MoveBoatCompleted)
+        if (basic.GlobalUI.InTutorial && !basic.GlobalUI.MoveBoatCompleted)
         {
-            basic.GlobalUi.MoveBoatCompleted = true;
-            basic.GlobalUi.SwitchHookButtons();
+            basic.GlobalUI.MoveBoatCompleted = true;
+            basic.GlobalUI.SwitchHookButtons();
         }
     }
     public override void Update()
@@ -35,6 +35,7 @@ public class MoveBoatState : AbstractBoatState {
         setPolarity();
         if (!MoveToDestination())
         {
+            Debug.Log("Switching to another state");
             basic.Hook.SetState(hook.HookState.None);
             _boat.SetState(boat.BoatState.Stationary);          
         }
@@ -74,7 +75,7 @@ public class MoveBoatState : AbstractBoatState {
         Vector3 differenceVector = _destination - _boat.gameObject.transform.position;
         Vector2 m = new Vector3((direction * _velocity), 0.0f, 0.0f);
         _boat.gameObject.transform.Translate(m);
-        return (differenceVector.magnitude > _velocity);
+        return (_velocity > 0 || Input.GetMouseButton(0));
     }
     public override void Refresh()
     {

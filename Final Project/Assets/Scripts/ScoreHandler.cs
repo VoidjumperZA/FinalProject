@@ -32,7 +32,7 @@ public class ScoreHandler : MonoBehaviour {
     [SerializeField]
     private int largeFishScoreValue;
     [SerializeField]
-    private int trashScoreValue;
+    private int trashPercentageModifier;
     [SerializeField]
     private int jellyfishPenaltyPercentage;
     private Transform UIPosition;
@@ -45,6 +45,8 @@ public class ScoreHandler : MonoBehaviour {
     private bool colourFlashing;
     private Text flashTextHolder;
     private Color originalColourHolder;
+    private int totalNumberOfTrashPieces;
+    private int collectedTrash;
 
     // Use this for initialization
     void Start()
@@ -212,12 +214,11 @@ public class ScoreHandler : MonoBehaviour {
                 return -999999;
                 break;
         }
-
     }
 
-    public int GetTrashScore()
+    public int GetTrashScoreModifier()
     {
-        return trashScoreValue;
+        return trashPercentageModifier;
     }
 
     public int GetJellyfishPenalty()
@@ -250,5 +251,51 @@ public class ScoreHandler : MonoBehaviour {
     {
         int percentageRemoved = playerCurrentScore * (Mathf.Abs((int)pPercentage) / 100);
         playerCurrentScore -= percentageRemoved;
+    }
+
+    public void SetTotalNumberOfTrashPieces(int pNumber)
+    {
+        totalNumberOfTrashPieces = pNumber;
+    }
+
+    public bool CollectATrashPiece()
+    {
+        bool firstTime = false;
+        if (collectedTrash == 0)
+        {
+            firstTime = true;
+        }
+        if (collectedTrash < totalNumberOfTrashPieces)
+        {
+            collectedTrash++;
+            Debug.Log("Collected: " + collectedTrash + " out of " + totalNumberOfTrashPieces + " pieces of trash.");
+        }
+        else
+        {
+            Debug.Log("Already have " + collectedTrash + "/" + totalNumberOfTrashPieces + " trash pieces collected. This message should not be appearing.");
+        }
+        return firstTime;
+    }
+
+    /// <summary>
+    /// Returns either the pure percentage number of trash you have collected or the percentage timesed by the reward modifier, i.e. 86% x 200 points.
+    /// </summary>
+    /// <param name="pReturnOnlyPercentage"></param>
+    /// <returns></returns>
+    public int CalculatePercentageOceanCleaned(bool pReturnOnlyPercentage)
+    {
+        float percentage = 100.0f * ((float)collectedTrash / (float)totalNumberOfTrashPieces);
+        int intPercentage = Mathf.FloorToInt(percentage);
+        Debug.Log("Cleaned " + intPercentage + "% of the ocean.");
+
+        if (pReturnOnlyPercentage == true)
+        {
+            return intPercentage;
+        }
+        else
+        {
+            return intPercentage * trashPercentageModifier;
+        }
+
     }
 }

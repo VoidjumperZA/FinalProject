@@ -10,6 +10,7 @@ public class FollowHookFishState : AbstractFishState
     }
     public override void Start()
     {
+        
         _fish.Animator.SetBool("Death", true);
         _fish.ToggleOutliner(false);
         _fish.gameObject.GetComponent<BoxCollider>().enabled = false;
@@ -23,15 +24,22 @@ public class FollowHookFishState : AbstractFishState
         // }
         //  }
         // _fish.gameObject.GetComponent<Animator>().speed = 0;
-
-
+        if (_fish._head.Length > 0)
+        {
+            foreach (GameObject obj in _fish._head)
+            {
+                obj.GetComponent<Rigidbody>().isKinematic = false;
+            }
+            _fish._head[0].transform.rotation = Quaternion.LookRotation(Vector3.right, -Vector3.forward);
+        }
+        _fish.Animator.enabled = false;
 
 
     }
     public override void Update()
     {
         //_fish.RagdollJoints[4].transform.position = basic.Hook.transform.position;
-        _fish.gameObject.transform.position = basic.Hook.transform.position;
+        if (_fish._head.Length > 0) _fish._head[0].gameObject.transform.position = basic.Hook.transform.position;
     }
     public override void Refresh()
     {

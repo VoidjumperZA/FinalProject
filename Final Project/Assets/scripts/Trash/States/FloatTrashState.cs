@@ -48,4 +48,8 @@ public class FloatTrashState : AbstractTrashState
                                                           Mathf.Sin(2*Mathf.PI * Time.time * _spinsPerSecond) * _spinDirection, 
                                                           Mathf.Cos(2 * Mathf.PI * Time.time * _spinsPerSecond) * _spinDirection).normalized * _spinRadius);
     }
+    public void ResetOutLineCounter(float pRevealDuration)
+    {
+        _outlineCounter.Reset(pRevealDuration);
+    }
 }

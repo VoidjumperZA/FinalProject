@@ -5,10 +5,11 @@ using UnityEngine;
 public class basic : MonoBehaviour
 {
     private InputTimer _inputTimer;
-    [HideInInspector] public static GlobalUI GlobalUi;
+    [HideInInspector] public static GlobalUI GlobalUI;
     [HideInInspector] public static ScoreHandler Scorehandler;
     [HideInInspector] public static ShoppingList Shoppinglist;
     [HideInInspector] public static Combo combo;
+    [HideInInspector] public static GameplayValues Gameplayvalues;
 
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
@@ -27,8 +28,7 @@ public class basic : MonoBehaviour
 
     //public static radar Radar;
     public static trailer Trailer;
-
-    private GameObject boat;
+    
     private GameObject floor;
     private static float seaDepth;
 
@@ -51,40 +51,55 @@ public class basic : MonoBehaviour
         Boat.AssignHook(Hook);
         Boat.AssignRadar(Radar);
         Hook.AssignBoat(Boat);
-        
+
+
         //Debug.Log(_generals.Count + " generals");
 
         //InputTimer and basic should be on the same object, but I'm explictly calling in case they ever aren't
         //and therefore I can still get the script
         _inputTimer = GetComponent<InputTimer>(); if (!_inputTimer) Debug.Log("ERROR: Cannot get a reference to InputTimer from the Manager object.");
-        GlobalUi = GetComponent<GlobalUI>(); if (!GlobalUi) Debug.Log("ERROR: Cannot get a reference to GlobalUI from the Manager object.");
+        GlobalUI = GetComponent<GlobalUI>(); if (!GlobalUI) Debug.Log("ERROR: Cannot get a reference to GlobalUI from the Manager object.");
         Scorehandler = GetComponent<ScoreHandler>(); if (!Scorehandler) Debug.Log("ERROR: Cannot get reference to ScoreHandler from Manager object");
         Shoppinglist = GetComponent<ShoppingList>(); if (!Shoppinglist) Debug.Log("ERROR: Cannot get reference to ShoppingList from Manager object");
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
+        Gameplayvalues = GetComponent<GameplayValues>(); Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
+
+        CameraHandler.InitializeCameraHandler();
+        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Boat);
 
         //Find out seaDepth
         floor = GameObject.FindGameObjectWithTag("Floor");
         Vector3 difference = floor.transform.position - Boat.transform.position;
+
         seaDepth = Mathf.Abs(difference.y);
+ 
 
         //Getting the position and size of the zone where the jellyfish can move
         _jellyfishZoneSizeX = _jellyfishZone.transform.localScale.x / 2;
         _jellyfishZonePosX = _jellyfishZone.transform.position.x;
         _jellyfishZoneSizeY = _jellyfishZone.transform.localScale.y / 2;
         _jellyfishZonePosY = _jellyfishZone.transform.position.y;
+         
 
-        CameraHandler.ArtificialStart();
-        cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
+        //Find out seaWidth
+        //_docks = GameObject.FindGameObjectWithTag("Docks"); if (!_docks) Debug.Log("WARNING (Jellyfish uses this): You need to create the Docks and tag it with Docks");
+        //_endOfLevel = GameObject.FindGameObjectWithTag("EndOfLevel"); if (!_endOfLevel) Debug.Log("WARNING (Jellyfish uses this): You need to create an empy object, place it at the end of the level (x) and tag it with EndOfLevel");
+        //_seaWidth = Vector3.Distance(_docks.transform.position, _endOfLevel.transform.position);
+        //
+        //CameraHandler.ArtificialStart();
+        //cameraHandlerUpdateKey = CameraHandler.RequestUpdateCallPermission();
+ 
     }
     void Update()
     {
         RenderTrail(Boat.transform.position, Hook.gameObject.transform.position);
-        if (Input.GetMouseButton(0)) _inputTimer.ResetClock();    
+        if (Input.GetMouseButton(0)) _inputTimer.ResetClock();
+        CameraHandler.Update();
     }
 
     private void LateUpdate()
     {
-        CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
+        //CameraHandler.ArtificialUpdate(cameraHandlerUpdateKey);
     }
     private boat SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
     {
