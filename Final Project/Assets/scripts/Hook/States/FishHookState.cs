@@ -129,17 +129,15 @@ public class FishHookState : AbstractHookState
         //Reel the hook in if you touch the floor
         if (other.gameObject.CompareTag("Floor"))
         {
-
-            //CameraHandler.ApplyScreenShake(true);
             SetState(hook.HookState.Reel);
             GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
         } 
         //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
         {
-
             fish theFish = other.gameObject.GetComponent<fish>();
             if (!theFish.Visible) return;
+
             theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
             basic.Shoppinglist.AddFish(theFish);
@@ -157,9 +155,9 @@ public class FishHookState : AbstractHookState
         }
         if (other.gameObject.CompareTag("Jellyfish"))
         {
-
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
             if (!theJellyfish.Visible) return;
+
             basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty());
             //Create a new list maybe
             //Change animation for the fish and state
@@ -173,6 +171,7 @@ public class FishHookState : AbstractHookState
         {
             trash theTrash = other.gameObject.GetComponent<trash>();
             if (!theTrash.Visible) return;
+
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
             bool firstTime = basic.Scorehandler.CollectATrashPiece();
