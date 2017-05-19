@@ -43,6 +43,11 @@ public class FishHookState : AbstractHookState
     {
         if (Input.GetMouseButton(0))
         {
+            if (basic.GlobalUI.InTutorial )
+            {
+                basic.GlobalUI.ShowHandSwipe(false);
+                basic.GlobalUI.SwipehandCompleted = true;
+            }
             SetXYAxisOffset(mouse.GetWorldPoint());
             //Debug.Log(mouse.GetWorldPoint().ToString());
         }
