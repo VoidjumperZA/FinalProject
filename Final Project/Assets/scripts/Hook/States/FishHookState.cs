@@ -178,6 +178,9 @@ public class FishHookState : AbstractHookState
             basic.GlobalUI.UpdateOceanProgressBar(firstTime);
             CameraHandler.CreateShakePoint();
 
+            SetState(hook.HookState.Reel);
+            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+
         }
 
     }
