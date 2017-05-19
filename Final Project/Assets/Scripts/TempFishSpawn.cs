@@ -67,6 +67,15 @@ public class TempFishSpawn : MonoBehaviour
         _valid = true;
     }
 
+    public void ClearAllFish()
+    {
+        for (int i = 0; i < basic.Generals.Count; i++)
+        {
+            Destroy(basic.Generals[i]);
+        }
+        basic.Generals.Clear();
+    }
+
     // Update is called once per frame
     void Update()
     {
