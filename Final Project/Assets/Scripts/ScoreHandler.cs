@@ -114,7 +114,7 @@ public class ScoreHandler : MonoBehaviour {
         playerCurrentScore += pAddedScore;
         if (pCreatUIAnnouncement == true)
         {
-            createScoreUI(pAddedScore);
+            createScoreUI(pAddedScore, false);
         }
         currentHookScore.text = playerCurrentScore + "";
         if (pCaughtAFish == true)
@@ -156,7 +156,7 @@ public class ScoreHandler : MonoBehaviour {
     }
 
     //Instantiate a UI instance
-    private void createScoreUI(int pScore)
+    private void createScoreUI(int pScore, bool pJellyMinPercent)
     {
         GameObject newScoreInstance = Instantiate(scoreUI, UIPosition);
 
@@ -167,7 +167,15 @@ public class ScoreHandler : MonoBehaviour {
         float angle = Random.Range(-UIRotationAngle, UIRotationAngle);
         float scale = Random.Range(minimumUIScale, maximumUIScale);
         newScoreInstance.GetComponent<ScoreUIAnimation>().SetSpawnParametres(angle, scale);
-        newScoreInstance.GetComponent<ScoreUIAnimation>().SetScoreText(pScore);
+        if (pJellyMinPercent == true)
+        {
+            newScoreInstance.GetComponent<ScoreUIAnimation>().SetScoreText("-" + pScore + "%");
+            newScoreInstance.GetComponent<ScoreUIAnimation>().SetScoreTextColour(Color.red);
+        }
+        else
+        {
+            newScoreInstance.GetComponent<ScoreUIAnimation>().SetScoreText(pScore);
+        }
     }
 
     private void createComboScoreUI()
@@ -250,10 +258,14 @@ public class ScoreHandler : MonoBehaviour {
     /// Remove score by a percentage. Percentage will be internally converted to an integer as well as an absolute value.
     /// </summary>
     /// <param name="pPercentage"></param>
-    public void RemoveScore(float pPercentage)
+    public void RemoveScore(float pPercentage, bool pCreatUIAnnouncement)
     {
         int percentageRemoved = playerCurrentScore * (Mathf.Abs((int)pPercentage) / 100);
         playerCurrentScore -= percentageRemoved;
+        if (pCreatUIAnnouncement == true)
+        {
+            createScoreUI(percentageRemoved, true);
+        }
     }
 
     public void SetTotalNumberOfTrashPieces(int pNumber)
