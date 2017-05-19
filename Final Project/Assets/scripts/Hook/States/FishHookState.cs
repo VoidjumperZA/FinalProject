@@ -41,6 +41,7 @@ public class FishHookState : AbstractHookState
     //
     public override void Update()
     {
+        
         if (Input.GetMouseButton(0))
         {
             if (basic.GlobalUI.InTutorial )

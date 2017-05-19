@@ -23,6 +23,7 @@ public class SetUpBoatState : AbstractBoatState
     public override void Start()
     {
         _halfDestination = (_destination - _boat.gameObject.transform.position).magnitude / 2;
+        _boat.gameObject.transform.position = _destination;
     }
 
     public override void Update()
