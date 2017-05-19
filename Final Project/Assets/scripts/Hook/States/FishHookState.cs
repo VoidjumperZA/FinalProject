@@ -156,15 +156,20 @@ public class FishHookState : AbstractHookState
         if (other.gameObject.CompareTag("Jellyfish"))
         {
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
-            if (!theJellyfish.Visible) return;
+            //if (!theJellyfish.Visible) return;
 
             basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty());
+
+            CameraHandler.CreateShakePoint();
+
+            SetState(hook.HookState.Reel);
+            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
             //Create a new list maybe
             //Change animation for the fish and state
             //Remove fish from list 
             //Destroy fish
             //Screen shake
-            
+
             //Remove some fish
         }
         if (other.gameObject.CompareTag("Trash"))
