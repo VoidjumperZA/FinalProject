@@ -9,6 +9,8 @@ public class FloatTrashState : AbstractTrashState
     private float _spinsPerSecond;
     private float _spinRadius;
     private int _spinDirection;
+
+    private int _stayVisibleRange;
     public FloatTrashState(trash pTrash, float pSpinsPerSeconds, float pSpinRadius) : base(pTrash)
     {
         _spinsPerSecond = pSpinsPerSeconds;
@@ -35,11 +37,14 @@ public class FloatTrashState : AbstractTrashState
     }
     private void HandleOutline()
     {
-        _outlineCounter.Count();
-        if (_outlineCounter.Done())
+        if (Mathf.Abs(basic.Radar.transform.position.x - _trash.transform.position.x) > _stayVisibleRange)
         {
-            _trash.Hide();
-            _outlineCounter.Reset();
+            _outlineCounter.Count();
+            if (_outlineCounter.Done())
+            {
+                _trash.Hide();
+                _outlineCounter.Reset();
+            }
         }
     }
     private void FloatAround()
@@ -50,6 +55,7 @@ public class FloatTrashState : AbstractTrashState
     }
     public void ResetOutLineCounter(float pRevealDuration, int pCollectableStaysVisibleRange)
     {
+        _stayVisibleRange = pCollectableStaysVisibleRange;
         _outlineCounter.Reset(pRevealDuration);
     }
 }

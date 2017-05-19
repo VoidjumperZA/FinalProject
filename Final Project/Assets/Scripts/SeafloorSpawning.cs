@@ -37,10 +37,11 @@ public class SeafloorSpawning : MonoBehaviour
         for (int i = 0; i < spawnCount; i++)
         {           
             int spawnNumber = Random.Range(0, trashSpawns.Count);
-            GameObject newTrash = Instantiate(trashPieces[Random.Range(0, trashPieces.Length)]);
+            trash newTrash = Instantiate(trashPieces[Random.Range(0, trashPieces.Length)]).GetComponent<trash>();
             newTrash.transform.position = trashSpawns[spawnNumber].transform.position;
-            newTrash.SetActive(true);
+            newTrash.gameObject.SetActive(true);
             trashSpawns.Remove(trashSpawns[spawnNumber]);
+            basic.AddCollectable(newTrash);
         }
         basic.Scorehandler.SetTotalNumberOfTrashPieces(spawnCount);
     }

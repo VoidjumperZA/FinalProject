@@ -43,7 +43,7 @@ public class SetUpBoatState : AbstractBoatState
     {
         basic.Tempfishspawn._boatSetUp = true;
         basic.GlobalUI.DeployHookButton(true);
-        basic.GlobalUI.ShowHandHookButton(true);
+        if (basic.GlobalUI.InTutorial) basic.GlobalUI.ShowHandHookButton(true);
     }
 
     public override boat.BoatState StateType()
