@@ -12,6 +12,8 @@ public class GlobalUI : MonoBehaviour
 
     [SerializeField]
     private Image _handDeployHook;
+    [SerializeField]
+    private Image _handSwipe;
 
 
     [SerializeField]
@@ -73,6 +75,9 @@ public class GlobalUI : MonoBehaviour
         ReelUpHookButton(false);
 
         ShowHandHookButton(false);
+        _handDeployHook.transform.position = new Vector2 (_deployHookButton.transform.position.x + 15, _deployHookButton.transform.position.y - 15);
+        
+        ShowHandSwipe(false);
     }
     public void OnPlayGameClick()
     {
@@ -94,6 +99,7 @@ public class GlobalUI : MonoBehaviour
     public void RadarButton(bool pBool) { _radarButton.gameObject.SetActive(pBool); }
 
     public void ShowHandHookButton(bool pBool) { _handDeployHook.gameObject.SetActive(pBool); }
+    public void ShowHandSwipe(bool pBool) { _handSwipe.gameObject.SetActive(pBool); }
 
     public void DeployHook()
     {
@@ -109,6 +115,10 @@ public class GlobalUI : MonoBehaviour
         {
             if (DropHookCompleted) ReelUpHookButton(true);
             DropHookCompleted = true;
+            ShowHandHookButton(false);
+            StartCoroutine(ShowHookHand());
+            
+
         }
         //RadarButton(false);
         //ReelUpHookButton(true);
@@ -183,6 +193,12 @@ public class GlobalUI : MonoBehaviour
         oceanCleanUpBarChildFill.GetComponent<Image>().CrossFadeAlpha(0.0f, oceanBarFadeOutSpeed, false);
         oceanCleanUpBarChildBackground.GetComponent<Image>().CrossFadeAlpha(0.0f, oceanBarFadeOutSpeed, false);
         oceanCleanUpBarChildText.GetComponent<Text>().CrossFadeAlpha(0.0f, oceanBarFadeOutSpeed, false);
+    }
+
+    private IEnumerator ShowHookHand()
+    {
+        yield return new WaitForSeconds(5);
+        ShowHandSwipe(true);
     }
 
     void Update()
