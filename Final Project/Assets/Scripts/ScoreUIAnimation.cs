@@ -71,4 +71,14 @@ public class ScoreUIAnimation : MonoBehaviour {
     {
         selfText.text = "+" + pScore + "!";
     }
+
+    public void SetScoreText(string pPercentScore)
+    {
+        selfText.text = pPercentScore;
+    }
+
+    public void SetScoreTextColour(Color pColour)
+    {
+        selfText.color = pColour;
+    }
 }

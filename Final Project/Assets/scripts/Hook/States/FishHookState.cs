@@ -163,7 +163,7 @@ public class FishHookState : AbstractHookState
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
             //if (!theJellyfish.Visible) return;
 
-            basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty());
+            basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty(), true);
 
             CameraHandler.CreateShakePoint();
 
@@ -187,6 +187,9 @@ public class FishHookState : AbstractHookState
             bool firstTime = basic.Scorehandler.CollectATrashPiece();
             basic.GlobalUI.UpdateOceanProgressBar(firstTime);
             CameraHandler.CreateShakePoint();
+
+            SetState(hook.HookState.Reel);
+            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
 
         }
 
