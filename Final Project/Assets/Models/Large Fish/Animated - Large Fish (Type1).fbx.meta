@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: c1438dcef0e90934087c021ada58f8ec
-timeCreated: 1495109918
+guid: 946f2c239131aa543be4f1d20e4b892a
+timeCreated: 1495189828
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
@@ -59,63 +59,7 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: Take 001
-      takeName: Take 001
-      firstFrame: 1
-      lastFrame: 220
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 1
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask:
-      - path: 
-        weight: 1
-      - path: Fish_General_Rig
-        weight: 1
-      - path: Fish_General_Rig/NullGRP
-        weight: 1
-      - path: Fish_General_Rig/NullGRP/Origin
-        weight: 1
-      - path: Fish_General_Rig/NullGRP/Origin/Neck
-        weight: 1
-      - path: Fish_General_Rig/NullGRP/Origin/Neck/Head
-        weight: 1
-      - path: Fish_General_Rig/NullGRP/Origin/Spine_1
-        weight: 1
-      - path: Fish_General_Rig/NullGRP/Origin/Spine_1/Spine_2
-        weight: 1
-      - path: Fish_General_Rig/NullGRP/Origin/Spine_1/Spine_2/Spine_3
-        weight: 1
-      - path: Fish_General_Rig/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4
-        weight: 1
-      - path: Fish_General_Rig/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4/Spine_5
-        weight: 1
-      - path: Fish_General_Rig/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4/Spine_5/Spine_6
-        weight: 1
-      - path: Fish_General_Rig/NullGRP/Origin/Spine_1/Spine_2/Spine_3/Spine_4/Spine_5/Spine_6/Spine_7
-        weight: 1
-      - path: Large_Fish:pSphere6
-        weight: 1
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+    clipAnimations: []
     isReadable: 1
   meshes:
     lODScreenPercentages: []
