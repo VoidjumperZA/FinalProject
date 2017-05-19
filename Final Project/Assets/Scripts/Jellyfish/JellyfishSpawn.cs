@@ -30,23 +30,23 @@ public class JellyfishSpawn : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if(_numJellyfish < _maxNumJellyfish)
+        if (!basic.GlobalUI.InTutorial)
         {
-            _spawnCounter += Time.deltaTime;
-
-            if(_spawnCounter >= _spawnCooldown)
+            //Debug.Log("Hello jellyfish");
+            if(_numJellyfish < _maxNumJellyfish)
             {
-                Debug.Log("Jellyfish down" + _jellyfishZoneDown);
-                Debug.Log("Jellyfish up" + _jellyfishZoneUp);
-                _numJellyfish += 1;
-                _spawnCounter = 0;
-                Debug.Log("Values zone: ");
-                Debug.Log(_jellyfishZoneLeft);
-                Instantiate(_jellyfishPrefab, new Vector3(Random.Range(_jellyfishZoneLeft, _jellyfishZoneRight), Random.Range(_jellyfishZoneDown, _jellyfishZoneUp), 0), gameObject.transform.rotation);
-                //Instantiate(_jellyfishPrefab, new Vector3(0, 0, 0), gameObject.transform.rotation);
+                _spawnCounter += Time.deltaTime;
+
+                if(_spawnCounter >= _spawnCooldown)
+                {
+                    _numJellyfish += 1;
+                    _spawnCounter = 0;
+               
+                    Instantiate(_jellyfishPrefab, new Vector3(Random.Range(_jellyfishZoneLeft, _jellyfishZoneRight), Random.Range(_jellyfishZoneDown, _jellyfishZoneUp), 0), gameObject.transform.rotation);
+
+                }
             }
         }
-        
 
     }
 

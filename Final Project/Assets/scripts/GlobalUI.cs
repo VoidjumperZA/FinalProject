@@ -31,6 +31,8 @@ public class GlobalUI : MonoBehaviour
     public bool ReelUpHookCompleted = false;
     [HideInInspector]
     public bool MoveBoatCompleted = false;
+    [HideInInspector]
+    public bool SwipehandCompleted = false;
 
     //Ocean Clean Up Bar
     /*private float barDisplay;
@@ -198,7 +200,7 @@ public class GlobalUI : MonoBehaviour
     private IEnumerator ShowHookHand()
     {
         yield return new WaitForSeconds(5);
-        ShowHandSwipe(true);
+        if(!SwipehandCompleted) ShowHandSwipe(true);
     }
 
     void Update()

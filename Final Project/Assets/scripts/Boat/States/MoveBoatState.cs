@@ -28,6 +28,7 @@ public class MoveBoatState : AbstractBoatState {
         {
             basic.GlobalUI.MoveBoatCompleted = true;
             basic.GlobalUI.SwitchHookButtons();
+            basic.GlobalUI.InTutorial = false;
         }
     }
     public override void Update()
