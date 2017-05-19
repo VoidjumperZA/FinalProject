@@ -27,6 +27,7 @@ public class MoveBoatState : AbstractBoatState {
         if (basic.GlobalUI.InTutorial && !basic.GlobalUI.MoveBoatCompleted)
         {
             basic.GlobalUI.MoveBoatCompleted = true;
+            basic.GlobalUI.ShowHandSwipe(false);
             basic.GlobalUI.SwitchHookButtons();
             basic.GlobalUI.InTutorial = false;
         }
