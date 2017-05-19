@@ -23,9 +23,9 @@ public class GameplayValues : MonoBehaviour
     [SerializeField]
     private float camZoomedHookZoomLevel;*/
 
-    [Header("Ability Statistics")]
+    /*[Header("Ability Statistics")]
     [SerializeField]
-    private float sonarFadeTime;
+    private float sonarFadeTime;*/
 
     // Use this for initialization
     void Start()
