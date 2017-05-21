@@ -73,6 +73,7 @@ namespace cakeslice
         public bool flipY = false;
         public Camera sourceCamera;
 
+        public GameObject _outlineCameraPrefab;
         [HideInInspector]
         public Camera outlineCamera;
         Material outline1Material;
@@ -134,9 +135,9 @@ namespace cakeslice
 
             if(outlineCamera == null)
             {
-                GameObject cameraGameObject = new GameObject("Outline Camera");
+                GameObject cameraGameObject = Instantiate(_outlineCameraPrefab, sourceCamera.transform);
                 cameraGameObject.transform.parent = sourceCamera.transform;
-                outlineCamera = cameraGameObject.AddComponent<Camera>();
+                outlineCamera = cameraGameObject.GetComponent<Camera>();
             }
 
             renderTexture = new RenderTexture(sourceCamera.pixelWidth, sourceCamera.pixelHeight, 16, RenderTextureFormat.Default);

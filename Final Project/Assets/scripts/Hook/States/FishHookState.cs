@@ -41,19 +41,25 @@ public class FishHookState : AbstractHookState
     //
     public override void Update()
     {
-        if (Input.GetMouseButton(0))
+        if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10)
         {
-            if (basic.GlobalUI.InTutorial )
-            {
-                basic.GlobalUI.ShowHandSwipe(false);
-                basic.GlobalUI.SwipehandCompleted = true;
-            }
-            SetXYAxisOffset(mouse.GetWorldPoint());
-            //Debug.Log(mouse.GetWorldPoint().ToString());
+            ApplyVelocity(_speed);
         }
-        ApplyVelocity();
-        DampXVelocity();
-        //SetCameraAndHookAngle();
+        else
+        {
+            if (Input.GetMouseButton(0))
+            {
+                if (basic.GlobalUI.InTutorial)
+                {
+                    basic.GlobalUI.ShowHandSwipe(false);
+                    basic.GlobalUI.SwipehandCompleted = true;
+                }
+                SetXYAxisOffset(mouse.GetWorldPoint());
+            }
+            ApplyVelocity(_fallSpeed);
+            DampXVelocity();
+        }
+
     }
 
     // -------- Movement --------
@@ -99,9 +105,9 @@ public class FishHookState : AbstractHookState
     }
 
     //
-    private void ApplyVelocity()
+    private void ApplyVelocity(float pFallSpeed)
     {
-        _velocity = new Vector3(_xyOffset.x * _speed, Mathf.Min(_xyOffset.y * _speed / 2, -_fallSpeed), 0);
+        _velocity = new Vector3(_xyOffset.x * _speed, Mathf.Min(_xyOffset.y * _speed / 2, -pFallSpeed), 0);
         _hook.gameObject.transform.Translate(_velocity);
     }
 
@@ -134,6 +140,12 @@ public class FishHookState : AbstractHookState
         //Reel the hook in if you touch the floor
         if (other.gameObject.CompareTag("Floor"))
         {
+            //The game time is out before this condition can be true, I am going to leave it here just in case
+            if (basic.GlobalUI.InTutorial)
+            {
+                basic.GlobalUI.ShowHandSwipe(false);
+                basic.GlobalUI.SwipehandCompleted = true;
+            }
             SetState(hook.HookState.Reel);
             GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
         } 
@@ -173,9 +185,7 @@ public class FishHookState : AbstractHookState
             //Change animation for the fish and state
             //Remove fish from list 
             //Destroy fish
-            //Screen shake
 
-            //Remove some fish
         }
         if (other.gameObject.CompareTag("Trash"))
         {
@@ -188,7 +198,14 @@ public class FishHookState : AbstractHookState
             basic.GlobalUI.UpdateOceanProgressBar(firstTime);
             CameraHandler.CreateShakePoint();
 
+            //The game time is out before this condition can be true, I am going to leave it here just in case
+            if (basic.GlobalUI.InTutorial)
+            {
+                basic.GlobalUI.ShowHandSwipe(false);
+                basic.GlobalUI.SwipehandCompleted = true;
+            }
             SetState(hook.HookState.Reel);
+           
             GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
 
         }

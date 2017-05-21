@@ -60,4 +60,12 @@ public class PulseRadarState : AbstractRadarState {
             if (visible) collectable.Reveal(_fadeOutDuration, _collectableStaysVisibleRange);
         }
     }
+
+    /*IEnumerator DoScan()
+    {
+        //for(all fish)
+        //scan 1 or a few fish
+        //yield return null
+    }*/
+
 }

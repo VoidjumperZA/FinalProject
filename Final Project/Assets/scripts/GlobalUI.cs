@@ -33,6 +33,7 @@ public class GlobalUI : MonoBehaviour
     public bool MoveBoatCompleted = false;
     [HideInInspector]
     public bool SwipehandCompleted = false;
+    
 
     //Ocean Clean Up Bar
     /*private float barDisplay;
@@ -115,9 +116,19 @@ public class GlobalUI : MonoBehaviour
         }
         else
         {
-            if (DropHookCompleted) ReelUpHookButton(true);
-            DropHookCompleted = true;
-            ShowHandHookButton(false);
+            if (DropHookCompleted)
+            {
+                ReelUpHookButton(true);
+                ShowHandHookButton(true);
+            }
+            else
+            {
+                DropHookCompleted = true;
+                if (!ReelUpHookCompleted) { ShowHandHookButton(false); }
+            }
+            
+            
+            
             StartCoroutine(ShowHookHand());
             
 
@@ -137,9 +148,16 @@ public class GlobalUI : MonoBehaviour
         }
         else
         {
+            //Stop all new fish spawning while we are in this part of the tutorial as the ocean should be empty
+            basic.Tempfishspawn._boatSetUp = false;
+            basic.Tempfishspawn.ClearAllFish();
             if (DropHookCompleted)
             {
+                basic.Tempfishspawn._boatSetUp = true;
+                GameObject.Find("Manager").GetComponent<SeafloorSpawning>().SpawnTrash();
+                GameObject.Find("Manager").GetComponent<SeafloorSpawning>().SpawnSpecialItems();
                 ReelUpHookCompleted = true;
+                ShowHandHookButton(false);
                 WaitForBoatMove();
             }
         }
@@ -199,7 +217,7 @@ public class GlobalUI : MonoBehaviour
 
     private IEnumerator ShowHookHand()
     {
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(4);
         if(!SwipehandCompleted) ShowHandSwipe(true);
     }
 
