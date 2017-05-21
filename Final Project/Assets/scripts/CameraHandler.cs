@@ -16,27 +16,17 @@ public static class CameraHandler
     private static Vector3 _destination;
     private static float _cameraSpeed { get { return basic.Gameplayvalues.GetCameraSpeed(); } }
     private static bool _viewPointReached = true;
+    private static bool _viewRotationReached = true;
+
+    private static float _currentSlerpTime = 0;
+    private static float _totalSlerpTime;
     // ----------------------------
     private static List<Vector3> _shakePoints = new List<Vector3>();
 
-    //Screen shake
-    /*private static Vector2 shakePolarities;
-    private static GameplayValues gameplayValues;
-    private static bool screenShakeLock;
-
-    public enum UpdateStatus { Available, Taken };
-    public static UpdateStatus updateStatus;
-    public static int minKeyRange;
-    public static int maxKeyRange;
-    public static int updateKey;
-
-    private static List<float> orthZoomLevel;
-    private static bool hasStartBeenCalled = false;
-    private static float originalOrthSize;
-    private static bool zooming;*/
-
     public static void InitializeCameraHandler()
     {
+        _totalSlerpTime = basic.Gameplayvalues.GetLerpDuration();
+
         _parentPoints = new Dictionary<CameraFocus, Transform>();
         _parentPoints[CameraFocus.Boat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
         _parentPoints[CameraFocus.Ocean] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
@@ -72,32 +62,48 @@ public static class CameraHandler
         _focusObject = pFocusObject;
         _camera.transform.SetParent(_parentPoints[_focusObject]);
         _viewPointReached = false;
+        _viewRotationReached = false;
         if (pFirstTime)
         {
             _camera.transform.position = _parentPoints[_focusObject].position;
             _viewPointReached = true;
+            _viewRotationReached = true;
         }
+        _currentSlerpTime = 0;
     }
     public static void ReachViewPoint()
     {
-        if (!_viewPointReached)
+        if (!_viewPointReached || !_viewRotationReached)
         {
-            Vector3 directionVector = _parentPoints[_focusObject].position - _camera.transform.position;
+            _currentSlerpTime += Time.deltaTime;
+            if (_currentSlerpTime <= _totalSlerpTime)
+            {
+                _camera.transform.position = Vector3.Lerp(_camera.transform.position, _parentPoints[_focusObject].position, _currentSlerpTime / _totalSlerpTime);
+                _camera.transform.rotation = Quaternion.Lerp(_camera.transform.rotation, _parentPoints[_focusObject].rotation, _currentSlerpTime / _totalSlerpTime);
+            }
+            else
+            {
+                _viewPointReached = true;
+                _viewRotationReached = true;
+            }
+            /*Vector3 directionVector = _parentPoints[_focusObject].position - _camera.transform.position;
             if (directionVector.magnitude > _cameraSpeed)
             {
-                _camera.transform.Translate(directionVector.normalized * _cameraSpeed);
-                _camera.transform.LookAt(_lookAtPoints[_focusObject]);
+                //_camera.transform.Translate(directionVector.normalized * _cameraSpeed);
+                _camera.transform.position = Vector3.Slerp(_camera.transform.position, _parentPoints[_focusObject].position, _currentSlerpTime/_totalSlerpTime);
             }
             else
             {
                 _camera.transform.position = _parentPoints[_focusObject].position;
                 _viewPointReached = true;
             }
+            if (_camera.transform.rotation != _parentPoints[_focusObject].rotation) _camera.transform.rotation = Quaternion.Slerp(_camera.transform.rotation, _parentPoints[_focusObject].rotation, _currentSlerpTime / _totalSlerpTime);
+            else _viewRotationReached = true;*/
         }
     }
     private static void ReachShakePoint()
     {
-        if (_viewPointReached)
+        if (_viewPointReached && _viewRotationReached)
         {
             if (_shakePoints.Count > 0)
             {
@@ -111,7 +117,11 @@ public static class CameraHandler
                 {
                     _camera.transform.position = (_parentPoints[_focusObject].position + _shakePoints[0]);
                     _shakePoints.RemoveAt(0);
-                    if (_shakePoints.Count == 0) _viewPointReached = false;
+                    if (_shakePoints.Count == 0)
+                    {
+                        _viewPointReached = false;
+                        _viewRotationReached = false;
+                    }
                 }
             }
         }
