@@ -50,6 +50,8 @@ public class TempFishSpawn : MonoBehaviour
         leftSpawnPos.y += (_verticalSpawnFluctuation);
         _leftSpawn.transform.position = leftSpawnPos;
 
+        Debug.Log("Vertical Spawn Fluctuation: " + _verticalSpawnFluctuation);
+
         Vector3 rightSpawnPos = new Vector3(_rightSpawn.transform.position.x, basic.Boat.transform.position.y, _rightSpawn.transform.position.z);
         rightSpawnPos.y += (_verticalSpawnFluctuation);
         _rightSpawn.transform.position = rightSpawnPos;
@@ -63,6 +65,15 @@ public class TempFishSpawn : MonoBehaviour
         //Is our game valid, if there is disparity between how many fish types we have and the levels of spawning
         //then mark that as invalid.
         _valid = true;
+    }
+
+    public void ClearAllFish()
+    {
+        for (int i = 0; i < basic.Generals.Count; i++)
+        {
+            Destroy(basic.Generals[i]);
+        }
+        basic.Generals.Clear();
     }
 
     // Update is called once per frame
@@ -88,7 +99,7 @@ public class TempFishSpawn : MonoBehaviour
         {
             //Choose a random fish and direction
             int randomFish = Random.Range(0, _fishPrefabs.Length);
-            float verticalOffset = Random.Range(-_verticalSpawnFluctuation, _verticalSpawnFluctuation - bufferSpaceUnderBoat);
+            float verticalOffset = Random.Range(_verticalSpawnFluctuation, (-1.0f * _verticalSpawnFluctuation) - bufferSpaceUnderBoat);
 
 
             GameObject newFish = Instantiate(_fishPrefabs[randomFish],

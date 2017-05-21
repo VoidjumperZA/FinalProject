@@ -20,6 +20,17 @@ public class SeafloorSpawning : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    { 
+
+    }
+
+    public void SpawnTrash()
+    {
         Debug.Log("TrashPieces: " + trashPieces.Length);
         trashSpawns = new List<Transform>();
         GameObject[] arr = GameObject.FindGameObjectsWithTag("TrashSpawn");
@@ -35,7 +46,7 @@ public class SeafloorSpawning : MonoBehaviour
             spawnCount = trashSpawns.Count;
         }
         for (int i = 0; i < spawnCount; i++)
-        {           
+        {
             int spawnNumber = Random.Range(0, trashSpawns.Count);
             trash newTrash = Instantiate(trashPieces[Random.Range(0, trashPieces.Length)]).GetComponent<trash>();
             newTrash.transform.position = trashSpawns[spawnNumber].transform.position;
@@ -46,9 +57,8 @@ public class SeafloorSpawning : MonoBehaviour
         basic.Scorehandler.SetTotalNumberOfTrashPieces(spawnCount);
     }
 
-    // Update is called once per frame
-    void Update()
-    { 
-
+    public void SpawnSpecialItems()
+    {
+        //waiting for special items to be decided
     }
 }

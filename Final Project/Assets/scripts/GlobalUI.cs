@@ -148,8 +148,14 @@ public class GlobalUI : MonoBehaviour
         }
         else
         {
+            //Stop all new fish spawning while we are in this part of the tutorial as the ocean should be empty
+            basic.Tempfishspawn._boatSetUp = false;
+            basic.Tempfishspawn.ClearAllFish();
             if (DropHookCompleted)
             {
+                basic.Tempfishspawn._boatSetUp = true;
+                GameObject.Find("Manager").GetComponent<SeafloorSpawning>().SpawnTrash();
+                GameObject.Find("Manager").GetComponent<SeafloorSpawning>().SpawnSpecialItems();
                 ReelUpHookCompleted = true;
                 ShowHandHookButton(false);
                 WaitForBoatMove();
