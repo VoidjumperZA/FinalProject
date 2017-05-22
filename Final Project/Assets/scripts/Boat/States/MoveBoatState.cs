@@ -117,7 +117,16 @@ public class MoveBoatState : AbstractBoatState {
             }
 
             Vector3 differenceVector = _destination - _boat.gameObject.transform.position;
-            Vector2 m = new Vector3(Mathf.Sign(_boat.gameObject.transform.rotation.y) * (direction * _velocity), 0.0f, 0.0f);
+            float backwardsForwards;
+            if (_boat.gameObject.transform.rotation.y != 0)
+            {
+                backwardsForwards = -1.0f;
+            }
+            else
+            {
+                backwardsForwards = 1.0f;
+            }
+            Vector2 m = new Vector3(_velocity, 0.0f, 0.0f);
             _boat.gameObject.transform.Translate(m);
         }
         else
