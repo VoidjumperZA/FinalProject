@@ -156,9 +156,7 @@ public class MoveBoatState : AbstractBoatState {
         {
             Camera.main.transform.SetParent(previousCamHolder);
 
-            //currentRot = 0;
-            targetQua = targetQua == _boat.GetBoatEndRotations(true) ? _boat.GetBoatEndRotations(false) : _boat.GetBoatEndRotations(true);
-            //targetRot *= -1;
+            //targetQua = targetQua == _boat.GetBoatEndRotations(true) ? _boat.GetBoatEndRotations(false) : _boat.GetBoatEndRotations(true);
             turning = false;
         }
     }
@@ -167,9 +165,8 @@ public class MoveBoatState : AbstractBoatState {
     private void prepareToRotate()
     {
         //shitty rotation
-        //currentRot = 0;
         turning = true;
-
+        targetQua = targetQua == _boat.GetBoatEndRotations(true) ? _boat.GetBoatEndRotations(false) : _boat.GetBoatEndRotations(true);
         previousCamHolder = Camera.main.transform.parent.transform;
         Camera.main.transform.SetParent(GameObject.FindGameObjectWithTag("TopLevelCamHolder").transform);
     }
