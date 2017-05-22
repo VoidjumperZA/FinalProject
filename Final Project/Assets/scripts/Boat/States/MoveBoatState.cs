@@ -49,8 +49,8 @@ public class MoveBoatState : AbstractBoatState {
     public override void Update()
     {
         setPolarity();
-        Debug.Log("Direction: " + direction);
-        if (!MoveToDestination())
+        //Debug.Log("Direction: " + direction);
+        if (!MoveToDestination() && turning == false)
         {
             Debug.Log("Switching to another state");
             basic.Hook.SetState(hook.HookState.None);
@@ -62,6 +62,7 @@ public class MoveBoatState : AbstractBoatState {
         polarity = Mathf.Sign(mouse.GetWorldPoint().x - _boat.gameObject.transform.position.x);
         if (direction == 0.0f)
         {
+            Debug.Log("One.");
             matchDirectionToPolarity();
         }
     }
@@ -74,7 +75,7 @@ public class MoveBoatState : AbstractBoatState {
     private void matchDirectionToPolarity()
     {
         direction = polarity;
-
+        Debug.Log("Direction: " + direction);
         //shitty rotation
         currentRot = 0;
 
@@ -108,6 +109,7 @@ public class MoveBoatState : AbstractBoatState {
                 _velocity -= _deceleration;
                 if (_velocity <= 0)
                 {
+                    Debug.Log("Two.");
                     matchDirectionToPolarity();
                 }
             }
@@ -117,22 +119,13 @@ public class MoveBoatState : AbstractBoatState {
             }
 
             Vector3 differenceVector = _destination - _boat.gameObject.transform.position;
-            float backwardsForwards;
-            if (_boat.gameObject.transform.rotation.y != 0)
-            {
-                backwardsForwards = -1.0f;
-            }
-            else
-            {
-                backwardsForwards = 1.0f;
-            }
             Vector2 m = new Vector3(_velocity, 0.0f, 0.0f);
             _boat.gameObject.transform.Translate(m);
         }
         else
         {
             currentRot += rotSpeed * (int)Mathf.Sign(targetRot);
-            basic.Boat.gameObject.transform.Rotate(new Vector3(0.0f, rotSpeed * Mathf.Sign(targetRot), 0.0f));
+            _boat.gameObject.transform.Rotate(new Vector3(0.0f, rotSpeed * Mathf.Sign(targetRot), 0.0f));
             /*
             //slerp to there
             basic.Boat.gameObject.transform.rotation = Quaternion.Slerp(basic.Boat.gameObject.gameObject.transform.rotation, Quaternion.LookRotation(lerpTarget - basic.Boat.gameObject.gameObject.transform.position), _rotationLerpSpeed * Time.deltaTime);
@@ -141,6 +134,7 @@ public class MoveBoatState : AbstractBoatState {
             if (/*basic.Boat.gameObject.transform.rotation == Quaternion.LookRotation(lerpTarget)*/ Mathf.Abs(currentRot) >= Mathf.Abs(targetRot))
             {
                 Camera.main.transform.SetParent(previousCamHolder);
+
                 currentRot = 0;
                 targetRot *= -1;
                 turning = false;
@@ -154,7 +148,19 @@ public class MoveBoatState : AbstractBoatState {
         _destination = _boat.gameObject.transform.position;
         _velocity = 0;
         polarity = 0.0f;
-        direction = 0.0f;
+        if (_boat.gameObject.transform.rotation.eulerAngles.y == 0)
+        {
+            direction = 1.0f;
+        }
+        else
+        {
+            direction = -1.0f;
+        }
+        //* Mathf.Sign(_boat.gameObject.transform.rotation.eulerAngles.y);
+        turning = false;
+        targetRot = 180 * (int)direction;
+        currentRot = 0;
+        rotSpeed = 1;
     }
     public override boat.BoatState StateType()
     {
