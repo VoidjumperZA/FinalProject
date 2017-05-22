@@ -8,19 +8,24 @@ public class MoveBoatState : AbstractBoatState {
     private float _maxVelocity;
     private float _deceleration;
     private float _velocity;
+    private float _rotationLerpSpeed;
 
     private Vector3 _destination = Vector3.zero;
     private float polarity;
     private float direction;
+    private bool turning;
 
-    public MoveBoatState(boat pBoat, float pAcceleration, float pMaxVelocity, float pDeceleration) : base(pBoat)
+    public MoveBoatState(boat pBoat, float pAcceleration, float pMaxVelocity, float pDeceleration, float pRotationLerpSpeed) : base(pBoat)
     {
         _acceleration = pAcceleration;
         _maxVelocity = pMaxVelocity;
         _deceleration = pDeceleration;
         polarity = 0.0f;
         direction = 0.0f;
+        _rotationLerpSpeed = pRotationLerpSpeed;
+        turning = false;
     }
+
 
     public override void Start()
     {
@@ -47,8 +52,19 @@ public class MoveBoatState : AbstractBoatState {
         polarity = Mathf.Sign(mouse.GetWorldPoint().x - _boat.gameObject.transform.position.x);
         if (direction == 0.0f)
         {
-            direction = polarity;
+            matchDirectionToPolarity();
         }
+    }
+
+    private IEnumerator RotateToOppositeDirection()
+    {
+        return null;
+    }
+
+    private void matchDirectionToPolarity()
+    {
+        direction = polarity;
+        turning = true;
     }
     private void SetDestination(Vector3 pPosition)
     {
@@ -57,27 +73,35 @@ public class MoveBoatState : AbstractBoatState {
     }
     private bool MoveToDestination()
     {
-        if (Input.GetMouseButton(0) && _velocity < _maxVelocity && direction == polarity)
+        if (turning == false)
         {
-            _velocity += _acceleration;
-        }
-        else if (_velocity > 0 || _velocity >= _maxVelocity /*|| direction != polarity*/)
-        {
-            _velocity -= _deceleration;
-            if (_velocity <= 0)
+            Vector3 target = mouse.GetWorldPoint();
+            target.x = basic.Boat.gameObject.transform.position.x;
+            target.y = basic.Boat.gameObject.transform.position.y;
+            basic.Boat.gameObject.transform.rotation = Quaternion.Slerp(basic.Boat.gameObject.gameObject.transform.rotation, Quaternion.LookRotation(target - basic.Boat.gameObject.gameObject.transform.position), _rotationLerpSpeed * Time.deltaTime);
+            if (Input.GetMouseButton(0) && _velocity < _maxVelocity && direction == polarity)
             {
-                direction = polarity;
+                _velocity += _acceleration;
             }
-        }
-        if (!Input.GetMouseButton(0) && _velocity < 0)
-        {
-            _velocity = 0;
-        }
+            else if (_velocity > 0 || _velocity >= _maxVelocity /*|| direction != polarity*/)
+            {
+                _velocity -= _deceleration;
+                if (_velocity <= 0)
+                {
+                    matchDirectionToPolarity();
+                }
+            }
+            if (!Input.GetMouseButton(0) && _velocity < 0)
+            {
+                _velocity = 0;
+            }
 
-        Vector3 differenceVector = _destination - _boat.gameObject.transform.position;
-        Vector2 m = new Vector3((direction * _velocity), 0.0f, 0.0f);
-        _boat.gameObject.transform.Translate(m);
+            Vector3 differenceVector = _destination - _boat.gameObject.transform.position;
+            Vector2 m = new Vector3((direction * _velocity), 0.0f, 0.0f);
+            _boat.gameObject.transform.Translate(m);
+        }
         return (_velocity > 0 || Input.GetMouseButton(0));
+        
     }
     public override void Refresh()
     {
