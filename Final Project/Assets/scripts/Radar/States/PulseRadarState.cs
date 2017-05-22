@@ -53,11 +53,19 @@ public class PulseRadarState : AbstractRadarState {
         {
             if (collectable == null)
             {
-                Debug.Log("Collectable NULL");
+                //Debug.Log("Collectable NULL");
                 continue;
             }
             bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (collectable.transform.position - _radar.transform.position).normalized) >= _radarAngle;
             if (visible) collectable.Reveal(_fadeOutDuration, _collectableStaysVisibleRange);
         }
     }
+
+    /*IEnumerator DoScan()
+    {
+        //for(all fish)
+        //scan 1 or a few fish
+        //yield return null
+    }*/
+
 }

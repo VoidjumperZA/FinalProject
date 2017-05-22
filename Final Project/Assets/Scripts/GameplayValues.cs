@@ -10,6 +10,7 @@ public class GameplayValues : MonoBehaviour
     [SerializeField] [Range(1, 10)] private int _maxShakePoints;
     [SerializeField] private float _cameraSpeed;
     [SerializeField] private bool _applyJellyFeel;
+    [SerializeField] private float _lerpDuration;
     /*[SerializeField]
     private int screenShakeDuration;
 
@@ -23,9 +24,9 @@ public class GameplayValues : MonoBehaviour
     [SerializeField]
     private float camZoomedHookZoomLevel;*/
 
-    [Header("Ability Statistics")]
+    /*[Header("Ability Statistics")]
     [SerializeField]
-    private float sonarFadeTime;
+    private float sonarFadeTime;*/
 
     // Use this for initialization
     void Start()
@@ -56,6 +57,10 @@ public class GameplayValues : MonoBehaviour
     public int GetMaxShakePoints()
     {
         return _maxShakePoints;
+    }
+    public float GetLerpDuration()
+    {
+        return _lerpDuration;
     }
     /*public int GetScreenShakeDuration()
     {

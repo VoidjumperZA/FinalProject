@@ -141,7 +141,7 @@ public class SwimJellyfishState : AbstractJellyfishState
             Debug.Log("Call create new point from Y <: TargetpointY = " + _targetPoint.y);
         }
 
-        Debug.Log("Exit ");
+        //Debug.Log("Exit ");
 
     }
 
