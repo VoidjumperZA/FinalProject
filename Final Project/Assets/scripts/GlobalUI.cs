@@ -20,8 +20,6 @@ public class GlobalUI : MonoBehaviour
     private Button _deployHookButton;
     [SerializeField]
     private Button _reelUpHook;
-    [SerializeField]
-    private Button _radarButton;
 
     [HideInInspector]
     public bool InTutorial = true;
@@ -71,10 +69,8 @@ public class GlobalUI : MonoBehaviour
         //Warnings
         if (!_deployHookButton) Debug.Log("Warning: You need to assign DeployHookButton to GlobalUI.");
         if (!_reelUpHook) Debug.Log("Warning: You need to assign ReelUpButton to GlobalUI.");
-        if (!_radarButton) Debug.Log("Warning: You need to assign RadarButton to GlobalUI.");
 
         DeployHookButton(false);
-        RadarButton(false);
         ReelUpHookButton(false);
 
         ShowHandHookButton(false);
@@ -84,7 +80,7 @@ public class GlobalUI : MonoBehaviour
     }
     public void OnPlayGameClick()
     {
-        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
+        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
         _skipTutorialButton.gameObject.SetActive(false);
@@ -92,14 +88,13 @@ public class GlobalUI : MonoBehaviour
     public void OnSkipTutorialClick()
     {
         InTutorial = false;
-        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
+        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
         _skipTutorialButton.gameObject.SetActive(false);
     }
     public void DeployHookButton(bool pBool) { _deployHookButton.gameObject.SetActive(pBool); }
     public void ReelUpHookButton(bool pBool) { _reelUpHook.gameObject.SetActive(pBool); }
-    public void RadarButton(bool pBool) { _radarButton.gameObject.SetActive(pBool); }
 
     public void ShowHandHookButton(bool pBool) { _handDeployHook.gameObject.SetActive(pBool); }
     public void ShowHandSwipe(bool pBool) { _handSwipe.gameObject.SetActive(pBool); }

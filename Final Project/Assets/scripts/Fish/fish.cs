@@ -15,7 +15,7 @@ public class fish : general
     public enum FishType { Small, Medium, Large};
     public FishType fishType;
     // Radar related
-    [SerializeField] private SkinnedMeshRenderer _renderer;
+    [SerializeField] public SkinnedMeshRenderer _renderer;
     [SerializeField] private cakeslice.Outline _outliner;
     [SerializeField] private ParticleSystem _bubbles;
     [HideInInspector] public Animator Animator;
@@ -87,8 +87,8 @@ public class fish : general
     public override void Reveal(float pFadeOutDuration, int pCollectableStaysVisibleRange)
     {
         if (Revealed) return;
-
         Revealed = true;
+
         SwimFishState swimFishState = _stateCache[FishState.Swim] as SwimFishState;
         if (swimFishState is SwimFishState) //Debug.Log("SWIMFISHSTATE !NULL");
         swimFishState.ResetOutLineCounter(pFadeOutDuration, pCollectableStaysVisibleRange);

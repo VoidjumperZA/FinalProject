@@ -35,7 +35,7 @@ public class FishHookState : AbstractHookState
         hookRotationAmount = 1.0f;
         currentHookRotation = 0.0f;
         maxHookRotation = 25.0f;
-        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Hook);
+        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Hook);
     }
 
     //
@@ -168,7 +168,7 @@ public class FishHookState : AbstractHookState
                 basic.Shoppinglist.Show(true);
                 basic.Shoppinglist.Introduced = true;
             }
-            CameraHandler.CreateShakePoint();
+            basic.Camerahandler.CreateShakePoint();
         }
         if (other.gameObject.CompareTag("Jellyfish"))
         {
@@ -177,7 +177,7 @@ public class FishHookState : AbstractHookState
 
             basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty(), true);
 
-            CameraHandler.CreateShakePoint();
+            basic.Camerahandler.CreateShakePoint();
 
             SetState(hook.HookState.Reel);
             GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
@@ -196,7 +196,7 @@ public class FishHookState : AbstractHookState
             _hook.TrashOnHook.Add(theTrash);
             bool firstTime = basic.Scorehandler.CollectATrashPiece();
             basic.GlobalUI.UpdateOceanProgressBar(firstTime);
-            CameraHandler.CreateShakePoint();
+            basic.Camerahandler.CreateShakePoint();
 
             //The game time is out before this condition can be true, I am going to leave it here just in case
             if (basic.GlobalUI.InTutorial)
