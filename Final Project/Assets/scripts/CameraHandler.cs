@@ -40,6 +40,7 @@ public static class CameraHandler
         _shakePoints = new List<Vector3>();
         _initialized = true;
         Debug.Log("CameraHandeler initialized: " + _initialized);
+        //SetViewPoint(CameraFocus.Boat, )
 
     }
     public static void Update()

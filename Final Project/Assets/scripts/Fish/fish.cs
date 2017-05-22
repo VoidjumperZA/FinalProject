@@ -90,7 +90,7 @@ public class fish : general
 
         Revealed = true;
         SwimFishState swimFishState = _stateCache[FishState.Swim] as SwimFishState;
-        if (swimFishState is SwimFishState) Debug.Log("SWIMFISHSTATE !NULL");
+        if (swimFishState is SwimFishState) //Debug.Log("SWIMFISHSTATE !NULL");
         swimFishState.ResetOutLineCounter(pFadeOutDuration, pCollectableStaysVisibleRange);
 
         ToggleBubbles(true);
