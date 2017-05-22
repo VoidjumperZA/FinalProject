@@ -17,6 +17,7 @@ public class boat : general
     [SerializeField] private float _acceleration;
     [SerializeField] private float _deceleration;
     [SerializeField] private float _maxVelocity;
+    [SerializeField] private float _rotationLerpSpeed;
     private Vector3 _setUpPosition;
     public override void Start()
     {
@@ -39,7 +40,7 @@ public class boat : general
         _stateCache[BoatState.None] = new NoneBoatState(this);
         _stateCache[BoatState.SetUp] = new SetUpBoatState(this, _acceleration, _maxVelocity, _deceleration, _setUpPosition);
         _stateCache[BoatState.Stationary] = new StationaryBoatState(this);
-        _stateCache[BoatState.Move] = new MoveBoatState(this, _acceleration, _maxVelocity, _deceleration);
+        _stateCache[BoatState.Move] = new MoveBoatState(this, _acceleration, _maxVelocity, _deceleration, _rotationLerpSpeed);
         _stateCache[BoatState.Fish] = new FishBoatState(this);
         SetState(_boatState);
     }
