@@ -32,7 +32,7 @@ public class SwimJellyfishState : AbstractJellyfishState
     // Use this for initialization
     public override void Start()
     {
-        Debug.Log("Jellyfih created");
+        //Debug.Log("Jellyfih created");
         _outlineCounter.Reset();
         
         //Getting the position and size of the zone where the jellyfish can move
@@ -82,23 +82,23 @@ public class SwimJellyfishState : AbstractJellyfishState
             case 'l':
                 angle = Random.Range(0, Mathf.PI);
                 if (angle > Mathf.PI / 2) angle += Mathf.PI;
-                Debug.Log("Angle l: " + angle);
+                //Debug.Log("Angle l: " + angle);
                 break;
 
             case 'r':
                 angle = Random.Range(Mathf.PI / 2, Mathf.PI * 3 / 2);
-                Debug.Log("Angle r: " + angle);
+               // Debug.Log("Angle r: " + angle);
                 break;
 
             case 'u':
                 angle = Random.Range(0, Mathf.PI);
                 angle *= -1;
-                Debug.Log("Angle u: " + angle);
+                //Debug.Log("Angle u: " + angle);
                 break;
 
             case 'd':
                 angle = Random.Range(0, Mathf.PI);
-                Debug.Log("Angle d: " + angle);
+                //Debug.Log("Angle d: " + angle);
                 break;
 
             default:
@@ -108,7 +108,7 @@ public class SwimJellyfishState : AbstractJellyfishState
         }
 
         //Calculate new point
-        Debug.Log("New point");
+        //Debug.Log("New point");
         float distanceToNewPoint = Random.Range(_jellyfishZoneSizeY/2,_jellyfishZoneSizeY);
         
         float x = _targetPoint.x + Mathf.Cos(angle) * distanceToNewPoint;

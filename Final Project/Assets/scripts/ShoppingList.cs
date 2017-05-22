@@ -33,7 +33,7 @@ public class ShoppingList : MonoBehaviour {
     }
     private void CacheNewCollection()
     {
-        Debug.Log("Started generating");
+        //Debug.Log("Started generating");
         _fishInfo = new Dictionary<int, int[]>();
         List<int> chosen = new List<int>();
 

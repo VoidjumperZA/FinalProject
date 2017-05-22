@@ -20,21 +20,39 @@ public class MoveBoatState : AbstractBoatState {
     private int currentRot;
     private int targetRot;
     private int rotSpeed;
+    private Quaternion targetQua;
 
     public MoveBoatState(boat pBoat, float pAcceleration, float pMaxVelocity, float pDeceleration, float pRotationLerpSpeed) : base(pBoat)
     {
         _acceleration = pAcceleration;
         _maxVelocity = pMaxVelocity;
         _deceleration = pDeceleration;
+        _rotationLerpSpeed = pRotationLerpSpeed;
+        SetUpState();
+    }
+
+    private void SetUpState()
+    {
+        _velocity = 0.0f;
         polarity = 0.0f;
         direction = 1.0f;
-        _rotationLerpSpeed = pRotationLerpSpeed;
         turning = false;
-        targetRot = 180;
+
+        if (_boat.gameObject.transform.rotation == basic.Boat.GetBoatEndRotations(true))
+        {
+            direction = 1.0f;
+            targetRot = 180;
+            targetQua = basic.Boat.GetBoatEndRotations(false);
+        }
+        else
+        {
+            direction = -1.0f;
+            targetRot = -180;
+            targetQua = basic.Boat.GetBoatEndRotations(true);
+        }
         currentRot = 0;
         rotSpeed = 1;
     }
-
 
     public override void Start()
     {
@@ -52,7 +70,7 @@ public class MoveBoatState : AbstractBoatState {
         //Debug.Log("Direction: " + direction);
         if (!MoveToDestination() && turning == false)
         {
-            Debug.Log("Switching to another state");
+            //Debug.Log("Switching to another state");
             basic.Hook.SetState(hook.HookState.None);
             _boat.SetState(boat.BoatState.Stationary);          
         }
@@ -60,7 +78,7 @@ public class MoveBoatState : AbstractBoatState {
     private void setPolarity()
     {
         polarity = Mathf.Sign(mouse.GetWorldPoint().x - _boat.gameObject.transform.position.x);
-        if (direction == 0.0f)
+        if (direction != polarity && Input.GetMouseButton(0) == true && _velocity == 0.0f)
         {
             Debug.Log("One.");
             matchDirectionToPolarity();
@@ -75,20 +93,8 @@ public class MoveBoatState : AbstractBoatState {
     private void matchDirectionToPolarity()
     {
         direction = polarity;
+        prepareToRotate();
         Debug.Log("Direction: " + direction);
-        //shitty rotation
-        currentRot = 0;
-
-        turning = true;
-        previousCamHolder = Camera.main.transform.parent.transform;
-        Camera.main.transform.SetParent(GameObject.FindGameObjectWithTag("TopLevelCamHolder").transform);
-
-        //get a target that is just on the other side of the boat
-        lerpTarget = mouse.GetWorldPoint();
-        lerpTarget.x = basic.Boat.gameObject.transform.position.x;
-        lerpTarget.y = basic.Boat.gameObject.transform.position.y;
-
-       
     }
     private void SetDestination(Vector3 pPosition)
     {
@@ -99,20 +105,26 @@ public class MoveBoatState : AbstractBoatState {
     {
         //don't move the boat while it is turning as it will then traverse along incorrect axes
         if (turning == false)
-        {          
+        {         
+            //while clicking, under max velocity and heading where directed 
             if (Input.GetMouseButton(0) && _velocity < _maxVelocity && direction == polarity)
             {
+                //accelerate
                 _velocity += _acceleration;
             }
+            //if moving OR at max velocity
             else if (_velocity > 0 || _velocity >= _maxVelocity /*|| direction != polarity*/)
             {
+                //decelerate
                 _velocity -= _deceleration;
+                //if we're at zero check where we're being told to turn around
                 if (_velocity <= 0)
                 {
                     Debug.Log("Two.");
                     matchDirectionToPolarity();
                 }
             }
+            //if not input or min vel
             if (!Input.GetMouseButton(0) && _velocity < 0)
             {
                 _velocity = 0;
@@ -124,43 +136,46 @@ public class MoveBoatState : AbstractBoatState {
         }
         else
         {
-            currentRot += rotSpeed * (int)Mathf.Sign(targetRot);
-            _boat.gameObject.transform.Rotate(new Vector3(0.0f, rotSpeed * Mathf.Sign(targetRot), 0.0f));
-            /*
-            //slerp to there
-            basic.Boat.gameObject.transform.rotation = Quaternion.Slerp(basic.Boat.gameObject.gameObject.transform.rotation, Quaternion.LookRotation(lerpTarget - basic.Boat.gameObject.gameObject.transform.position), _rotationLerpSpeed * Time.deltaTime);
-
-            //if we are back set our camera back to it's previous owner*/
-            if (/*basic.Boat.gameObject.transform.rotation == Quaternion.LookRotation(lerpTarget)*/ Mathf.Abs(currentRot) >= Mathf.Abs(targetRot))
-            {
-                Camera.main.transform.SetParent(previousCamHolder);
-
-                currentRot = 0;
-                targetRot *= -1;
-                turning = false;
-            }
+            rotate();
         }
         return (_velocity > 0 || Input.GetMouseButton(0));
         
     }
+
+    //
+    private void rotate()
+    {
+        //currentRot += rotSpeed * (int)Mathf.Sign(targetRot);
+        _boat.gameObject.transform.Rotate(new Vector3(0.0f, rotSpeed /*.* Mathf.Sign(targetRot)*/, 0.0f));
+        /*
+        basic.Boat.gameObject.transform.rotation = Quaternion.Slerp(basic.Boat.gameObject.gameObject.transform.rotation, Quaternion.LookRotation(lerpTarget - basic.Boat.gameObject.gameObject.transform.position), _rotationLerpSpeed * Time.deltaTime);
+        //slerp to there
+
+        //if we are back set our camera back to it's previous owner*/
+        if (/*basic.Boat.gameObject.transform.rotation == Quaternion.LookRotation(lerpTarget)*/ _boat.gameObject.transform.rotation == targetQua)
+        {
+            Camera.main.transform.SetParent(previousCamHolder);
+
+            //targetQua = targetQua == _boat.GetBoatEndRotations(true) ? _boat.GetBoatEndRotations(false) : _boat.GetBoatEndRotations(true);
+            turning = false;
+        }
+    }
+
+    //
+    private void prepareToRotate()
+    {
+        //shitty rotation
+        turning = true;
+        targetQua = targetQua == _boat.GetBoatEndRotations(true) ? _boat.GetBoatEndRotations(false) : _boat.GetBoatEndRotations(true);
+        previousCamHolder = Camera.main.transform.parent.transform;
+        Camera.main.transform.SetParent(GameObject.FindGameObjectWithTag("TopLevelCamHolder").transform);
+    }
+
+
     public override void Refresh()
     {
         _destination = _boat.gameObject.transform.position;
-        _velocity = 0;
-        polarity = 0.0f;
-        if (_boat.gameObject.transform.rotation.eulerAngles.y == 0)
-        {
-            direction = 1.0f;
-        }
-        else
-        {
-            direction = -1.0f;
-        }
-        //* Mathf.Sign(_boat.gameObject.transform.rotation.eulerAngles.y);
-        turning = false;
-        targetRot = 180 * (int)direction;
-        currentRot = 0;
-        rotSpeed = 1;
+        SetUpState();
     }
     public override boat.BoatState StateType()
     {
