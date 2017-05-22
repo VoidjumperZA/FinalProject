@@ -19,7 +19,7 @@ public class fish : general
     [SerializeField] private cakeslice.Outline _outliner;
     [SerializeField] private ParticleSystem _bubbles;
     [HideInInspector] public Animator Animator;
-    [SerializeField] public GameObject[] _head;
+    [SerializeField] public GameObject[] Joints;
 
     private float _revealDuration;
 

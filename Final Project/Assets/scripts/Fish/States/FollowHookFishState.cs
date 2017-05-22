@@ -23,7 +23,7 @@ public class FollowHookFishState : AbstractFishState
     public override void Update()
     {
         //_fish.RagdollJoints[4].transform.position = basic.Hook.transform.position;
-        if (_fish._head.Length > 0) _fish._head[0].gameObject.transform.position = basic.Hook.transform.position;
+        if (_fish.Joints.Length > 0) _fish.Joints[0].gameObject.transform.position = basic.Hook.transform.position;
     }
     public override void Refresh()
     {
@@ -39,13 +39,13 @@ public class FollowHookFishState : AbstractFishState
     }
     private void HandleJointsRigidBodies()
     {
-        if (_fish._head.Length > 0)
+        if (_fish.Joints.Length > 0)
         {
-            foreach (GameObject obj in _fish._head)
+            foreach (GameObject joint in _fish.Joints)
             {
-                obj.GetComponent<Rigidbody>().isKinematic = false;
+                joint.GetComponent<Rigidbody>().isKinematic = false;
             }
-            _fish._head[0].transform.rotation = Quaternion.LookRotation(Vector3.right, -Vector3.forward);
+            _fish.Joints[0].transform.rotation = Quaternion.LookRotation(Vector3.right, -Vector3.forward);
         }
     }
 }
