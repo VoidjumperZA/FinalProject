@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TempFishSpawn : MonoBehaviour
 {
-    private basic _basic;
+    private basic _basic { get { return GetComponent<basic>(); } }
 
     [Header("Fish")]
     [SerializeField]
@@ -21,15 +21,6 @@ public class TempFishSpawn : MonoBehaviour
     [Header("Misc Values")]
     [SerializeField]
     private int maximumNumberOfOnscreenFish;
-    [SerializeField]
-    private float bufferSpaceUnderBoat;
-    [SerializeField]
-    private float _spawnWidth;
-    [SerializeField]
-    private Transform _leftSpawn;
-    [SerializeField]
-    private Transform _rightSpawn;
-    private float _verticalSpawnFluctuation;
     private float _timePassed;
     private bool _valid;
     [HideInInspector] public bool _boatSetUp = false;
@@ -39,12 +30,17 @@ public class TempFishSpawn : MonoBehaviour
     private float timeCo;
     private int totalNumberOfSpawnedFish;
 
+    [SerializeField] private GameObject _spawnZone;
+    private float _halfSpawnWidth { get { return _spawnZone.transform.lossyScale.x / 2; } }
+    private float _halfSpawnHeight { get { return _spawnZone.transform.lossyScale.y / 2; } }
+
+
     // Use this for initialization
     void Start()
     {
         possiblePolarities = PossiblePolarities.Niether;
-        _basic = GetComponent<basic>();
-        _verticalSpawnFluctuation = (-1.0f * (basic.GetSeaDepth() / 2));
+        //_basic = GetComponent<basic>();
+        /*_verticalSpawnFluctuation = (-1.0f * (basic.GetSeaDepth() / 2));
 
         Vector3 leftSpawnPos = new Vector3(_leftSpawn.transform.position.x, basic.Boat.transform.position.y, _leftSpawn.transform.position.z);
         leftSpawnPos.y += (_verticalSpawnFluctuation);
@@ -54,11 +50,10 @@ public class TempFishSpawn : MonoBehaviour
 
         Vector3 rightSpawnPos = new Vector3(_rightSpawn.transform.position.x, basic.Boat.transform.position.y, _rightSpawn.transform.position.z);
         rightSpawnPos.y += (_verticalSpawnFluctuation);
-        _rightSpawn.transform.position = rightSpawnPos;
+        _rightSpawn.transform.position = rightSpawnPos;*/
         //Max our time to start
         timeBetweenSpawns = lowerSpawningRateHigherValue;
         _timePassed = timeBetweenSpawns;
-        _spawnWidth /= 2;
 
         totalNumberOfSpawnedFish = 0;
 
@@ -99,12 +94,12 @@ public class TempFishSpawn : MonoBehaviour
         {
             //Choose a random fish and direction
             int randomFish = Random.Range(0, _fishPrefabs.Length);
-            float verticalOffset = Random.Range(_verticalSpawnFluctuation, (-1.0f * _verticalSpawnFluctuation) - bufferSpaceUnderBoat);
 
+            Vector3 spawnPos = new Vector3((pPolarity == 0) ? -_halfSpawnWidth : _halfSpawnWidth, Random.Range(-_halfSpawnHeight, _halfSpawnHeight), 0);
 
             GameObject newFish = Instantiate(_fishPrefabs[randomFish],
-                                            (pPolarity == 0) ? _leftSpawn.position + new Vector3(0, verticalOffset, 0) : _rightSpawn.position + new Vector3(0, verticalOffset, 0),
-                                            (pPolarity == 0) ? _leftSpawn.rotation : _rightSpawn.rotation);
+                                            _spawnZone.transform.position + spawnPos,
+                                            Quaternion.LookRotation((pPolarity == 0) ? Vector3.right : -Vector3.right));
 
             totalNumberOfSpawnedFish++;
             newFish.GetComponent<fish>().SetDirection(1.0f);
@@ -126,12 +121,13 @@ public class TempFishSpawn : MonoBehaviour
 
     private void MoveSpawnArea(Vector3 pBoatPosition)
     {
-        Vector3 differenceVector = pBoatPosition - new Vector3(0, 0.5f, 0);
+        _spawnZone.transform.position = new Vector3(basic.Boat.transform.position.x, _spawnZone.transform.position.y, 0);
+        /*Vector3 differenceVector = pBoatPosition - new Vector3(0, 0.5f, 0);
         if (differenceVector.magnitude > 0)
         { 
                 _leftSpawn.position = new Vector3(pBoatPosition.x - _spawnWidth, _leftSpawn.position.y, _leftSpawn.position.z);
                 _rightSpawn.position = new Vector3(pBoatPosition.x + _spawnWidth, _rightSpawn.position.y, _rightSpawn.position.z);           
-        }
+        }*/
     }
 
     public void CalculateNewSpawnDensity()
