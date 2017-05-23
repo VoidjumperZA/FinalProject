@@ -55,6 +55,10 @@ public class counter {
     {
         return _done;
     }
+    public float Left()
+    {
+        return _counter / _limit;
+    }
     public bool Remaining(float pPercentage)
     {
         if (_passedPercentage) return false;

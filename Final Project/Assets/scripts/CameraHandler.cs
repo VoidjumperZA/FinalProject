@@ -2,28 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class CameraHandler
+public class CameraHandler : MonoBehaviour
 {
-    private static bool _initialized = false;
-    private static GameObject _manager { get { return GameObject.Find("Manager"); } }
-    private static Camera _camera { get { return Camera.main; } }
+    private bool _initialized = false;
+    private GameObject _manager { get { return GameObject.Find("Manager"); } }
+    private Camera _camera { get { return Camera.main; } }
 
     //Camera zoom levels and focus points
     public enum CameraFocus { Boat, Ocean, Hook };
-    public static CameraFocus _focusObject;
-    private static Dictionary<CameraFocus, Transform> _parentPoints;
-    private static Dictionary<CameraFocus, Transform> _lookAtPoints;
-    private static Vector3 _destination;
-    private static float _cameraSpeed { get { return basic.Gameplayvalues.GetCameraSpeed(); } }
-    private static bool _viewPointReached = true;
-    private static bool _viewRotationReached = true;
+    public CameraFocus _focusObject;
+    private Dictionary<CameraFocus, Transform> _parentPoints;
+    private Dictionary<CameraFocus, Transform> _lookAtPoints;
+    private Vector3 _destination;
+    private float _cameraSpeed { get { return basic.Gameplayvalues.GetCameraSpeed(); } }
+    private bool _viewPointReached = true;
+    private bool _viewRotationReached = true;
 
-    private static float _currentSlerpTime = 0;
-    private static float _totalSlerpTime;
+    private float _currentSlerpTime = 0;
+    private float _totalSlerpTime;
     // ----------------------------
-    private static List<Vector3> _shakePoints = new List<Vector3>();
+    private List<Vector3> _shakePoints = new List<Vector3>();
 
-    public static void InitializeCameraHandler()
+    public void InitializeCameraHandler()
     {
         _totalSlerpTime = basic.Gameplayvalues.GetLerpDuration();
 
@@ -36,14 +36,14 @@ public static class CameraHandler
         _lookAtPoints[CameraFocus.Boat] = basic.Boat.transform;
         _lookAtPoints[CameraFocus.Ocean] = basic.Boat.transform;
         _lookAtPoints[CameraFocus.Hook] = basic.Hook.transform;
-        
+
         _shakePoints = new List<Vector3>();
         _initialized = true;
         Debug.Log("CameraHandeler initialized: " + _initialized);
         //SetViewPoint(CameraFocus.Boat, )
 
     }
-    public static void Update()
+    public void ClassUpdate()
     {
         if (!_initialized)
         {
@@ -53,7 +53,7 @@ public static class CameraHandler
         ReachViewPoint();
         ReachShakePoint();
     }
-    public static void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
+    public void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
     {
         if (!_initialized)
         {
@@ -72,7 +72,7 @@ public static class CameraHandler
         }
         _currentSlerpTime = 0;
     }
-    public static void ReachViewPoint()
+    public void ReachViewPoint()
     {
         if (!_viewPointReached || !_viewRotationReached)
         {
@@ -102,7 +102,7 @@ public static class CameraHandler
             else _viewRotationReached = true;*/
         }
     }
-    private static void ReachShakePoint()
+    private void ReachShakePoint()
     {
         if (_viewPointReached && _viewRotationReached)
         {
@@ -127,7 +127,7 @@ public static class CameraHandler
             }
         }
     }
-    public static void CreateShakePoint()
+    public void CreateShakePoint()
     {
         for (int i = 0; i < basic.Gameplayvalues.GetMaxShakePoints(); i++)
         {

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class basic : MonoBehaviour
 {
+    
     private InputTimer _inputTimer;
     [HideInInspector] public static GlobalUI GlobalUI;
     [HideInInspector] public static ScoreHandler Scorehandler;
@@ -11,6 +12,7 @@ public class basic : MonoBehaviour
     [HideInInspector] public static Combo combo;
     [HideInInspector] public static GameplayValues Gameplayvalues;
     [HideInInspector] public static TempFishSpawn Tempfishspawn;
+    [HideInInspector] public static CameraHandler Camerahandler;
 
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
@@ -62,9 +64,10 @@ public class basic : MonoBehaviour
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
         Gameplayvalues = GetComponent<GameplayValues>(); if (!Gameplayvalues) Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
         Tempfishspawn = GetComponent<TempFishSpawn>(); if (!Tempfishspawn) Debug.Log("ERROR: Cannot get reference to TempFishSpawn from Manager object");
+        Camerahandler = GetComponent<CameraHandler>(); if (Camerahandler == null) Debug.Log("ERROR: Cannot get reference to CameraHandler from Manager object");
 
-        CameraHandler.InitializeCameraHandler();
-        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Boat);
+        Camerahandler.InitializeCameraHandler();
+        Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat);
 
         //Find out seaDepth
         floor = GameObject.FindGameObjectWithTag("Floor");
@@ -97,7 +100,7 @@ public class basic : MonoBehaviour
 
     private void LateUpdate()
     {
-        CameraHandler.Update();
+        Camerahandler.ClassUpdate();
     }
     private void SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
     {

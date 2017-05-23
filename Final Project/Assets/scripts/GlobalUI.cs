@@ -14,14 +14,19 @@ public class GlobalUI : MonoBehaviour
     private Image _handDeployHook;
     [SerializeField]
     private Image _handSwipe;
-
+    [SerializeField]
+    private Image _playExplode;
+    [SerializeField]
+    private Image _playButtonImage;
+    [SerializeField]
+    private Image _replayExplode;
+    [SerializeField]
+    private Image _replayButtonImage;
 
     [SerializeField]
     private Button _deployHookButton;
     [SerializeField]
     private Button _reelUpHook;
-    [SerializeField]
-    private Button _radarButton;
 
     [HideInInspector]
     public bool InTutorial = true;
@@ -71,12 +76,14 @@ public class GlobalUI : MonoBehaviour
         //Warnings
         if (!_deployHookButton) Debug.Log("Warning: You need to assign DeployHookButton to GlobalUI.");
         if (!_reelUpHook) Debug.Log("Warning: You need to assign ReelUpButton to GlobalUI.");
-        if (!_radarButton) Debug.Log("Warning: You need to assign RadarButton to GlobalUI.");
 
         DeployHookButton(false);
-        RadarButton(false);
         ReelUpHookButton(false);
-
+        _playExplode.gameObject.SetActive(false);
+        _replayExplode.gameObject.SetActive(false);
+        _playButtonImage.gameObject.SetActive(true);
+        _replayButtonImage.gameObject.SetActive(true);
+        
         ShowHandHookButton(false);
         _handDeployHook.transform.position = new Vector2 (_deployHookButton.transform.position.x + 15, _deployHookButton.transform.position.y - 15);
         
@@ -84,22 +91,15 @@ public class GlobalUI : MonoBehaviour
     }
     public void OnPlayGameClick()
     {
-        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
-        basic.Boat.SetState(boat.BoatState.SetUp);
-        _playGameButton.gameObject.SetActive(false);
-        _skipTutorialButton.gameObject.SetActive(false);
+        StartCoroutine(PlayGameAnim());
+        
     }
     public void OnSkipTutorialClick()
     {
-        InTutorial = false;
-        CameraHandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
-        basic.Boat.SetState(boat.BoatState.SetUp);
-        _playGameButton.gameObject.SetActive(false);
-        _skipTutorialButton.gameObject.SetActive(false);
+        StartCoroutine(ReplayGameAnim());
     }
     public void DeployHookButton(bool pBool) { _deployHookButton.gameObject.SetActive(pBool); }
     public void ReelUpHookButton(bool pBool) { _reelUpHook.gameObject.SetActive(pBool); }
-    public void RadarButton(bool pBool) { _radarButton.gameObject.SetActive(pBool); }
 
     public void ShowHandHookButton(bool pBool) { _handDeployHook.gameObject.SetActive(pBool); }
     public void ShowHandSwipe(bool pBool) { _handSwipe.gameObject.SetActive(pBool); }
@@ -198,7 +198,39 @@ public class GlobalUI : MonoBehaviour
             oceanCleanUpProgressBar.GetComponent<OceanCleanUpUIAnimation>().AnimateFirstTimeMovement();
         }
     }
+    private IEnumerator PlayGameAnim()
+    {
+        _playGameButton.gameObject.SetActive(false);
+        _playButtonImage.gameObject.SetActive(false);
+        _playExplode.gameObject.SetActive(true);
+        
+        yield return new WaitForSeconds(0.6f);
 
+        _playExplode.gameObject.SetActive(false);
+
+        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
+        basic.Boat.SetState(boat.BoatState.SetUp);
+        _skipTutorialButton.gameObject.SetActive(false);
+        _replayButtonImage.gameObject.SetActive(false);
+    }
+
+    private IEnumerator ReplayGameAnim()
+    {
+        _skipTutorialButton.gameObject.SetActive(false);
+        _replayButtonImage.gameObject.SetActive(false);
+        _replayExplode.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(0.6f);
+
+        _replayExplode.gameObject.SetActive(false);
+
+        InTutorial = false;
+        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
+        basic.Boat.SetState(boat.BoatState.SetUp);
+        _playGameButton.gameObject.SetActive(false);
+        _playButtonImage.gameObject.SetActive(false);
+
+    }
     private IEnumerator ShowThenFadeOceanBar()
     {
         //Immediately show the bar
