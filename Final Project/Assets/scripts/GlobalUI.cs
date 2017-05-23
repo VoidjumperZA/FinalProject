@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 public class GlobalUI : MonoBehaviour
 {
+	[SerializeField]
+	private Button _BubbleButton;
+	[SerializeField]
+	private Image _BubbleImage;
+	[SerializeField]
+	private Image _Bubbleimageanimation;
     [SerializeField]
     private Button _playGameButton;
     [SerializeField]
@@ -83,6 +89,9 @@ public class GlobalUI : MonoBehaviour
         _replayExplode.gameObject.SetActive(false);
         _playButtonImage.gameObject.SetActive(true);
         _replayButtonImage.gameObject.SetActive(true);
+		_Bubbleimageanimation.gameObject.SetActive (false);
+		_BubbleImage.gameObject.SetActive (true);
+		_BubbleButton.gameObject.SetActive (true);
         
         ShowHandHookButton(false);
         _handDeployHook.transform.position = new Vector2 (_deployHookButton.transform.position.x + 15, _deployHookButton.transform.position.y - 15);
@@ -138,7 +147,9 @@ public class GlobalUI : MonoBehaviour
 
 
     }
-
+	public void OnBubbleClicked (){
+		StartCoroutine(ButtonBubble ());
+	}
     public void ReelUpHook()
     {
         basic.Hook.SetState(hook.HookState.Reel);
@@ -200,6 +211,7 @@ public class GlobalUI : MonoBehaviour
     }
     private IEnumerator PlayGameAnim()
     {
+		
         _playGameButton.gameObject.SetActive(false);
         _playButtonImage.gameObject.SetActive(false);
         _playExplode.gameObject.SetActive(true);
@@ -213,6 +225,20 @@ public class GlobalUI : MonoBehaviour
         _skipTutorialButton.gameObject.SetActive(false);
         _replayButtonImage.gameObject.SetActive(false);
     }
+	private IEnumerator ButtonBubble()
+	{
+		
+		_BubbleButton.gameObject.SetActive(false);
+		_BubbleImage.gameObject.SetActive(false);
+		_Bubbleimageanimation.gameObject.SetActive(true);
+
+		yield return new WaitForSeconds(0.7f);
+
+		_Bubbleimageanimation.gameObject.SetActive(false);
+
+		_BubbleButton.gameObject.SetActive(true);
+		_BubbleImage.gameObject.SetActive(true);
+	}
 
     private IEnumerator ReplayGameAnim()
     {
