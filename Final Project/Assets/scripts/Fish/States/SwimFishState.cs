@@ -10,6 +10,7 @@ public class SwimFishState : AbstractFishState
 
     private int _stayVisibleRange;
     public float RevealDuration;
+    private bool _firstTimeRevealed = false;
     public SwimFishState(fish pFish, float pSpeed) : base(pFish)
     {
         _speed = pSpeed;

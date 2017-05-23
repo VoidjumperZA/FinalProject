@@ -19,8 +19,15 @@ public class boat : general
     [SerializeField] private float _maxVelocity;
     [SerializeField] private float _rotationLerpSpeed;
     private Vector3 _setUpPosition;
+    private Quaternion rightFacingRotation;
+    private Quaternion leftFacingRotation;
     public override void Start()
     {
+        rightFacingRotation = gameObject.transform.rotation;
+        GameObject goTemp = new GameObject();
+        goTemp.transform.rotation = rightFacingRotation;
+        goTemp.transform.Rotate(0.0f, 180, 0.0f);
+        leftFacingRotation = goTemp.transform.rotation;
         InitializeStateMachine();
     }
     public override void Update()
@@ -60,5 +67,17 @@ public class boat : general
     public void SetSetUpPosition(Vector3 pPosition)
     {
         _setUpPosition = pPosition;
+    }
+
+    public Quaternion GetBoatEndRotations(bool pTrueRightFalseLeft)
+    {
+        if (pTrueRightFalseLeft == true)
+        {
+            return rightFacingRotation;
+        }
+        else
+        {
+            return leftFacingRotation;
+        }
     }
 }
