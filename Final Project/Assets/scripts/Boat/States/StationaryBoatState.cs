@@ -14,7 +14,7 @@ public class StationaryBoatState : AbstractBoatState {
         basic.Radar.SetState(radar.RadarState.Pulse);
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat);
 
-        if(basic.GlobalUI.InTutorial && basic.GlobalUI.ReelUpHookCompleted)
+        if (basic.GlobalUI.InTutorial && basic.GlobalUI.ReelUpHookCompleted)
         {
             basic.GlobalUI.ShowHandSwipe(true);
         }
