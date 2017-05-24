@@ -74,7 +74,7 @@ public class SwimJellyfishState : AbstractJellyfishState
   
     private void createNewPoint(char side)
     {
-        Debug.Log("Enter create point");
+        //Debug.Log("Enter create point");
         bool firstTime = true;
         float angle;
         switch (side)
@@ -123,22 +123,22 @@ public class SwimJellyfishState : AbstractJellyfishState
         if (_targetPoint.x >  _jellyfishZoneRight)
         {
             createNewPoint('r');
-            Debug.Log("Call create new point from x >: Targetpointx = " + _targetPoint.x);
+           // Debug.Log("Call create new point from x >: Targetpointx = " + _targetPoint.x);
         }
         if(_targetPoint.x < _jellyfishZoneLeft)
         {
             createNewPoint('l');
-            Debug.Log("Call create new point from x <: Targetpointx = " + _targetPoint.x);
+            //Debug.Log("Call create new point from x <: Targetpointx = " + _targetPoint.x);
         }
         if(_targetPoint.y > _jellyfishZoneUp)
         {
             createNewPoint('u');
-            Debug.Log("Call create new point from Y >: TargetpointY = " + _targetPoint.y);
+           // Debug.Log("Call create new point from Y >: TargetpointY = " + _targetPoint.y);
         }
         if (_targetPoint.y < _jellyfishZoneDown)
         {
             createNewPoint('d');
-            Debug.Log("Call create new point from Y <: TargetpointY = " + _targetPoint.y);
+            //Debug.Log("Call create new point from Y <: TargetpointY = " + _targetPoint.y);
         }
 
         //Debug.Log("Exit ");
