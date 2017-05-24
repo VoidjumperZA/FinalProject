@@ -7,9 +7,10 @@ using UnityEngine.PostProcessing;
 public class CameraHandler : MonoBehaviour
 {
     private bool _isAboveWater = false;
-    [SerializeField] private UnityEngine.PostProcessing.PostProcessingProfile _aboveWaterProfile;
-    [SerializeField] private UnityEngine.PostProcessing.PostProcessingProfile _underWaterProfile;
-    private UnityEngine.PostProcessing.PostProcessingBehaviour _cameraPostProcessing { get { return _camera.GetComponent<UnityEngine.PostProcessing.PostProcessingBehaviour>(); } }
+    [SerializeField] private Transform _seaSurface;
+    [SerializeField] private PostProcessingProfile _aboveWaterProfile;
+    [SerializeField] private PostProcessingProfile _underWaterProfile;
+    private PostProcessingBehaviour _cameraPostProcessing { get { return _camera.GetComponent<PostProcessingBehaviour>(); } }
     private PostEffectsBase _globalFog { get { return _camera.GetComponent<PostEffectsBase>(); } }
 
     private bool _initialized = false;
@@ -64,7 +65,9 @@ public class CameraHandler : MonoBehaviour
     }
     private void IfCrossedSurface()
     {
-        float val = 130.0f;
+        if (!_seaSurface) return;
+
+        float val = _seaSurface.position.y + 0.5f;
         if (_isAboveWater && _camera.transform.position.y <= val)
         {
             _globalFog.enabled = true;
