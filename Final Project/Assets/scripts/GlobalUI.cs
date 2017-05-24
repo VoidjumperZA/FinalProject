@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class GlobalUI : MonoBehaviour
 {
+	
     [SerializeField]
     private Button _playGameButton;
     [SerializeField]
@@ -83,6 +84,7 @@ public class GlobalUI : MonoBehaviour
         _replayExplode.gameObject.SetActive(false);
         _playButtonImage.gameObject.SetActive(true);
         _replayButtonImage.gameObject.SetActive(true);
+		
         
         ShowHandHookButton(false);
         _handDeployHook.transform.position = new Vector2 (_deployHookButton.transform.position.x + 15, _deployHookButton.transform.position.y - 15);
@@ -200,6 +202,7 @@ public class GlobalUI : MonoBehaviour
     }
     private IEnumerator PlayGameAnim()
     {
+		
         _playGameButton.gameObject.SetActive(false);
         _playButtonImage.gameObject.SetActive(false);
         _playExplode.gameObject.SetActive(true);
@@ -213,6 +216,7 @@ public class GlobalUI : MonoBehaviour
         _skipTutorialButton.gameObject.SetActive(false);
         _replayButtonImage.gameObject.SetActive(false);
     }
+
 
     private IEnumerator ReplayGameAnim()
     {
