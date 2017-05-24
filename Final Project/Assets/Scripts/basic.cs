@@ -32,6 +32,7 @@ public class basic : MonoBehaviour
     
     private GameObject floor;
     private static float seaDepth;
+    private static bool gameEnded;
 
     //Zone for the jellyfish
 
@@ -44,6 +45,7 @@ public class basic : MonoBehaviour
 
     void Start()
     {
+        gameEnded = false;
         SpawnBoat(_boatSpawn.position, _boatSetUp.position);
         SpawnHook();
         SpawnRadar();
@@ -175,5 +177,15 @@ public class basic : MonoBehaviour
     public static float GetJellyfishZoneDown()
     {
         return _jellyfishZonePosY - _jellyfishZoneSizeY;
+    }
+
+    public static void EndGame()
+    {
+        gameEnded = true;
+    }
+
+    public static bool HasGameEnded()
+    {
+        return gameEnded;
     }
 }

@@ -45,14 +45,14 @@ public class MoveBoatState : AbstractBoatState {
             direction = 1.0f;
             targetRot = 180;
             targetQua = basic.Boat.GetBoatEndRotations(true);
-            Debug.Log("Set Up State. Direction: " + direction + "  |  targetQua: Right");
+            //Debug.Log("Set Up State. Direction: " + direction + "  |  targetQua: Right");
         }
         else
         {
             direction = -1.0f;
             targetRot = -180;
             targetQua = basic.Boat.GetBoatEndRotations(false);
-            Debug.Log("Set Up State. Direction: " + direction + "  |  targetQua: Left");
+            //Debug.Log("Set Up State. Direction: " + direction + "  |  targetQua: Left");
         }
         currentRot = 0;
         rotSpeed = GameObject.Find("Manager").GetComponent<GameplayValues>().GetBoatRotationSpeed();
@@ -87,7 +87,7 @@ public class MoveBoatState : AbstractBoatState {
 
         if (turning == false)
         {
-        Debug.Log("Polarity: " + polarity + "\t|\tDirection: " + direction);
+        //Debug.Log("Polarity: " + polarity + "\t|\tDirection: " + direction);
 
         }
     }
@@ -110,7 +110,6 @@ public class MoveBoatState : AbstractBoatState {
     {
         direction = polarity;
         prepareToRotate();
-        //Debug.Log("Direction: " + direction);
     }
 
     private bool MoveToDestination()
@@ -156,20 +155,12 @@ public class MoveBoatState : AbstractBoatState {
     //
     private void rotate()
     {
-        Debug.Log("Rotating.");
-        //currentRot += rotSpeed * (int)Mathf.Sign(targetRot);
-        //basic.Boat.gameObject.transform.rotation = Quaternion.Slerp(basic.Boat.gameObject.gameObject.transform.rotation, targetQua, _rotationLerpSpeed * Time.deltaTime);
+        //Debug.Log("Rotating.");
         boatModel.gameObject.transform.rotation = Quaternion.RotateTowards(boatModel.gameObject.transform.rotation, targetQua, rotSpeed * Time.deltaTime);
-      //  _boat.gameObject.transform.Rotate(new Vector3(0.0f, rotSpeed, 0.0f));
-        /*
-        //slerp to there
 
-        //if we are back set our camera back to it's previous owner*/
-        if (/*basic.Boat.gameObject.transform.rotation == Quaternion.LookRotation(lerpTarget)*/ boatModel.gameObject.transform.rotation == targetQua)
+        if (boatModel.gameObject.transform.rotation == targetQua)
         {
             Camera.main.transform.SetParent(previousCamHolder);
-
-            //targetQua = targetQua == _boat.GetBoatEndRotations(true) ? _boat.GetBoatEndRotations(false) : _boat.GetBoatEndRotations(true);
             turning = false;
             Debug.Log("Turning is false");
         }
@@ -178,8 +169,7 @@ public class MoveBoatState : AbstractBoatState {
     //
     private void prepareToRotate()
     {
-        Debug.Log("Preparing to rotate.");
-        //shitty rotation
+        //Debug.Log("Preparing to rotate.");
         turning = true;
         targetQua = targetQua == _boat.GetBoatEndRotations(true) ? _boat.GetBoatEndRotations(false) : _boat.GetBoatEndRotations(true);
         previousCamHolder = Camera.main.transform.parent.transform;
@@ -198,11 +188,9 @@ public class MoveBoatState : AbstractBoatState {
 
     public override void OnTriggerEnter(Collider other)
     {
-        //Debug.Log("Overriding");
         if (other.gameObject.tag == "FishingArea")
         {
             GameObject.Find("Manager").GetComponent<TempFishSpawn>().CalculateNewSpawnDensity();
-        }
-            
+        }          
     }
 }
