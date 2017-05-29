@@ -81,12 +81,12 @@ public class boat : general
     {
         if (pTrueRightFalseLeft == true)
         {
-            Debug.Log("Returning targetQua Right");
+            //Debug.Log("Returning targetQua Right");
             return rightFacingRotation;
         }
         else
         {
-            Debug.Log("Returning targetQua Left");
+            //Debug.Log("Returning targetQua Left");
             return leftFacingRotation;
         }
     }

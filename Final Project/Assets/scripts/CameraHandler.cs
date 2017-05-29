@@ -47,7 +47,7 @@ public class CameraHandler : MonoBehaviour
 
         _shakePoints = new List<Vector3>();
         _initialized = true;
-        Debug.Log("CameraHandeler initialized: " + _initialized);
+        //Debug.Log("CameraHandeler initialized: " + _initialized);
     }
     public void ClassUpdate()
     {
