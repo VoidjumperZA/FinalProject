@@ -37,9 +37,9 @@ public class hook : general
     private Vector3 _xyOffset;
     private Vector3 _velocity;
     // X Velocity damping
-    
 
-    [SerializeField] private Button _reelButton;
+
+    public Transform HookTip;
 
     private bool valid;
     public override void Start()

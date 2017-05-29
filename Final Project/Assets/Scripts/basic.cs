@@ -22,8 +22,8 @@ public class basic : MonoBehaviour
     [SerializeField] private GameObject _trailerPrefab;
     [SerializeField] private GameObject _radarPrefab;
     [SerializeField] private GameObject _hookPrefab;
-
-    private int cameraHandlerUpdateKey;
+    [SerializeField] private GameObject _lowPolyFish; public static GameObject LowPolyFish;
+    
     public static List<general> Generals = new List<general>();
     public static boat Boat;
     public static hook Hook;
@@ -45,13 +45,12 @@ public class basic : MonoBehaviour
 
     void Start()
     {
+        LowPolyFish = _lowPolyFish;
         gameEnded = false;
         SpawnBoat(_boatSpawn.position, _boatSetUp.position);
         SpawnHook();
         SpawnRadar();
-        SpawnTrailer();
-
-        Boat.AssignHook(Hook);
+        
         Boat.AssignRadar(Radar);
         Hook.AssignBoat(Boat);
 

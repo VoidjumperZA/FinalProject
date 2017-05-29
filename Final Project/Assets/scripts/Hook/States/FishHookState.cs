@@ -41,7 +41,10 @@ public class FishHookState : AbstractHookState
     //
     public override void Update()
     {
-        if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10) ApplyVelocity(_dragSpeed); 
+        if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10)
+        {
+            ApplyVelocity(_dragSpeed);
+        } 
         else
         {
             if (Input.GetMouseButton(0))
@@ -116,18 +119,6 @@ public class FishHookState : AbstractHookState
     }
 
     //
-    private void shakeCameraOnCollect()
-    {
-        screenShakeCounter++;
-        if (screenShakeCounter >= screenShakeDuration)
-        {
-            camShaking = false;
-            screenShakeCounter = 0;
-            //CameraHandler.ResetScreenShake(true);
-        }
-    }
-
-    //
     public override void OnTriggerEnter(Collider other)
     {
         if (!_hook || !other) return;
@@ -141,7 +132,7 @@ public class FishHookState : AbstractHookState
                 basic.GlobalUI.SwipehandCompleted = true;
             }
             SetState(hook.HookState.Reel);
-            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+            basic.combo.ClearPreviousCombo(false);
         } 
         //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
@@ -174,7 +165,7 @@ public class FishHookState : AbstractHookState
             basic.Camerahandler.CreateShakePoint();
 
             SetState(hook.HookState.Reel);
-            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+            basic.combo.ClearPreviousCombo(false);
             //Create a new list maybe
             //Change animation for the fish and state
             //Remove fish from list 
@@ -200,7 +191,7 @@ public class FishHookState : AbstractHookState
             }
             SetState(hook.HookState.Reel);
            
-            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+            basic.combo.ClearPreviousCombo(false);
 
         }
 
