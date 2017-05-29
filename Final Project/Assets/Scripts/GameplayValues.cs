@@ -11,6 +11,10 @@ public class GameplayValues : MonoBehaviour
     [SerializeField] private float _cameraSpeed;
     [SerializeField] private bool _applyJellyFeel;
     [SerializeField] private float _lerpDuration;
+
+    [Header("Boat Values")]
+    [SerializeField]
+    private int boatRotationSpeed;
     /*[SerializeField]
     private int screenShakeDuration;
 
@@ -48,6 +52,11 @@ public class GameplayValues : MonoBehaviour
     public float GetCameraSpeed()
     {
         return _cameraSpeed;
+    }
+
+    public int GetBoatRotationSpeed()
+    {
+        return boatRotationSpeed;
     }
 
     public bool GetApplyJellyFeel()

@@ -13,6 +13,7 @@ public class basic : MonoBehaviour
     [HideInInspector] public static GameplayValues Gameplayvalues;
     [HideInInspector] public static TempFishSpawn Tempfishspawn;
     [HideInInspector] public static CameraHandler Camerahandler;
+    [HideInInspector] public static CameraController Cameracontroller;
 
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
@@ -31,6 +32,7 @@ public class basic : MonoBehaviour
     
     private GameObject floor;
     private static float seaDepth;
+    private static bool gameEnded;
 
     //Zone for the jellyfish
 
@@ -43,6 +45,7 @@ public class basic : MonoBehaviour
 
     void Start()
     {
+        gameEnded = false;
         SpawnBoat(_boatSpawn.position, _boatSetUp.position);
         SpawnHook();
         SpawnRadar();
@@ -65,6 +68,7 @@ public class basic : MonoBehaviour
         Gameplayvalues = GetComponent<GameplayValues>(); if (!Gameplayvalues) Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
         Tempfishspawn = GetComponent<TempFishSpawn>(); if (!Tempfishspawn) Debug.Log("ERROR: Cannot get reference to TempFishSpawn from Manager object");
         Camerahandler = GetComponent<CameraHandler>(); if (Camerahandler == null) Debug.Log("ERROR: Cannot get reference to CameraHandler from Manager object");
+        //Cameracontroller = GetComponent<CameraController>(); if (Cameracontroller == null) Debug.Log("ERROR: Cannot get reference to CameraController from Manager object");
 
         Camerahandler.InitializeCameraHandler();
         Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat);
@@ -173,5 +177,15 @@ public class basic : MonoBehaviour
     public static float GetJellyfishZoneDown()
     {
         return _jellyfishZonePosY - _jellyfishZoneSizeY;
+    }
+
+    public static void EndGame()
+    {
+        gameEnded = true;
+    }
+
+    public static bool HasGameEnded()
+    {
+        return gameEnded;
     }
 }

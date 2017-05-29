@@ -1,9 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityStandardAssets.ImageEffects;
+using UnityEngine.PostProcessing;
 
 public class CameraHandler : MonoBehaviour
 {
+    private bool _isAboveWater = false;
+    [SerializeField] private Transform _seaSurface;
+    [SerializeField] private PostProcessingProfile _aboveWaterProfile;
+    [SerializeField] private PostProcessingProfile _underWaterProfile;
+    private PostProcessingBehaviour _cameraPostProcessing { get { return _camera.GetComponent<PostProcessingBehaviour>(); } }
+    private PostEffectsBase _globalFog { get { return _camera.GetComponent<PostEffectsBase>(); } }
+
     private bool _initialized = false;
     private GameObject _manager { get { return GameObject.Find("Manager"); } }
     private Camera _camera { get { return Camera.main; } }
@@ -52,6 +61,27 @@ public class CameraHandler : MonoBehaviour
         }
         ReachViewPoint();
         ReachShakePoint();
+        IfCrossedSurface();
+    }
+    private void IfCrossedSurface()
+    {
+        if (!_seaSurface) return;
+
+        float val = _seaSurface.position.y + 0.5f;
+        if (_isAboveWater && _camera.transform.position.y <= val)
+        {
+            _globalFog.enabled = true;
+            RenderSettings.fog = true;
+            if (_underWaterProfile) _cameraPostProcessing.profile = _underWaterProfile;
+            _isAboveWater = false;
+        }
+        else if (!_isAboveWater && _camera.transform.position.y >= val)
+        {
+            _globalFog.enabled = false;
+            RenderSettings.fog = false;
+            if (_aboveWaterProfile) _cameraPostProcessing.profile = _aboveWaterProfile;
+            _isAboveWater = true;
+        }
     }
     public void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
     {

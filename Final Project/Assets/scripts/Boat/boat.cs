@@ -35,6 +35,17 @@ public class boat : general
         _abstractState.Update();
         
     }
+
+    public Dictionary<BoatState, AbstractBoatState> GetStateCache()
+    {
+        return _stateCache;
+    }
+
+    public AbstractBoatState GetAbstractState()
+    {
+        return _abstractState;
+    }
+
     public void SetState(BoatState pState)
     {
         if (_abstractState != null) _abstractState.Refresh();
@@ -73,10 +84,12 @@ public class boat : general
     {
         if (pTrueRightFalseLeft == true)
         {
+            Debug.Log("Returning targetQua Right");
             return rightFacingRotation;
         }
         else
         {
+            Debug.Log("Returning targetQua Left");
             return leftFacingRotation;
         }
     }

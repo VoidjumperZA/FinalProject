@@ -28,7 +28,7 @@ namespace Assets.Scripts
             Vector3 LightDirection = new Vector3(10, 10, 5);
             var lightMatrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.LookRotation(LightDirection, new Vector3(LightDirection.z, LightDirection.x, LightDirection.y)), Vector3.one);
             renderer.sharedMaterial.SetMatrix("_CausticsLightOrientation", lightMatrix);
-            print(lightMatrix);
+           // print(lightMatrix);
         }
     }
 }
