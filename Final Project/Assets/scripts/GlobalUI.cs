@@ -146,7 +146,7 @@ public class GlobalUI : MonoBehaviour
         basic.Hook.SetState(hook.HookState.Reel);
         if (!InTutorial)
         {
-            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+            basic.combo.ClearPreviousCombo(false);
         }
         else
         {
@@ -156,8 +156,8 @@ public class GlobalUI : MonoBehaviour
             if (DropHookCompleted)
             {
                 basic.Tempfishspawn._boatSetUp = true;
-                GameObject.Find("Manager").GetComponent<SeafloorSpawning>().SpawnTrash();
-                GameObject.Find("Manager").GetComponent<SeafloorSpawning>().SpawnSpecialItems();
+                basic.Seafloorspawning.SpawnTrash();
+                basic.Seafloorspawning.SpawnSpecialItems();
                 ReelUpHookCompleted = true;
                 ShowHandHookButton(false);
                 WaitForBoatMove();
@@ -172,7 +172,6 @@ public class GlobalUI : MonoBehaviour
     public void SwitchHookButtons()
     {
         DeployHookButton(true);
-        //RadarButton(true);
         ReelUpHookButton(false);
     }
 

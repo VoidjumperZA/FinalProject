@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class FishHookState : AbstractHookState
 {
-    private float _speed;
+    private float _dragSpeed;
     private float _fallSpeed;
     private Vector3 _xyOffset;
     private float _xOffsetDamping;
@@ -23,7 +23,7 @@ public class FishHookState : AbstractHookState
 
     public FishHookState(hook pHook, float pSpeed, float pOffsetDamping, float pFallSpeed) : base(pHook)
     {
-        _speed = pSpeed;
+        _dragSpeed = pSpeed;
         _xOffsetDamping = pOffsetDamping;
         _fallSpeed = pFallSpeed;
     }
@@ -41,10 +41,7 @@ public class FishHookState : AbstractHookState
     //
     public override void Update()
     {
-        if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10)
-        {
-            ApplyVelocity(_speed);
-        }
+        if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10) ApplyVelocity(_dragSpeed); 
         else
         {
             if (Input.GetMouseButton(0))
@@ -57,7 +54,7 @@ public class FishHookState : AbstractHookState
                 SetXYAxisOffset(mouse.GetWorldPoint());
             }
             ApplyVelocity(_fallSpeed);
-            DampXVelocity();
+            DampVelocityOffset();
         }
 
     }
@@ -107,18 +104,15 @@ public class FishHookState : AbstractHookState
     //
     private void ApplyVelocity(float pFallSpeed)
     {
-        _velocity = new Vector3(_xyOffset.x * _speed, Mathf.Min(_xyOffset.y * _speed / 2, -pFallSpeed), 0);
+        _velocity = new Vector3(_xyOffset.x * _dragSpeed, Mathf.Min(_xyOffset.y * _dragSpeed / 2, -pFallSpeed), 0);
         _hook.gameObject.transform.Translate(_velocity);
     }
 
     //
-    private void DampXVelocity()
+    private void DampVelocityOffset()
     {
         if (_xyOffset.magnitude > 0)
             _xyOffset *= _xOffsetDamping;
-
-        if (_xyOffset.x == 0 && basic.Boat.gameObject.transform.position.x - _hook.gameObject.transform.position.x > 0)
-            _hook.gameObject.transform.Translate(new Vector3(basic.Boat.gameObject.transform.position.x - _hook.gameObject.transform.position.x, 0, 0));
     }
 
     //

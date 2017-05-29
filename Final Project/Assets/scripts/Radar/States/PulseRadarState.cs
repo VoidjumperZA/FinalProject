@@ -39,11 +39,6 @@ public class PulseRadarState : AbstractRadarState {
         float offset = Time.time * _scrollSpeed;
         _radar.Renderer.material.mainTextureOffset = new Vector2(0, offset);
         DetectCollectables();
-        /*if (_cooldown.Done())
-        {
-            _active = false;
-            _renderer.enabled = false;
-        }*/
     }
     private void DetectCollectables()
     {
@@ -51,11 +46,8 @@ public class PulseRadarState : AbstractRadarState {
         if (Time.time % 1.0f != 0) return;
         foreach (general collectable in basic.Generals)
         {
-            if (collectable == null)
-            {
-                //Debug.Log("Collectable NULL");
-                continue;
-            }
+            if (collectable == null) continue;
+
             bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (collectable.transform.position - _radar.transform.position).normalized) >= _radarAngle;
             if (visible) collectable.Reveal(_fadeOutDuration, _collectableStaysVisibleRange);
         }
