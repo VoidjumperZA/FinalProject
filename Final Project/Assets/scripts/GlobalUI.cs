@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class GlobalUI : MonoBehaviour
 {
-	
+	[Header("Tutorial Buttons")]
     [SerializeField]
     private Button _playGameButton;
     [SerializeField]
@@ -23,11 +23,14 @@ public class GlobalUI : MonoBehaviour
     private Image _replayExplode;
     [SerializeField]
     private Image _replayButtonImage;
-
     [SerializeField]
     private Button _deployHookButton;
     [SerializeField]
     private Button _reelUpHook;
+
+    [Header("Timer")]
+    [SerializeField]
+    private Text gameTimerText;
 
     [HideInInspector]
     public bool InTutorial = true;
@@ -67,8 +70,11 @@ public class GlobalUI : MonoBehaviour
     [SerializeField]
     private float oceanBarMovementSpeed;
 
+    private GameTimer gameTimer;
+
     void Start()
     {
+        gameTimer = GameObject.Find("Manager").GetComponent<GameTimer>();
         oceanCleanUpProgressBar.GetComponentInChildren<Text>().text = 0 + "%";
         oceanCleanUpBarChildFill.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
         oceanCleanUpBarChildBackground.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
@@ -127,18 +133,9 @@ public class GlobalUI : MonoBehaviour
             {
                 DropHookCompleted = true;
                 if (!ReelUpHookCompleted) { ShowHandHookButton(false); }
-            }
-            
-            
-            
+            }                     
             StartCoroutine(ShowHookHand());
-            
-
         }
-        //RadarButton(false);
-        //ReelUpHookButton(true);
-
-
     }
 
     public void ReelUpHook()
@@ -207,7 +204,7 @@ public class GlobalUI : MonoBehaviour
         _playExplode.gameObject.SetActive(true);
         
         yield return new WaitForSeconds(0.6f);
-
+        //gameTimer.BeginCountdown();
         _playExplode.gameObject.SetActive(false);
 
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
@@ -224,6 +221,7 @@ public class GlobalUI : MonoBehaviour
         _replayExplode.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(0.6f);
+        //gameTimer.BeginCountdown();
 
         _replayExplode.gameObject.SetActive(false);
 
