@@ -5,7 +5,10 @@ using UnityEngine;
 
 public class FishHookState : AbstractHookState
 {
-    private float _dragSpeed;
+    private counter _speedMultiplier;
+
+    private float _sideSpeed;
+    private float _downSpeed;
     private float _fallSpeed;
     private Vector3 _xyOffset;
     private float _xOffsetDamping;
@@ -21,11 +24,15 @@ public class FishHookState : AbstractHookState
     private float maxHookRotation;
     private float currentHookRotation;
 
-    public FishHookState(hook pHook, float pSpeed, float pOffsetDamping, float pFallSpeed) : base(pHook)
+    public FishHookState(hook pHook, float pSideSpeed, float pDownSpeed, float pOffsetDamping, float pFallSpeed) : base(pHook)
     {
-        _dragSpeed = pSpeed;
+        _sideSpeed = pSideSpeed;
+        _downSpeed = pDownSpeed;
         _xOffsetDamping = pOffsetDamping;
         _fallSpeed = pFallSpeed;
+
+        _speedMultiplier = new counter(1.0f);
+        _speedMultiplier.Reset();
     }
 
     //
@@ -43,11 +50,11 @@ public class FishHookState : AbstractHookState
     {
         if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10)
         {
-            ApplyVelocity(_dragSpeed);
+            ApplyVelocity(_sideSpeed);
         } 
         else
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) || mouse.Touching())
             {
                 if (basic.GlobalUI.InTutorial)
                 {
@@ -100,14 +107,16 @@ public class FishHookState : AbstractHookState
     //
     private void SetXYAxisOffset(Vector3 pPosition)
     {
-        _xyOffset = new Vector3(pPosition.x - _hook.gameObject.transform.position.x, pPosition.y - _hook.gameObject.transform.position.y, 0);
+        _xyOffset = new Vector3(pPosition.x - _hook.HookTip.position.x, pPosition.y - _hook.HookTip.position.y, 0);
         _xyOffset.Normalize();
+        _speedMultiplier.Increase();
+        _xyOffset *= _speedMultiplier.PercentagePassed();
     }
 
     //
     private void ApplyVelocity(float pFallSpeed)
     {
-        _velocity = new Vector3(_xyOffset.x * _dragSpeed, Mathf.Min(_xyOffset.y * _dragSpeed / 2, -pFallSpeed), 0);
+        _velocity = new Vector3(_xyOffset.x * _sideSpeed, Mathf.Min(_xyOffset.y * _downSpeed, -pFallSpeed), 0);
         _hook.gameObject.transform.Translate(_velocity);
     }
 
@@ -116,6 +125,7 @@ public class FishHookState : AbstractHookState
     {
         if (_xyOffset.magnitude > 0)
             _xyOffset *= _xOffsetDamping;
+        if (_xyOffset.magnitude <= 0.01f) _speedMultiplier.Reset();
     }
 
     //
