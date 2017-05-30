@@ -6,6 +6,7 @@ using UnityEngine;
 public class FishHookState : AbstractHookState
 {
     private counter _speedMultiplier;
+    private int _previousSideDirection = 0;
 
     private float _sideSpeed;
     private float _downSpeed;
@@ -50,7 +51,7 @@ public class FishHookState : AbstractHookState
     {
         if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10)
         {
-            ApplyVelocity(_sideSpeed);
+            ApplyVelocity(_downSpeed);
         } 
         else
         {
@@ -63,6 +64,7 @@ public class FishHookState : AbstractHookState
                 }
                 SetXYAxisOffset(mouse.GetWorldPoint());
             }
+            else _speedMultiplier.Reset();
             ApplyVelocity(_fallSpeed);
             DampVelocityOffset();
         }
@@ -108,6 +110,8 @@ public class FishHookState : AbstractHookState
     private void SetXYAxisOffset(Vector3 pPosition)
     {
         _xyOffset = new Vector3(pPosition.x - _hook.HookTip.position.x, pPosition.y - _hook.HookTip.position.y, 0);
+        if ((_previousSideDirection < 0 && _xyOffset.x > 0) || (_previousSideDirection > 0 && _xyOffset.x < 0)) _speedMultiplier.Reset();
+        _previousSideDirection = (_xyOffset.x < 0) ? -1 : ((_xyOffset.x > 0) ? 1 : 0);
         _xyOffset.Normalize();
         _speedMultiplier.Increase();
         _xyOffset *= _speedMultiplier.PercentagePassed();
@@ -125,7 +129,7 @@ public class FishHookState : AbstractHookState
     {
         if (_xyOffset.magnitude > 0)
             _xyOffset *= _xOffsetDamping;
-        if (_xyOffset.magnitude <= 0.01f) _speedMultiplier.Reset();
+        if (_xyOffset.magnitude < 0.01f) _speedMultiplier.Reset();
     }
 
     //
