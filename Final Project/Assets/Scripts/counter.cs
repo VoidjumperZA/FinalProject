@@ -47,6 +47,20 @@ public class counter {
             }
         }
     }
+    public void Increase()
+    {
+        if (!_active && _counter == 0) _active = true;
+        if (_active && _counter < _limit)
+        {
+            _counter += (_realTime) ? Time.deltaTime : _step;
+            if (_counter >= _limit)
+            {
+                _counter = _limit;
+                _active = false;
+                _done = true;
+            }
+        }
+    }
     public void SetActive(bool pBool)
     {
         _active = pBool;
@@ -55,9 +69,13 @@ public class counter {
     {
         return _done;
     }
-    public float Left()
+    public float PercentagePassed()
     {
         return _counter / _limit;
+    }
+    public float PercentageLeft()
+    {
+        return 1 - (_counter / _limit);
     }
     public bool Remaining(float pPercentage)
     {

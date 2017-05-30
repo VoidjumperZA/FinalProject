@@ -30,6 +30,8 @@ public class SetFreeHookState : AbstractHookState {
     {
         _hook.FishOnHook = null;
         _hook.FishOnHook = new List<fish>();
+        _hook.TrashOnHook = null;
+        _hook.TrashOnHook = new List<trash>();
     }
     public override hook.HookState StateType()
     {

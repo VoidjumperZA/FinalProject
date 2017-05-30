@@ -72,8 +72,15 @@ public class GlobalUI : MonoBehaviour
 
     private GameTimer gameTimer;
 
+    [Header("HighScore")]
+    [SerializeField] private GameObject _totalScore;
+    [SerializeField] private GameObject _currency;
+
     void Start()
     {
+        _totalScore.SetActive(false);
+        _currency.SetActive(false);
+
         gameTimer = GameObject.Find("Manager").GetComponent<GameTimer>();
         oceanCleanUpProgressBar.GetComponentInChildren<Text>().text = 0 + "%";
         oceanCleanUpBarChildFill.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
@@ -93,7 +100,7 @@ public class GlobalUI : MonoBehaviour
 		
         
         ShowHandHookButton(false);
-        _handDeployHook.transform.position = new Vector2 (_deployHookButton.transform.position.x + 15, _deployHookButton.transform.position.y - 15);
+        //_handDeployHook.transform.position = new Vector2 (_deployHookButton.transform.position.x + 15, _deployHookButton.transform.position.y - 15);
         
         ShowHandSwipe(false);
     }
@@ -143,7 +150,7 @@ public class GlobalUI : MonoBehaviour
         basic.Hook.SetState(hook.HookState.Reel);
         if (!InTutorial)
         {
-            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+            basic.combo.ClearPreviousCombo(false);
         }
         else
         {
@@ -153,8 +160,8 @@ public class GlobalUI : MonoBehaviour
             if (DropHookCompleted)
             {
                 basic.Tempfishspawn._boatSetUp = true;
-                GameObject.Find("Manager").GetComponent<SeafloorSpawning>().SpawnTrash();
-                GameObject.Find("Manager").GetComponent<SeafloorSpawning>().SpawnSpecialItems();
+                basic.Seafloorspawning.SpawnTrash();
+                basic.Seafloorspawning.SpawnSpecialItems();
                 ReelUpHookCompleted = true;
                 ShowHandHookButton(false);
                 WaitForBoatMove();
@@ -169,7 +176,6 @@ public class GlobalUI : MonoBehaviour
     public void SwitchHookButtons()
     {
         DeployHookButton(true);
-        //RadarButton(true);
         ReelUpHookButton(false);
     }
 
@@ -205,13 +211,16 @@ public class GlobalUI : MonoBehaviour
         _playExplode.gameObject.SetActive(true);
         
         yield return new WaitForSeconds(0.6f);
-        gameTimer.BeginCountdown();
+        //gameTimer.BeginCountdown();
         _playExplode.gameObject.SetActive(false);
 
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _skipTutorialButton.gameObject.SetActive(false);
         _replayButtonImage.gameObject.SetActive(false);
+
+        _totalScore.SetActive(true);
+        _currency.SetActive(true);
     }
 
 
@@ -231,6 +240,9 @@ public class GlobalUI : MonoBehaviour
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
         _playButtonImage.gameObject.SetActive(false);
+
+        _totalScore.SetActive(true);
+        _currency.SetActive(true);
 
     }
     private IEnumerator ShowThenFadeOceanBar()

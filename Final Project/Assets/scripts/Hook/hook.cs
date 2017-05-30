@@ -29,16 +29,18 @@ public class hook : general
     float fishRotationAngle = 25.0f;
 
     // Movement
-    [SerializeField] private float _speed;
+    [SerializeField] private float _sideSpeed;
+    [SerializeField] private float _downSpeed;
     [SerializeField] private float _fallSpeed;
+    [SerializeField] private float _reelSpeed;
     [SerializeField] private float _xOffsetDamping;
 
     private Vector3 _xyOffset;
     private Vector3 _velocity;
     // X Velocity damping
-    
 
-    [SerializeField] private Button _reelButton;
+
+    public Transform HookTip;
 
     private bool valid;
     public override void Start()
@@ -66,8 +68,8 @@ public class hook : general
         _stateCache.Clear();
         _stateCache[HookState.None] = new NoneHookState(this);
         _stateCache[HookState.FollowBoat] = new FollowBoatHookState(this, basic.Boat);
-        _stateCache[HookState.Fish] = new FishHookState(this, _speed, _xOffsetDamping, _fallSpeed);
-        _stateCache[HookState.Reel] = new ReelHookState(this, _speed);
+        _stateCache[HookState.Fish] = new FishHookState(this, _sideSpeed, _downSpeed, _xOffsetDamping, _fallSpeed);
+        _stateCache[HookState.Reel] = new ReelHookState(this, _reelSpeed);
         _stateCache[HookState.SetFree] = new SetFreeHookState(this);
         SetState(_hookState);
     }
