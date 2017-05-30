@@ -17,12 +17,12 @@ public class GlobalUI : MonoBehaviour
     private Image _handSwipe;
     [SerializeField]
     private Image _playExplode;
-    [SerializeField]
-    private Image _playButtonImage;
+    /*[SerializeField]
+    private Image _playButtonImage;*/
     [SerializeField]
     private Image _replayExplode;
-    [SerializeField]
-    private Image _replayButtonImage;
+    /*[SerializeField]
+    private Image _replayButtonImage;*/
     [SerializeField]
     private Button _deployHookButton;
     [SerializeField]
@@ -60,6 +60,8 @@ public class GlobalUI : MonoBehaviour
     [SerializeField]
     GameObject oceanCleanUpBarChildBackground;
     [SerializeField]
+    Image oceanCleanUpBarChildStripe;
+    [SerializeField]
     GameObject oceanCleanUpBarChildText;
     [SerializeField]
     private float timeOceanBarIsShown;
@@ -85,6 +87,7 @@ public class GlobalUI : MonoBehaviour
         oceanCleanUpProgressBar.GetComponentInChildren<Text>().text = 0 + "%";
         oceanCleanUpBarChildFill.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
         oceanCleanUpBarChildBackground.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
+        oceanCleanUpBarChildStripe.CrossFadeAlpha(0.0f, 0.0f, false);
         oceanCleanUpBarChildText.GetComponent<Text>().CrossFadeAlpha(0.0f, 0.0f, false);
 
         //Warnings
@@ -95,8 +98,8 @@ public class GlobalUI : MonoBehaviour
         ReelUpHookButton(false);
         _playExplode.gameObject.SetActive(false);
         _replayExplode.gameObject.SetActive(false);
-        _playButtonImage.gameObject.SetActive(true);
-        _replayButtonImage.gameObject.SetActive(true);
+        //_playButtonImage.gameObject.SetActive(true);
+        //_replayButtonImage.gameObject.SetActive(true);
 		
         
         ShowHandHookButton(false);
@@ -156,7 +159,7 @@ public class GlobalUI : MonoBehaviour
         {
             //Stop all new fish spawning while we are in this part of the tutorial as the ocean should be empty
             basic.Tempfishspawn._boatSetUp = false;
-            basic.Tempfishspawn.ClearAllFish();
+            //basic.Tempfishspawn.ClearAllFish(); //gives shit ton of errors
             if (DropHookCompleted)
             {
                 basic.Tempfishspawn._boatSetUp = true;
@@ -193,7 +196,7 @@ public class GlobalUI : MonoBehaviour
     {
         //Get the percentage, set the bar value and the helper text
         int percentage = basic.Scorehandler.CalculatePercentageOceanCleaned(true);
-        oceanCleanUpProgressBar.GetComponent<Slider>().value = percentage;
+        oceanCleanUpProgressBar.GetComponent<Slider>().value = 100 - percentage;
         oceanCleanUpProgressBar.GetComponentInChildren<Text>().text = percentage + "%";
 
         //Start a coroutine to disable after a while     
@@ -207,7 +210,6 @@ public class GlobalUI : MonoBehaviour
     {
 		
         _playGameButton.gameObject.SetActive(false);
-        _playButtonImage.gameObject.SetActive(false);
         _playExplode.gameObject.SetActive(true);
         
         yield return new WaitForSeconds(0.6f);
@@ -217,7 +219,6 @@ public class GlobalUI : MonoBehaviour
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _skipTutorialButton.gameObject.SetActive(false);
-        _replayButtonImage.gameObject.SetActive(false);
 
         _totalScore.SetActive(true);
         _currency.SetActive(true);
@@ -227,7 +228,6 @@ public class GlobalUI : MonoBehaviour
     private IEnumerator ReplayGameAnim()
     {
         _skipTutorialButton.gameObject.SetActive(false);
-        _replayButtonImage.gameObject.SetActive(false);
         _replayExplode.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(0.6f);
@@ -239,10 +239,11 @@ public class GlobalUI : MonoBehaviour
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
-        _playButtonImage.gameObject.SetActive(false);
 
         _totalScore.SetActive(true);
         _currency.SetActive(true);
+        basic.Seafloorspawning.SpawnTrash();
+        basic.Seafloorspawning.SpawnSpecialItems();
 
     }
     private IEnumerator ShowThenFadeOceanBar()
@@ -250,6 +251,7 @@ public class GlobalUI : MonoBehaviour
         //Immediately show the bar
         oceanCleanUpBarChildFill.GetComponent<Image>().CrossFadeAlpha(1.0f, oceanBarFadeInSpeed, false);
         oceanCleanUpBarChildBackground.GetComponent<Image>().CrossFadeAlpha(1.0f, oceanBarFadeInSpeed, false);
+        oceanCleanUpBarChildStripe.CrossFadeAlpha(1.0f, oceanBarFadeInSpeed, false);
         oceanCleanUpBarChildText.GetComponent<Text>().CrossFadeAlpha(1.0f, oceanBarFadeInSpeed, false);
 
         //Show for a small time
@@ -258,6 +260,7 @@ public class GlobalUI : MonoBehaviour
         //Fade out
         oceanCleanUpBarChildFill.GetComponent<Image>().CrossFadeAlpha(0.0f, oceanBarFadeOutSpeed, false);
         oceanCleanUpBarChildBackground.GetComponent<Image>().CrossFadeAlpha(0.0f, oceanBarFadeOutSpeed, false);
+        oceanCleanUpBarChildStripe.CrossFadeAlpha(0.0f, oceanBarFadeOutSpeed, false);
         oceanCleanUpBarChildText.GetComponent<Text>().CrossFadeAlpha(0.0f, oceanBarFadeOutSpeed, false);
     }
 

@@ -24,7 +24,10 @@ public class basic : MonoBehaviour
     [SerializeField] private GameObject _hookPrefab;
     [SerializeField] private GameObject _lowPolyFish; public static GameObject LowPolyFish;
     
-    public static List<general> Generals = new List<general>();
+    public static List<fish> Fish = new List<fish>();
+    public static List<trash> Trash = new List<trash>();
+    public static List<Jellyfish> JellyFish = new List<Jellyfish>();
+
     public static boat Boat;
     public static hook Hook;
     public static radar Radar;
@@ -128,13 +131,23 @@ public class basic : MonoBehaviour
         if (!Boat && !Hook) return;
         _lineRenderer.SetPositions(new Vector3[] { Boat.gameObject.transform.position, Hook.gameObject.transform.position });
     }
-    public static void AddCollectable(general pCollectable)
+    public static void AddCollectable(fish pFish)
     {
-        Generals.Add(pCollectable);
+        Fish.Add(pFish);
+    }
+    public static void AddCollectable(trash pTrash)
+    {
+        Trash.Add(pTrash);
+    }
+    public static void AddCollectable(Jellyfish pJellyFish)
+    {
+
     }
     public static void RemoveCollectable(general pCollectable)
     {
-        Generals.Remove(pCollectable);
+        if (pCollectable is fish) Fish.Remove(pCollectable as fish);
+        if (pCollectable is trash) Trash.Remove(pCollectable as trash);
+        else Debug.Log("Trying to remove a general of unknown type.");
     }
     public static float GetSeaDepth()
     {
