@@ -47,6 +47,8 @@ public class SwimFishState : AbstractFishState
         if (Mathf.Abs(basic.Radar.transform.position.x - _fish.transform.position.x) > _stayVisibleRange)
         {
             _outlineCounter.Count();
+            _fish._color.a = _outlineCounter.PercentageLeft();
+            _fish._material.color = _fish._color;
             if (_outlineCounter.Done())
             {
                 _fish.Hide();

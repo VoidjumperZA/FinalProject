@@ -13,7 +13,7 @@ public class basic : MonoBehaviour
     [HideInInspector] public static GameplayValues Gameplayvalues;
     [HideInInspector] public static TempFishSpawn Tempfishspawn;
     [HideInInspector] public static CameraHandler Camerahandler;
-    [HideInInspector] public static CameraController Cameracontroller;
+    [HideInInspector] public static SeafloorSpawning Seafloorspawning;
 
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
@@ -22,8 +22,8 @@ public class basic : MonoBehaviour
     [SerializeField] private GameObject _trailerPrefab;
     [SerializeField] private GameObject _radarPrefab;
     [SerializeField] private GameObject _hookPrefab;
-
-    private int cameraHandlerUpdateKey;
+    [SerializeField] private GameObject _lowPolyFish; public static GameObject LowPolyFish;
+    
     public static List<general> Generals = new List<general>();
     public static boat Boat;
     public static hook Hook;
@@ -45,13 +45,12 @@ public class basic : MonoBehaviour
 
     void Start()
     {
+        LowPolyFish = _lowPolyFish;
         gameEnded = false;
         SpawnBoat(_boatSpawn.position, _boatSetUp.position);
         SpawnHook();
         SpawnRadar();
-        SpawnTrailer();
-
-        Boat.AssignHook(Hook);
+        
         Boat.AssignRadar(Radar);
         Hook.AssignBoat(Boat);
 
@@ -67,8 +66,8 @@ public class basic : MonoBehaviour
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
         Gameplayvalues = GetComponent<GameplayValues>(); if (!Gameplayvalues) Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
         Tempfishspawn = GetComponent<TempFishSpawn>(); if (!Tempfishspawn) Debug.Log("ERROR: Cannot get reference to TempFishSpawn from Manager object");
-        Camerahandler = GetComponent<CameraHandler>(); if (Camerahandler == null) Debug.Log("ERROR: Cannot get reference to CameraHandler from Manager object");
-        //Cameracontroller = GetComponent<CameraController>(); if (Cameracontroller == null) Debug.Log("ERROR: Cannot get reference to CameraController from Manager object");
+        Camerahandler = GetComponent<CameraHandler>(); if (!Camerahandler) Debug.Log("ERROR: Cannot get reference to CameraHandler from Manager object");
+        Seafloorspawning = GetComponent<SeafloorSpawning>(); if (!Seafloorspawning) Debug.Log("ERROR: Cannot get reference to SeafloorSpawning from Manager object");
 
         Camerahandler.InitializeCameraHandler();
         Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat);

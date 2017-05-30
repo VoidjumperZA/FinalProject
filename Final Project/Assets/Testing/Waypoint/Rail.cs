@@ -34,7 +34,7 @@ public class Rail : MonoBehaviour
 
         if (_flipped) Flip();
         Refresh();
-        basic.Cameracontroller.AddTrail(Track, this);
+        //basic.Cameracontroller.AddTrail(Track, this);
     }
     public void Run(ref Camera pCamera)
     {

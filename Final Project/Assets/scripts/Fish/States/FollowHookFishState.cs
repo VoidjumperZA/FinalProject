@@ -22,8 +22,7 @@ public class FollowHookFishState : AbstractFishState
     }
     public override void Update()
     {
-        //_fish.RagdollJoints[4].transform.position = basic.Hook.transform.position;
-        if (_fish.Joints.Length > 0) _fish.Joints[0].gameObject.transform.position = basic.Hook.transform.position;
+        if (_fish.Joints.Length > 0) _fish.Joints[0].gameObject.transform.position = basic.Hook.HookTip.position;
     }
     public override void Refresh()
     {
