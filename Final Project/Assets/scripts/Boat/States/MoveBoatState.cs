@@ -22,17 +22,26 @@ public class MoveBoatState : AbstractBoatState {
     private Quaternion targetQua;
     private GameObject boatModel;
 
+    private bool playerControl;
+    private Vector3 doubleBackDestination;
+    private float halfDoubleBackDestination;
+    private bool isMovingToDoubleBackDestination;
+    private List<GameObject> doubleBackDestinations;
+    private List<GameObject> levelBoundaries;
+
     public MoveBoatState(boat pBoat, float pAcceleration, float pMaxVelocity, float pDeceleration, float pRotationLerpSpeed) : base(pBoat)
     {
         _acceleration = pAcceleration;
         _maxVelocity = pMaxVelocity;
         _deceleration = pDeceleration;
         _rotationLerpSpeed = pRotationLerpSpeed;
+
         SetUpState();
     }
 
     private void SetUpState()
     {
+        Debug.Log("Beginning SetUp of MoveBoatState.");
         boatModel = GameObject.FindGameObjectWithTag("BoatModel");
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat);
         _velocity = 0.0f;
@@ -40,6 +49,25 @@ public class MoveBoatState : AbstractBoatState {
         direction = 1.0f;
         turning = false;
 
+        //Doubling Back
+        playerControl = true;
+        doubleBackDestination = Vector3.zero;
+        isMovingToDoubleBackDestination = false;
+        halfDoubleBackDestination = 0;
+        //doubleBackDestinations.Clear();
+        doubleBackDestinations = new List<GameObject>(GameObject.FindGameObjectsWithTag("DoubleBackDestination"));
+        if (doubleBackDestinations.Count < 2 || doubleBackDestinations.Count > 2)
+        {
+            Debug.Log("ERROR: There is an incorrect amount of double back locations. There are " + doubleBackDestinations.Count + " instead of the required 2.");
+        }
+        //levelBoundaries.Clear();
+        levelBoundaries = new List<GameObject>(GameObject.FindGameObjectsWithTag("LevelBoundary"));
+        if (levelBoundaries.Count < 2 || levelBoundaries.Count > 2)
+        {
+            Debug.Log("ERROR: There is an incorrect amount of level boundary points. There are " + levelBoundaries.Count + " instead of the required 2.");
+        }
+
+        //rotation
         if (boatModel.gameObject.transform.rotation == basic.Boat.GetBoatEndRotations(true))
         {
             direction = 1.0f;
@@ -56,6 +84,7 @@ public class MoveBoatState : AbstractBoatState {
         }
         currentRot = 0;
         rotSpeed = GameObject.Find("Manager").GetComponent<GameplayValues>().GetBoatRotationSpeed();
+        Debug.Log("Finished SetUp of MoveBoatState.");
     }
 
     public override void Start()
@@ -78,7 +107,7 @@ public class MoveBoatState : AbstractBoatState {
         setPolarity();
 
         //Debug.Log("Direction: " + direction);
-        if (!MoveToDestination() && turning == false)
+        if (!MoveToDestination() && turning == false && playerControl == true)
         {
             //Debug.Log("Switching to another state");
             basic.Hook.SetState(hook.HookState.None);
@@ -90,11 +119,16 @@ public class MoveBoatState : AbstractBoatState {
         //Debug.Log("Polarity: " + polarity + "\t|\tDirection: " + direction);
 
         }
+
+        if (isMovingToDoubleBackDestination == true)
+        {
+            moveToDoubleBackDestination();
+        }
     }
     private void setPolarity()
     {
         polarity = Mathf.Sign(mouse.GetWorldPoint().x - _boat.gameObject.transform.position.x);
-        if (direction != polarity && Input.GetMouseButton(0) == true && _velocity == 0.0f)
+        if (direction != polarity && Input.GetMouseButton(0) == true && _velocity == 0.0f && playerControl == true)
         {
             Debug.Log("One.");
             matchDirectionToPolarity();
@@ -115,7 +149,7 @@ public class MoveBoatState : AbstractBoatState {
     private bool MoveToDestination()
     {
         //don't move the boat while it is turning as it will then traverse along incorrect axes
-        if (turning == false)
+        if (turning == false && playerControl == true)
         {         
             //while clicking, under max velocity and heading where directed 
             if (Input.GetMouseButton(0) && _velocity < _maxVelocity && direction == polarity)
@@ -152,6 +186,22 @@ public class MoveBoatState : AbstractBoatState {
         
     }
 
+    private void moveToDoubleBackDestination()
+    {
+        Vector3 differenceVector = doubleBackDestination - _boat.gameObject.transform.position;
+        if (differenceVector.magnitude > halfDoubleBackDestination) _velocity += _acceleration;
+        else _velocity -= _acceleration;
+        if (_velocity > _maxVelocity) _velocity = _maxVelocity;
+        if (_velocity < 0 || differenceVector.magnitude <= _velocity)
+        {
+            _velocity = 0;
+            _boat.gameObject.transform.position = doubleBackDestination;
+            isMovingToDoubleBackDestination = false;
+            playerControl = true;
+            Debug.Log("Done doubling back.");
+        }
+        _boat.transform.Translate(differenceVector.normalized * _velocity);
+    }
     //
     private void rotate()
     {
@@ -163,7 +213,18 @@ public class MoveBoatState : AbstractBoatState {
             Camera.main.transform.SetParent(previousCamHolder);
             turning = false;
             Debug.Log("Turning is false");
+            if (playerControl == false)
+            {
+                Debug.Log("Initiating move.");
+                isMovingToDoubleBackDestination = true;
+            }
         }
+    }
+
+    public void ForceRotationWithoutPolarityDirectionMatch()
+    {
+        playerControl = false;
+        prepareToRotate();
     }
 
     //
@@ -188,9 +249,32 @@ public class MoveBoatState : AbstractBoatState {
 
     public override void OnTriggerEnter(Collider other)
     {
+        //Fishing Area
         if (other.gameObject.tag == "FishingArea")
         {
             GameObject.Find("Manager").GetComponent<TempFishSpawn>().CalculateNewSpawnDensity();
-        }          
+        }
+
+        //Level Boundary
+        if (other.gameObject.tag == "LevelBoundary")
+        {
+            doubleBackDestination = doubleBackDestinations[0].transform.position;
+            Vector3 distanceApart = Vector3.zero;
+            foreach (GameObject dbd in doubleBackDestinations)
+            {
+                distanceApart = other.gameObject.transform.position - dbd.gameObject.transform.position;
+                if (distanceApart.x < doubleBackDestination.x)
+                {
+                    Debug.Log("Replacing Distance.");
+                    doubleBackDestination = dbd.transform.position;
+                }
+            }
+            halfDoubleBackDestination = (doubleBackDestination - _boat.gameObject.transform.position).magnitude / 2;
+            ForceRotationWithoutPolarityDirectionMatch();
+        }
+        if (other.gameObject.tag == "DoubleBackDestination")
+        {
+            
+        }
     }
 }

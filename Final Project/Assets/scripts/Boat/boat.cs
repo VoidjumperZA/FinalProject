@@ -7,7 +7,7 @@ public class boat : general
     // States
     private Dictionary<BoatState, AbstractBoatState> _stateCache = new Dictionary<BoatState, AbstractBoatState>();
     private AbstractBoatState _abstractState = null;
-    public enum BoatState { None, SetUp, Stationary, Move, Fish }
+    public enum BoatState { None, SetUp, Stationary, Move, Fish}
     [SerializeField] private BoatState _boatState = BoatState.None;
     // Radar
     private radar _radar = null;
@@ -59,7 +59,7 @@ public class boat : general
         _stateCache[BoatState.SetUp] = new SetUpBoatState(this, _acceleration, _maxVelocity, _deceleration, _setUpPosition);
         _stateCache[BoatState.Stationary] = new StationaryBoatState(this);
         _stateCache[BoatState.Move] = new MoveBoatState(this, _acceleration, _maxVelocity, _deceleration, _rotationLerpSpeed);
-        _stateCache[BoatState.Fish] = new FishBoatState(this);
+        _stateCache[BoatState.Fish] = new FishBoatState(this);       
         SetState(_boatState);
     }
     public void AssignHook(hook pHook)
