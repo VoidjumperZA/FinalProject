@@ -70,14 +70,14 @@ public class CameraHandler : MonoBehaviour
         if (_isAboveWater && _camera.transform.position.y <= val)
         {
             _globalFog.enabled = true;
-            //RenderSettings.fog = true;
+            RenderSettings.fog = true;
             if (_underWaterProfile) _cameraPostProcessing.profile = _underWaterProfile;
             _isAboveWater = false;
         }
         else if (!_isAboveWater && _camera.transform.position.y >= val)
         {
             _globalFog.enabled = false;
-            //RenderSettings.fog = false;
+            RenderSettings.fog = false;
             if (_aboveWaterProfile) _cameraPostProcessing.profile = _aboveWaterProfile;
             _isAboveWater = true;
         }
