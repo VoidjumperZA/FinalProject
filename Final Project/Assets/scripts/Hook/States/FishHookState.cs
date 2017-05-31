@@ -5,7 +5,11 @@ using UnityEngine;
 
 public class FishHookState : AbstractHookState
 {
-    private float _speed;
+    private counter _speedMultiplier;
+    private int _previousSideDirection = 0;
+
+    private float _sideSpeed;
+    private float _downSpeed;
     private float _fallSpeed;
     private Vector3 _xyOffset;
     private float _xOffsetDamping;
@@ -21,11 +25,15 @@ public class FishHookState : AbstractHookState
     private float maxHookRotation;
     private float currentHookRotation;
 
-    public FishHookState(hook pHook, float pSpeed, float pOffsetDamping, float pFallSpeed) : base(pHook)
+    public FishHookState(hook pHook, float pSideSpeed, float pDownSpeed, float pOffsetDamping, float pFallSpeed) : base(pHook)
     {
-        _speed = pSpeed;
+        _sideSpeed = pSideSpeed;
+        _downSpeed = pDownSpeed;
         _xOffsetDamping = pOffsetDamping;
         _fallSpeed = pFallSpeed;
+
+        _speedMultiplier = new counter(1.0f);
+        _speedMultiplier.Reset();
     }
 
     //
@@ -43,11 +51,11 @@ public class FishHookState : AbstractHookState
     {
         if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10)
         {
-            ApplyVelocity(_speed);
-        }
+            ApplyVelocity(_downSpeed);
+        } 
         else
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButton(0) || mouse.Touching())
             {
                 if (basic.GlobalUI.InTutorial)
                 {
@@ -56,8 +64,9 @@ public class FishHookState : AbstractHookState
                 }
                 SetXYAxisOffset(mouse.GetWorldPoint());
             }
+            else _speedMultiplier.Reset();
             ApplyVelocity(_fallSpeed);
-            DampXVelocity();
+            DampVelocityOffset();
         }
 
     }
@@ -100,37 +109,26 @@ public class FishHookState : AbstractHookState
     //
     private void SetXYAxisOffset(Vector3 pPosition)
     {
-        _xyOffset = new Vector3(pPosition.x - _hook.gameObject.transform.position.x, pPosition.y - _hook.gameObject.transform.position.y, 0);
+        _xyOffset = new Vector3(pPosition.x - _hook.HookTip.position.x, pPosition.y - _hook.HookTip.position.y, 0);
+        //if ((_previousSideDirection < 0 && _xyOffset.x > 0) || (_previousSideDirection > 0 && _xyOffset.x < 0)) _speedMultiplier.Reset();
+        //_previousSideDirection = (_xyOffset.x < 0) ? -1 : ((_xyOffset.x > 0) ? 1 : 0);
         _xyOffset.Normalize();
+        //_speedMultiplier.Increase();
+        //_xyOffset *= _speedMultiplier.PercentagePassed();
     }
 
     //
     private void ApplyVelocity(float pFallSpeed)
     {
-        _velocity = new Vector3(_xyOffset.x * _speed, Mathf.Min(_xyOffset.y * _speed / 2, -pFallSpeed), 0);
+        _velocity = new Vector3(_xyOffset.x * _sideSpeed, Mathf.Min(_xyOffset.y * _downSpeed, -pFallSpeed), 0);
         _hook.gameObject.transform.Translate(_velocity);
     }
 
     //
-    private void DampXVelocity()
+    private void DampVelocityOffset()
     {
         if (_xyOffset.magnitude > 0)
             _xyOffset *= _xOffsetDamping;
-
-        if (_xyOffset.x == 0 && basic.Boat.gameObject.transform.position.x - _hook.gameObject.transform.position.x > 0)
-            _hook.gameObject.transform.Translate(new Vector3(basic.Boat.gameObject.transform.position.x - _hook.gameObject.transform.position.x, 0, 0));
-    }
-
-    //
-    private void shakeCameraOnCollect()
-    {
-        screenShakeCounter++;
-        if (screenShakeCounter >= screenShakeDuration)
-        {
-            camShaking = false;
-            screenShakeCounter = 0;
-            //CameraHandler.ResetScreenShake(true);
-        }
     }
 
     //
@@ -147,14 +145,15 @@ public class FishHookState : AbstractHookState
                 basic.GlobalUI.SwipehandCompleted = true;
             }
             SetState(hook.HookState.Reel);
-            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+            basic.combo.ClearPreviousCombo(false);
+			GameObject.Instantiate (basic.HookHit, _hook.HookTip.position, Quaternion.identity);
         } 
         //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
         {
             fish theFish = other.gameObject.GetComponent<fish>();
-            if (!theFish.Visible) return;
-
+            if (!theFish || !theFish.Visible) return;
+            GameObject.Destroy(other.gameObject.GetComponent<Collider>());
             theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
             basic.Shoppinglist.AddFish(theFish);
@@ -173,14 +172,14 @@ public class FishHookState : AbstractHookState
         if (other.gameObject.CompareTag("Jellyfish"))
         {
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
-            //if (!theJellyfish.Visible) return;
-
+            if (!theJellyfish) return;
+			_hook.EnableJellyAttackEffect ();
             basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty(), true);
 
             basic.Camerahandler.CreateShakePoint();
 
             SetState(hook.HookState.Reel);
-            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+            basic.combo.ClearPreviousCombo(false);
             //Create a new list maybe
             //Change animation for the fish and state
             //Remove fish from list 
@@ -190,10 +189,11 @@ public class FishHookState : AbstractHookState
         if (other.gameObject.CompareTag("Trash"))
         {
             trash theTrash = other.gameObject.GetComponent<trash>();
-            if (!theTrash.Visible) return;
+            if (!theTrash || !theTrash.Visible) return;
 
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
+
             bool firstTime = basic.Scorehandler.CollectATrashPiece();
             basic.GlobalUI.UpdateOceanProgressBar(firstTime);
             basic.Camerahandler.CreateShakePoint();
@@ -206,7 +206,7 @@ public class FishHookState : AbstractHookState
             }
             SetState(hook.HookState.Reel);
            
-            GameObject.Find("Manager").GetComponent<Combo>().ClearPreviousCombo(false);
+            basic.combo.ClearPreviousCombo(false);
 
         }
 

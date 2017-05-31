@@ -2,24 +2,56 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public struct tempLowPolyFish
+{
+    private fish.FishType _type;
+    public tempLowPolyFish(fish.FishType pType)
+    {
+        _type = pType;
+    }
+}
+
 public class trailer : general
 {
+    [HideInInspector] public List<fish.FishType> _lowPolyFish;
+    [SerializeField]
+    private float _interval = 2.0f;
+    private counter _spawnInterval;
     // States
     /*private Dictionary<BoatState, AbstractBoatState> _stateCache = new Dictionary<BoatState, AbstractBoatState>();
     private AbstractBoatState _abstractState = null;*/
-    public enum TrailerState { None, Move }
+    /*public enum TrailerState { None, Move }
     [SerializeField] private TrailerState _trailerState = TrailerState.None;
     [HideInInspector] public List<general> StuffOnTrailer = new List<general>();
-    [SerializeField] private Transform[] _storagePoints;
+    [SerializeField] private Transform[] _storagePoints;*/
     public override void Start()
     {
+        _lowPolyFish = new List<fish.FishType>();
+        _spawnInterval = new counter(_interval);
+        _spawnInterval.SetActive(true);
         //InitializeStateMachine();
     }
     public override void Update()
     {
-        for (int i = 0; i < StuffOnTrailer.Count; i++) StuffOnTrailer[i].gameObject.transform.position = gameObject.transform.position + new Vector3(0, i, 0);
-        //_abstractState.Update();
+        if (Input.GetKeyDown(KeyCode.L)) Instantiate(basic.LowPolyFish, basic.Boat.ContainerSpawner.position, basic.Boat.ContainerSpawner.rotation);
+        if (_lowPolyFish.Count > 0)
+        {
+            _spawnInterval.Count();
+            if (_spawnInterval.Done())
+            {
+                Instantiate(basic.LowPolyFish, basic.Boat.ContainerSpawner.position, basic.Boat.ContainerSpawner.rotation);
 
+                Debug.Log("Spawned: " + basic.LowPolyFish.name);
+                _lowPolyFish.RemoveAt(0);
+                _spawnInterval.Reset();
+            }
+        }
+        //_abstractState.Update();
+    }
+    public void Add(fish.FishType pType)
+    {
+        _lowPolyFish.Add(pType);
+        Debug.Log("Added: " + pType);
     }
     /*public void SetState(BoatState pState)
     {

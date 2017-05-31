@@ -29,23 +29,26 @@ public class hook : general
     float fishRotationAngle = 25.0f;
 
     // Movement
-    [SerializeField] private float _speed;
+    [SerializeField] private float _sideSpeed;
+    [SerializeField] private float _downSpeed;
     [SerializeField] private float _fallSpeed;
+    [SerializeField] private float _reelSpeed;
     [SerializeField] private float _xOffsetDamping;
 
     private Vector3 _xyOffset;
     private Vector3 _velocity;
     // X Velocity damping
-    
 
-    [SerializeField] private Button _reelButton;
+
+    public Transform HookTip;
+	public ParticleSystem JellyAttackEffect;
 
     private bool valid;
     public override void Start()
     {
         valid = true;
         InitializeStateMachine();
-        basic.GlobalUI.GetOceanCleanUpBar().gameObject.GetComponent<OceanCleanUpUIAnimation>().SetBarPosition();
+        //basic.GlobalUI.GetOceanCleanUpBar().gameObject.GetComponent<OceanCleanUpUIAnimation>().SetBarPosition();
     }
 
     //
@@ -66,8 +69,8 @@ public class hook : general
         _stateCache.Clear();
         _stateCache[HookState.None] = new NoneHookState(this);
         _stateCache[HookState.FollowBoat] = new FollowBoatHookState(this, basic.Boat);
-        _stateCache[HookState.Fish] = new FishHookState(this, _speed, _xOffsetDamping, _fallSpeed);
-        _stateCache[HookState.Reel] = new ReelHookState(this, _speed);
+        _stateCache[HookState.Fish] = new FishHookState(this, _sideSpeed, _downSpeed, _xOffsetDamping, _fallSpeed);
+        _stateCache[HookState.Reel] = new ReelHookState(this, _reelSpeed);
         _stateCache[HookState.SetFree] = new SetFreeHookState(this);
         SetState(_hookState);
     }
@@ -93,4 +96,16 @@ public class hook : general
     {
         _boat = pBoat;
     }
+	public void EnableJellyAttackEffect() 
+	{
+		StartCoroutine(JellyAttackCoroutine());
+	}
+
+	private IEnumerator JellyAttackCoroutine()
+	{
+		JellyAttackEffect.gameObject.SetActive (true);
+
+		yield return new WaitForSeconds (0.95f);
+		JellyAttackEffect.gameObject.SetActive (false);
+	}
 }

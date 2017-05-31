@@ -13,7 +13,7 @@ public class basic : MonoBehaviour
     [HideInInspector] public static GameplayValues Gameplayvalues;
     [HideInInspector] public static TempFishSpawn Tempfishspawn;
     [HideInInspector] public static CameraHandler Camerahandler;
-    [HideInInspector] public static CameraController Cameracontroller;
+    [HideInInspector] public static SeafloorSpawning Seafloorspawning;
 
     [SerializeField] private LineRenderer _lineRenderer;
     [SerializeField] private Transform _boatSpawn;
@@ -22,9 +22,13 @@ public class basic : MonoBehaviour
     [SerializeField] private GameObject _trailerPrefab;
     [SerializeField] private GameObject _radarPrefab;
     [SerializeField] private GameObject _hookPrefab;
+    [SerializeField] private GameObject _lowPolyFish; public static GameObject LowPolyFish;
+	[SerializeField] private GameObject _hookHit; public static GameObject HookHit;
+    
+    public static List<fish> Fish = new List<fish>();
+    public static List<trash> Trash = new List<trash>();
+    public static List<Jellyfish> JellyFish = new List<Jellyfish>();
 
-    private int cameraHandlerUpdateKey;
-    public static List<general> Generals = new List<general>();
     public static boat Boat;
     public static hook Hook;
     public static radar Radar;
@@ -45,13 +49,13 @@ public class basic : MonoBehaviour
 
     void Start()
     {
+        LowPolyFish = _lowPolyFish;
+		HookHit = _hookHit;
         gameEnded = false;
         SpawnBoat(_boatSpawn.position, _boatSetUp.position);
         SpawnHook();
         SpawnRadar();
-        SpawnTrailer();
-
-        Boat.AssignHook(Hook);
+        
         Boat.AssignRadar(Radar);
         Hook.AssignBoat(Boat);
 
@@ -67,11 +71,11 @@ public class basic : MonoBehaviour
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
         Gameplayvalues = GetComponent<GameplayValues>(); if (!Gameplayvalues) Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
         Tempfishspawn = GetComponent<TempFishSpawn>(); if (!Tempfishspawn) Debug.Log("ERROR: Cannot get reference to TempFishSpawn from Manager object");
-        Camerahandler = GetComponent<CameraHandler>(); if (Camerahandler == null) Debug.Log("ERROR: Cannot get reference to CameraHandler from Manager object");
-        //Cameracontroller = GetComponent<CameraController>(); if (Cameracontroller == null) Debug.Log("ERROR: Cannot get reference to CameraController from Manager object");
+        Camerahandler = GetComponent<CameraHandler>(); if (!Camerahandler) Debug.Log("ERROR: Cannot get reference to CameraHandler from Manager object");
+        Seafloorspawning = GetComponent<SeafloorSpawning>(); if (!Seafloorspawning) Debug.Log("ERROR: Cannot get reference to SeafloorSpawning from Manager object");
 
         Camerahandler.InitializeCameraHandler();
-        Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat);
+        Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat, true);
 
         //Find out seaDepth
         floor = GameObject.FindGameObjectWithTag("Floor");
@@ -99,12 +103,12 @@ public class basic : MonoBehaviour
     void Update()
     {
         RenderTrail();
-        if (Input.GetMouseButton(0)) _inputTimer.ResetClock();
+        if (Input.GetMouseButton(0) || mouse.Touching()) _inputTimer.ResetClock();
+        Camerahandler.ClassUpdate();
     }
 
     private void LateUpdate()
     {
-        Camerahandler.ClassUpdate();
     }
     private void SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
     {
@@ -129,13 +133,23 @@ public class basic : MonoBehaviour
         if (!Boat && !Hook) return;
         _lineRenderer.SetPositions(new Vector3[] { Boat.gameObject.transform.position, Hook.gameObject.transform.position });
     }
-    public static void AddCollectable(general pCollectable)
+    public static void AddCollectable(fish pFish)
     {
-        Generals.Add(pCollectable);
+        Fish.Add(pFish);
+    }
+    public static void AddCollectable(trash pTrash)
+    {
+        Trash.Add(pTrash);
+    }
+    public static void AddCollectable(Jellyfish pJellyFish)
+    {
+
     }
     public static void RemoveCollectable(general pCollectable)
     {
-        Generals.Remove(pCollectable);
+        if (pCollectable is fish) Fish.Remove(pCollectable as fish);
+        if (pCollectable is trash) Trash.Remove(pCollectable as trash);
+        else Debug.Log("Trying to remove a general of unknown type.");
     }
     public static float GetSeaDepth()
     {

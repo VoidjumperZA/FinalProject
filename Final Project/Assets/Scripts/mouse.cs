@@ -5,6 +5,7 @@ using UnityEngine;
 public static class mouse {
     private static RaycastHit _hitInfo;
     private static Vector3 _previousWorldPoint;
+
     public static Vector3 GetWorldPoint()
     {
         if (GetRaycastHit().HasValue) return GetRaycastHit().Value.point;
@@ -19,12 +20,27 @@ public static class mouse {
         }
             return null;
     }
-    public static RaycastHit? GetRaycastHit()
+    /*public static RaycastHit? GetRaycastHit()
     { 
-        
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out _hitInfo, 1 << 8))
         {
             //Debug.Log("RAYCAST HIT SUCCESSFUL");
+            return _hitInfo;
+        }
+        return null;
+    }*/
+    public static RaycastHit? GetRaycastHit()
+    {
+        if (Input.touchCount == 1)
+        {
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.GetTouch(0).position), out _hitInfo, 1 << 8))
+            {
+                //Debug.Log("RAYCAST HIT SUCCESSFUL");
+                return _hitInfo;
+            }
+        }
+        else if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out _hitInfo, 1 << 8))
+        {
             return _hitInfo;
         }
         return null;
@@ -32,5 +48,9 @@ public static class mouse {
     public static bool GameObjectTagIs(string pTag)
     {
         return GetGeneral() ? GetGeneral().gameObject.CompareTag(pTag) : false;
+    }
+    public static bool Touching()
+    {
+        return (Input.touchCount != 0);
     }
 }

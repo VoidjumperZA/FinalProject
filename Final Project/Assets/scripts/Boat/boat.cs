@@ -7,13 +7,10 @@ public class boat : general
     // States
     private Dictionary<BoatState, AbstractBoatState> _stateCache = new Dictionary<BoatState, AbstractBoatState>();
     private AbstractBoatState _abstractState = null;
-    public enum BoatState { None, SetUp, Stationary, Move, Fish }
+    public enum BoatState { None, SetUp, Stationary, Move, Fish}
     [SerializeField] private BoatState _boatState = BoatState.None;
     // Radar
     private radar _radar = null;
-    // Fishing
-    private hook _hook = null;
-    private trailer _trailer = null;
     [SerializeField] private float _acceleration;
     [SerializeField] private float _deceleration;
     [SerializeField] private float _maxVelocity;
@@ -21,6 +18,9 @@ public class boat : general
     private Vector3 _setUpPosition;
     private Quaternion rightFacingRotation;
     private Quaternion leftFacingRotation;
+
+
+    public Transform ContainerSpawner;
     public override void Start()
     {
         rightFacingRotation = gameObject.transform.rotation;
@@ -29,6 +29,7 @@ public class boat : general
         goTemp.transform.Rotate(0.0f, 180, 0.0f);
         leftFacingRotation = goTemp.transform.rotation;
         InitializeStateMachine();
+        basic.Trailer = GetComponent<trailer>();
     }
     public override void Update()
     {
@@ -59,12 +60,8 @@ public class boat : general
         _stateCache[BoatState.SetUp] = new SetUpBoatState(this, _acceleration, _maxVelocity, _deceleration, _setUpPosition);
         _stateCache[BoatState.Stationary] = new StationaryBoatState(this);
         _stateCache[BoatState.Move] = new MoveBoatState(this, _acceleration, _maxVelocity, _deceleration, _rotationLerpSpeed);
-        _stateCache[BoatState.Fish] = new FishBoatState(this);
+        _stateCache[BoatState.Fish] = new FishBoatState(this);       
         SetState(_boatState);
-    }
-    public void AssignHook(hook pHook)
-    {
-        _hook = pHook;
     }
     public void AssignRadar(radar pRadar)
     {
@@ -84,12 +81,12 @@ public class boat : general
     {
         if (pTrueRightFalseLeft == true)
         {
-            Debug.Log("Returning targetQua Right");
+            //Debug.Log("Returning targetQua Right");
             return rightFacingRotation;
         }
         else
         {
-            Debug.Log("Returning targetQua Left");
+            //Debug.Log("Returning targetQua Left");
             return leftFacingRotation;
         }
     }

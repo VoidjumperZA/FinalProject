@@ -55,7 +55,7 @@ public class MoveBoatState : AbstractBoatState {
             //Debug.Log("Set Up State. Direction: " + direction + "  |  targetQua: Left");
         }
         currentRot = 0;
-        rotSpeed = GameObject.Find("Manager").GetComponent<GameplayValues>().GetBoatRotationSpeed();
+        rotSpeed = basic.Gameplayvalues.GetBoatRotationSpeed();
     }
 
     public override void Start()
@@ -94,7 +94,7 @@ public class MoveBoatState : AbstractBoatState {
     private void setPolarity()
     {
         polarity = Mathf.Sign(mouse.GetWorldPoint().x - _boat.gameObject.transform.position.x);
-        if (direction != polarity && Input.GetMouseButton(0) == true && _velocity == 0.0f)
+        if (direction != polarity && (Input.GetMouseButton(0) || mouse.Touching()) && _velocity == 0.0f)
         {
             Debug.Log("One.");
             matchDirectionToPolarity();
@@ -118,7 +118,7 @@ public class MoveBoatState : AbstractBoatState {
         if (turning == false)
         {         
             //while clicking, under max velocity and heading where directed 
-            if (Input.GetMouseButton(0) && _velocity < _maxVelocity && direction == polarity)
+            if ((Input.GetMouseButton(0) || mouse.Touching()) && _velocity < _maxVelocity && direction == polarity)
             {
                 //accelerate
                 _velocity += _acceleration;
@@ -136,7 +136,7 @@ public class MoveBoatState : AbstractBoatState {
                 }
             }
             //if not input or min vel
-            if (!Input.GetMouseButton(0) && _velocity < 0)
+            if ((!Input.GetMouseButton(0) || !mouse.Touching()) && _velocity < 0)
             {
                 _velocity = 0;
             }
@@ -148,7 +148,7 @@ public class MoveBoatState : AbstractBoatState {
         {
             rotate();
         }
-        return (/*_velocity > 0 || */Input.GetMouseButton(0));
+        return (/*_velocity > 0 || */Input.GetMouseButton(0) || mouse.Touching());
         
     }
 
@@ -190,7 +190,7 @@ public class MoveBoatState : AbstractBoatState {
     {
         if (other.gameObject.tag == "FishingArea")
         {
-            GameObject.Find("Manager").GetComponent<TempFishSpawn>().CalculateNewSpawnDensity();
+            basic.Tempfishspawn.CalculateNewSpawnDensity();
         }          
     }
 }

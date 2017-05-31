@@ -44,9 +44,12 @@ public class trash : general
     public override void Reveal(float pFadeOutDuration, int pCollectableStaysVisibleRange)
     {
         if (Revealed) return;
-
         Revealed = true;
-        ((FloatTrashState)_stateCache[TrashState.Float]).ResetOutLineCounter(pFadeOutDuration, pCollectableStaysVisibleRange);
+
+        FloatTrashState floatTrashState = _stateCache[TrashState.Float] as FloatTrashState;
+        //if (floatTrashState is FloatTrashState)) //Debug.Log("FLOATTASHSTATE !NULL);
+        floatTrashState.ResetOutLineCounter(pFadeOutDuration, pCollectableStaysVisibleRange);
+        
         ToggleOutliner(true);
         ToggleRenderer(true);
     }
