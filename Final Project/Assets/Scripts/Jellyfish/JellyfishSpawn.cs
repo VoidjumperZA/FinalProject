@@ -42,8 +42,8 @@ public class JellyfishSpawn : MonoBehaviour {
                     _numJellyfish += 1;
                     _spawnCounter = 0;
                
-                    Instantiate(_jellyfishPrefab, new Vector3(Random.Range(_jellyfishZoneLeft, _jellyfishZoneRight), Random.Range(_jellyfishZoneDown, _jellyfishZoneUp), 0), gameObject.transform.rotation);
-
+                    Jellyfish theJellyFish = Instantiate(_jellyfishPrefab, new Vector3(Random.Range(_jellyfishZoneLeft, _jellyfishZoneRight), Random.Range(_jellyfishZoneDown, _jellyfishZoneUp), 0), gameObject.transform.rotation).GetComponent<Jellyfish>();
+                    basic.AddCollectable(theJellyFish);
                 }
             }
         }
