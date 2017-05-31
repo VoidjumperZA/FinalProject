@@ -22,9 +22,9 @@ public class CameraHandler : MonoBehaviour
     public CameraFocus _focusObject;
     private Dictionary<CameraFocus, Transform> _parentPoints;
     private Dictionary<CameraFocus, Transform> _lookAtPoints;
-    private float _cameraSpeed { get { return basic.Gameplayvalues.GetCameraSpeed(); } }
+    private float _shakeSpeed;
+    private float _currentShakeTime;
     private bool _viewPointReached = true;
-    private bool _viewRotationReached = true;
 
     private float _currentSlerpTime = 0;
     private float _totalSlerpTime;
@@ -33,6 +33,7 @@ public class CameraHandler : MonoBehaviour
 
     public void InitializeCameraHandler()
     {
+        _shakeSpeed = basic.Gameplayvalues.GetShakeSpeed();
         _totalSlerpTime = basic.Gameplayvalues.GetLerpDuration();
 
         _parentPoints = new Dictionary<CameraFocus, Transform>();
@@ -47,7 +48,7 @@ public class CameraHandler : MonoBehaviour
 
         _shakePoints = new List<Vector3>();
         _initialized = true;
-        //Debug.Log("CameraHandeler initialized: " + _initialized);
+        Debug.Log("CameraHandeler initialized: " + _initialized);
     }
     public void ClassUpdate()
     {
@@ -90,59 +91,51 @@ public class CameraHandler : MonoBehaviour
         _focusObject = pFocusObject;
         _camera.transform.SetParent(_parentPoints[_focusObject]);
         _viewPointReached = false;
-        _viewRotationReached = false;
         if (pFirstTime)
         {
             _camera.transform.position = _parentPoints[_focusObject].position;
             _viewPointReached = true;
-            _viewRotationReached = true;
         }
         _currentSlerpTime = 0;
     }
     public void ReachViewPoint()
     {
-        if (!_viewPointReached || !_viewRotationReached)
+        if (!_viewPointReached)
         {
             _currentSlerpTime += Time.deltaTime;
             if (_currentSlerpTime <= _totalSlerpTime)
             {
-                _camera.transform.position = Vector3.Lerp(_camera.transform.position, _parentPoints[_focusObject].position, _currentSlerpTime / _totalSlerpTime);
-                _camera.transform.rotation = Quaternion.Lerp(_camera.transform.rotation, _parentPoints[_focusObject].rotation, _currentSlerpTime / _totalSlerpTime);
+                float lerp = _currentSlerpTime / _totalSlerpTime;
+                _camera.transform.position = Vector3.Lerp(_camera.transform.position, _parentPoints[_focusObject].position, lerp);
+                _camera.transform.rotation = Quaternion.Lerp(_camera.transform.rotation, _parentPoints[_focusObject].rotation, lerp);
             }
             else
             {
                 _viewPointReached = true;
-                _viewRotationReached = true;
+                _currentSlerpTime = 0;
+                Debug.Log("Just Reached it");
             }
         }
     }
     private void ReachShakePoint()
     {
-        if (_viewPointReached && _viewRotationReached)
+        if (_viewPointReached && _shakePoints.Count > 0)
         {
-            if (_shakePoints.Count > 0)
+            Vector3 destination = _parentPoints[_focusObject].position + _shakePoints[0];
+            Vector3 differenceVector = destination - _camera.transform.position;
+            if (differenceVector.magnitude >= _shakeSpeed) _camera.transform.Translate(differenceVector.normalized * _shakeSpeed);
+            else
             {
-                Vector3 directionVector = (_parentPoints[_focusObject].position + _shakePoints[0]) - _camera.transform.position;
-                if (directionVector.magnitude > _cameraSpeed)
-                {
-                    _camera.transform.Translate(directionVector.normalized * _cameraSpeed);
-                    if (basic.Gameplayvalues.GetApplyJellyFeel()) _camera.transform.LookAt(_lookAtPoints[_focusObject]);
-                }
-                else
-                {
-                    _camera.transform.position = (_parentPoints[_focusObject].position + _shakePoints[0]);
-                    _shakePoints.RemoveAt(0);
-                    if (_shakePoints.Count == 0)
-                    {
-                        _viewPointReached = false;
-                        _viewRotationReached = false;
-                    }
-                }
+                _shakePoints.RemoveAt(0);
+                _camera.transform.position = destination;
+                if (_shakePoints.Count == 0) _viewPointReached = false;
+                Debug.Log(_shakePoints.Count + " PointsAmount");
             }
         }
     }
     public void CreateShakePoint()
     {
+        _shakePoints.Add(Vector3.zero);
         for (int i = 0; i < basic.Gameplayvalues.GetMaxShakePoints(); i++)
         {
             float slider = basic.Gameplayvalues.GetShakePointDistance();

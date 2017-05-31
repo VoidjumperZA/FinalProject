@@ -47,7 +47,7 @@ public class hook : general
     {
         valid = true;
         InitializeStateMachine();
-        basic.GlobalUI.GetOceanCleanUpBar().gameObject.GetComponent<OceanCleanUpUIAnimation>().SetBarPosition();
+        //basic.GlobalUI.GetOceanCleanUpBar().gameObject.GetComponent<OceanCleanUpUIAnimation>().SetBarPosition();
     }
 
     //
