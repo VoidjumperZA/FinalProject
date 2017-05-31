@@ -23,6 +23,7 @@ public class basic : MonoBehaviour
     [SerializeField] private GameObject _radarPrefab;
     [SerializeField] private GameObject _hookPrefab;
     [SerializeField] private GameObject _lowPolyFish; public static GameObject LowPolyFish;
+	[SerializeField] private GameObject _hookHit; public static GameObject HookHit;
     
     public static List<fish> Fish = new List<fish>();
     public static List<trash> Trash = new List<trash>();
@@ -49,6 +50,7 @@ public class basic : MonoBehaviour
     void Start()
     {
         LowPolyFish = _lowPolyFish;
+		HookHit = _hookHit;
         gameEnded = false;
         SpawnBoat(_boatSpawn.position, _boatSetUp.position);
         SpawnHook();
