@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class ShoppingList : MonoBehaviour {
     [HideInInspector] public bool Introduced = false;
+    [SerializeField] private Image _background;
     [SerializeField] private Text[] _listTextfields;
     private Dictionary<int, int[]> _fishInfo = new Dictionary<int, int[]>();
 
