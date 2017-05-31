@@ -6,6 +6,7 @@ using UnityEngine;
 public class FishHookState : AbstractHookState
 {
     private counter _speedMultiplier;
+    private int _previousSideDirection = 0;
 
     private float _sideSpeed;
     private float _downSpeed;
@@ -50,7 +51,7 @@ public class FishHookState : AbstractHookState
     {
         if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10)
         {
-            ApplyVelocity(_sideSpeed);
+            ApplyVelocity(_downSpeed);
         } 
         else
         {
@@ -63,6 +64,7 @@ public class FishHookState : AbstractHookState
                 }
                 SetXYAxisOffset(mouse.GetWorldPoint());
             }
+            else _speedMultiplier.Reset();
             ApplyVelocity(_fallSpeed);
             DampVelocityOffset();
         }
@@ -108,9 +110,11 @@ public class FishHookState : AbstractHookState
     private void SetXYAxisOffset(Vector3 pPosition)
     {
         _xyOffset = new Vector3(pPosition.x - _hook.HookTip.position.x, pPosition.y - _hook.HookTip.position.y, 0);
+        //if ((_previousSideDirection < 0 && _xyOffset.x > 0) || (_previousSideDirection > 0 && _xyOffset.x < 0)) _speedMultiplier.Reset();
+        //_previousSideDirection = (_xyOffset.x < 0) ? -1 : ((_xyOffset.x > 0) ? 1 : 0);
         _xyOffset.Normalize();
-        _speedMultiplier.Increase();
-        _xyOffset *= _speedMultiplier.PercentagePassed();
+        //_speedMultiplier.Increase();
+        //_xyOffset *= _speedMultiplier.PercentagePassed();
     }
 
     //
@@ -125,7 +129,6 @@ public class FishHookState : AbstractHookState
     {
         if (_xyOffset.magnitude > 0)
             _xyOffset *= _xOffsetDamping;
-        if (_xyOffset.magnitude <= 0.01f) _speedMultiplier.Reset();
     }
 
     //
@@ -143,13 +146,14 @@ public class FishHookState : AbstractHookState
             }
             SetState(hook.HookState.Reel);
             basic.combo.ClearPreviousCombo(false);
+			GameObject.Instantiate (basic.HookHit, _hook.HookTip.position, Quaternion.identity);
         } 
         //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
         {
             fish theFish = other.gameObject.GetComponent<fish>();
-            if (!theFish.Visible) return;
-
+            if (!theFish || !theFish.Visible) return;
+            GameObject.Destroy(other.gameObject.GetComponent<Collider>());
             theFish.SetState(fish.FishState.FollowHook);
             _hook.FishOnHook.Add(theFish);
             basic.Shoppinglist.AddFish(theFish);
@@ -168,8 +172,8 @@ public class FishHookState : AbstractHookState
         if (other.gameObject.CompareTag("Jellyfish"))
         {
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
-            //if (!theJellyfish.Visible) return;
-
+            if (!theJellyfish) return;
+			_hook.EnableJellyAttackEffect ();
             basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty(), true);
 
             basic.Camerahandler.CreateShakePoint();
@@ -185,10 +189,11 @@ public class FishHookState : AbstractHookState
         if (other.gameObject.CompareTag("Trash"))
         {
             trash theTrash = other.gameObject.GetComponent<trash>();
-            if (!theTrash.Visible) return;
+            if (!theTrash || !theTrash.Visible) return;
 
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
+
             bool firstTime = basic.Scorehandler.CollectATrashPiece();
             basic.GlobalUI.UpdateOceanProgressBar(firstTime);
             basic.Camerahandler.CreateShakePoint();
