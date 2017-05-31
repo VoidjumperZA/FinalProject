@@ -8,7 +8,7 @@ public class GameplayValues : MonoBehaviour
     [Header("Screen shake")]
     [SerializeField] [Range(0.0f, 10.0f)] private float _shakePointDistance;
     [SerializeField] [Range(1, 10)] private int _maxShakePoints;
-    [SerializeField] private float _shakeDuration;
+    [SerializeField] private float _shakeSpeed;
     [SerializeField] private bool _applyJellyFeel;
     [SerializeField] private float _lerpDuration;
     
@@ -50,9 +50,9 @@ public class GameplayValues : MonoBehaviour
         return _shakePointDistance;
     }
 
-    public float GetShakeDuration()
+    public float GetShakeSpeed()
     {
-        return _shakeDuration;
+        return _shakeSpeed;
     }
 
     public int GetBoatRotationSpeed()
