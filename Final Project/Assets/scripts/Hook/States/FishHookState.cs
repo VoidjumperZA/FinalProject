@@ -146,6 +146,7 @@ public class FishHookState : AbstractHookState
             }
             SetState(hook.HookState.Reel);
             basic.combo.ClearPreviousCombo(false);
+			GameObject.Instantiate (basic.HookHit, _hook.HookTip.position, Quaternion.identity);
         } 
         //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
@@ -172,7 +173,7 @@ public class FishHookState : AbstractHookState
         {
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
             if (!theJellyfish) return;
-
+			_hook.EnableJellyAttackEffect ();
             basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty(), true);
 
             basic.Camerahandler.CreateShakePoint();
