@@ -24,6 +24,7 @@ public class ShoppingList : MonoBehaviour {
 	
 	public void Update () {
         if (Input.GetKeyDown(KeyCode.Z)) CacheNewCollection();
+        //FadeIn();
     }
 
     public void AddFish(fish pFish)
@@ -66,11 +67,15 @@ public class ShoppingList : MonoBehaviour {
         _listTextfields[1].text = "Medium fish color: " + _fishInfo[1][0] + " collected: " + _fishInfo[1][1] + "/" + _fishInfo[1][2];
         _listTextfields[2].text = "Large fish color: " + _fishInfo[2][0] + " collected: " + _fishInfo[2][1] + "/" + _fishInfo[2][2];
     }
-    private void EditLine(int pIndex)
+    private void FadeIn()
     {
+        _background.CrossFadeAlpha(1.0f, 2, false);
     }
     public void Show(bool pBool)
     {
+        _background.CrossFadeAlpha(0.0f, 0.0f, false);
+        _background.gameObject.SetActive(pBool);
+        FadeIn();
         for (int i = 0; i < 3; i++)
         {
             _listTextfields[i].gameObject.SetActive(pBool);
