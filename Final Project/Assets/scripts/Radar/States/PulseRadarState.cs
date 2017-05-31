@@ -52,11 +52,18 @@ public class PulseRadarState : AbstractRadarState {
             foreach (trash pTrash in basic.Trash)
                 DoScan(pTrash);
     }
-    private void DoScan(general pCollectable)
+    private void DoScan(fish pCollectable)
     {
         if (pCollectable == null) return;
         bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (pCollectable.transform.position - _radar.transform.position).normalized) >= _radarAngle;
         if (visible) pCollectable.Reveal(_fadeOutDuration, _collectableStaysVisibleRange);
+    }
+    private void DoScan(trash pCollectable)
+    {
+        if (pCollectable == null) return;
+        bool visible = Vector3.Dot(-_radar.gameObject.transform.up, (pCollectable.transform.position - _radar.transform.position).normalized) >= _radarAngle;
+        if (visible) pCollectable.Reveal(_fadeOutDuration, _collectableStaysVisibleRange);
+        else pCollectable.Hide();
     }
 
     /*IEnumerator DoScan()

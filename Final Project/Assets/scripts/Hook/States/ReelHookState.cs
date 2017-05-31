@@ -4,22 +4,24 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ReelHookState : AbstractHookState {
-    private float _speed;
+    private float _reelSpeed;
 
-	public ReelHookState(hook pHook, float pSpeed) : base(pHook)
+	public ReelHookState(hook pHook, float pReelSpeed) : base(pHook)
     {
-        _speed = pSpeed;
+        _reelSpeed = pReelSpeed;
     }
     public override void Start()
     {
+
     }
     public override void Update()
     {
+        float step = _reelSpeed;
         Vector3 differenceVector = (basic.Boat.gameObject.transform.position - _hook.gameObject.transform.position);
-        if (differenceVector.magnitude >= _speed) _hook.gameObject.transform.Translate(differenceVector.normalized * _speed);
-        if (differenceVector.magnitude < _speed)
+        if (differenceVector.magnitude >= step) _hook.gameObject.transform.Translate(differenceVector.normalized * step);
+        if (differenceVector.magnitude < step)
         {
-            _hook.gameObject.transform.position = basic.Boat.transform.position;
+            _hook.transform.position = basic.Boat.transform.position;
             SetState(hook.HookState.SetFree);
         }
     }

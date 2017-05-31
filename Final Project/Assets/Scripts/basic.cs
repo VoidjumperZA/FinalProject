@@ -73,7 +73,7 @@ public class basic : MonoBehaviour
         Seafloorspawning = GetComponent<SeafloorSpawning>(); if (!Seafloorspawning) Debug.Log("ERROR: Cannot get reference to SeafloorSpawning from Manager object");
 
         Camerahandler.InitializeCameraHandler();
-        Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat);
+        Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat, true);
 
         //Find out seaDepth
         floor = GameObject.FindGameObjectWithTag("Floor");
@@ -101,12 +101,12 @@ public class basic : MonoBehaviour
     void Update()
     {
         RenderTrail();
-        if (Input.GetMouseButton(0)) _inputTimer.ResetClock();
+        if (Input.GetMouseButton(0) || mouse.Touching()) _inputTimer.ResetClock();
+        Camerahandler.ClassUpdate();
     }
 
     private void LateUpdate()
     {
-        Camerahandler.ClassUpdate();
     }
     private void SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
     {

@@ -192,6 +192,7 @@ public class FishHookState : AbstractHookState
 
             theTrash.SetState(trash.TrashState.FollowHook);
             _hook.TrashOnHook.Add(theTrash);
+
             bool firstTime = basic.Scorehandler.CollectATrashPiece();
             basic.GlobalUI.UpdateOceanProgressBar(firstTime);
             basic.Camerahandler.CreateShakePoint();
