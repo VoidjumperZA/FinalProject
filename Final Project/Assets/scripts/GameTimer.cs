@@ -19,7 +19,7 @@ public class GameTimer : MonoBehaviour {
         if (counting == true)
         {
             timeLeft -= Time.deltaTime;
-            Debug.Log("Time: " + timeLeft);
+            //Debug.Log("Time: " + timeLeft);
             if (timeLeft <= 0)
             {
                 basic.EndGame();

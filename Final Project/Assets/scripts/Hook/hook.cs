@@ -41,6 +41,7 @@ public class hook : general
 
 
     public Transform HookTip;
+	public ParticleSystem JellyAttackEffect;
 
     private bool valid;
     public override void Start()
@@ -93,4 +94,16 @@ public class hook : general
     {
         _boat = pBoat;
     }
+	public void EnableJellyAttackEffect() 
+	{
+		StartCoroutine(JellyAttackCoroutine());
+	}
+
+	private IEnumerator JellyAttackCoroutine()
+	{
+		JellyAttackEffect.gameObject.SetActive (true);
+
+		yield return new WaitForSeconds (0.95f);
+		JellyAttackEffect.gameObject.SetActive (false);
+	}
 }
