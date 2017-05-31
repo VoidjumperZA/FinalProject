@@ -263,6 +263,7 @@ public class GlobalUI : MonoBehaviour
             bool firstTime = basic.Scorehandler.CollectATrashPiece();
             UpdateOceanProgressBar(firstTime);
         }
+        gameTimerText.text = gameTimer.GetFormattedTimeLeftAsString();
     }
 
     public float GetOceanBarMovementSpeed()
