@@ -28,6 +28,8 @@ public class CameraHandler : MonoBehaviour
 
     private float _currentSlerpTime = 0;
     private float _totalSlerpTime;
+    private Vector3 _fromPosition;
+    private Quaternion _fromRotation;
     // ----------------------------
     private List<Vector3> _shakePoints = new List<Vector3>();
 
@@ -89,11 +91,18 @@ public class CameraHandler : MonoBehaviour
             return;
         }
         _focusObject = pFocusObject;
+
+        _fromPosition = _camera.transform.position;
+        _fromRotation = _camera.transform.rotation;
+
         _camera.transform.SetParent(_parentPoints[_focusObject]);
         _viewPointReached = false;
         if (pFirstTime)
         {
             _camera.transform.position = _parentPoints[_focusObject].position;
+            _camera.transform.rotation = _parentPoints[_focusObject].rotation;
+            _fromPosition = _camera.transform.position;
+            _fromRotation = _camera.transform.rotation;
             _viewPointReached = true;
         }
         _currentSlerpTime = 0;
@@ -106,8 +115,8 @@ public class CameraHandler : MonoBehaviour
             if (_currentSlerpTime <= _totalSlerpTime)
             {
                 float lerp = _currentSlerpTime / _totalSlerpTime;
-                _camera.transform.position = Vector3.Lerp(_camera.transform.position, _parentPoints[_focusObject].position, lerp);
-                _camera.transform.rotation = Quaternion.Lerp(_camera.transform.rotation, _parentPoints[_focusObject].rotation, lerp);
+                _camera.transform.position = Vector3.Lerp(_fromPosition, _parentPoints[_focusObject].position, lerp);
+                _camera.transform.rotation = Quaternion.Lerp(_fromRotation, _parentPoints[_focusObject].rotation, lerp);
             }
             else
             {
@@ -135,6 +144,7 @@ public class CameraHandler : MonoBehaviour
     }
     public void CreateShakePoint()
     {
+        return;
         _shakePoints.Add(Vector3.zero);
         for (int i = 0; i < basic.Gameplayvalues.GetMaxShakePoints(); i++)
         {
