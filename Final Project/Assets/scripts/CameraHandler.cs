@@ -18,8 +18,9 @@ public class CameraHandler : MonoBehaviour
     private Camera _camera { get { return Camera.main; } }
 
     //Camera zoom levels and focus points
-    public enum CameraFocus { Boat, Ocean, Hook };
+    public enum CameraFocus { Boat, Ocean, Hook, TopLevel };
     public CameraFocus _focusObject;
+    public CameraFocus _previousFocusObject;
     private Dictionary<CameraFocus, Transform> _parentPoints;
     private Dictionary<CameraFocus, Transform> _lookAtPoints;
     private float _shakeSpeed;
@@ -42,11 +43,13 @@ public class CameraHandler : MonoBehaviour
         _parentPoints[CameraFocus.Boat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
         _parentPoints[CameraFocus.Ocean] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
         _parentPoints[CameraFocus.Hook] = GameObject.FindGameObjectWithTag("HookCamHolder").transform;
+        _parentPoints[CameraFocus.TopLevel] = _parentPoints[CameraFocus.Ocean];
 
         _lookAtPoints = new Dictionary<CameraFocus, Transform>();
         _lookAtPoints[CameraFocus.Boat] = basic.Boat.transform;
         _lookAtPoints[CameraFocus.Ocean] = basic.Boat.transform;
         _lookAtPoints[CameraFocus.Hook] = basic.Hook.transform;
+        _lookAtPoints[CameraFocus.TopLevel] = _lookAtPoints[CameraFocus.Ocean];
 
         _shakePoints = new List<Vector3>();
         _initialized = true;
@@ -85,10 +88,16 @@ public class CameraHandler : MonoBehaviour
     }
     public void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
     {
+        Debug.Log("Calling camera to set to " + pFocusObject.ToString());
         if (!_initialized)
         {
             Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
             return;
+        }
+        _previousFocusObject = _focusObject;
+        if (pFirstTime == true)
+        {
+            _previousFocusObject = pFocusObject;
         }
         _focusObject = pFocusObject;
 
@@ -122,7 +131,7 @@ public class CameraHandler : MonoBehaviour
             {
                 _viewPointReached = true;
                 _currentSlerpTime = 0;
-                Debug.Log("Just Reached it");
+             //   Debug.Log("Just Reached it");
             }
         }
     }

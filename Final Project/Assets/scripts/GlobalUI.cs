@@ -85,7 +85,7 @@ public class GlobalUI : MonoBehaviour
         _totalScore.SetActive(false);
         _currency.SetActive(false);
 
-        gameTimer = GameObject.Find("Manager").GetComponent<GameTimer>();
+        gameTimer = GameObject.Find("Manager").GetComponent<GameTimer>();        
         oceanCleanUpProgressBar.GetComponentInChildren<Text>().text = 0 + "%";
         oceanCleanUpBarChildFill.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
         oceanCleanUpBarChildBackground.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
@@ -113,7 +113,6 @@ public class GlobalUI : MonoBehaviour
     public void OnPlayGameClick()
     {
         StartCoroutine(PlayGameAnim());
-        
     }
     public void OnSkipTutorialClick()
     {
@@ -225,6 +224,7 @@ public class GlobalUI : MonoBehaviour
 
         _totalScore.SetActive(true);
         _currency.SetActive(true);
+        gameTimer.BeginCountdown();
     }
 
 
@@ -247,7 +247,6 @@ public class GlobalUI : MonoBehaviour
         _currency.SetActive(true);
         basic.Seafloorspawning.SpawnTrash();
         basic.Seafloorspawning.SpawnSpecialItems();
-
     }
     private IEnumerator ShowThenFadeOceanBar()
     {
