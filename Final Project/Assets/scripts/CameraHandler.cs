@@ -18,8 +18,9 @@ public class CameraHandler : MonoBehaviour
     private Camera _camera { get { return Camera.main; } }
 
     //Camera zoom levels and focus points
-    public enum CameraFocus { Boat, Ocean, Hook };
+    public enum CameraFocus { Boat, Ocean, Hook, TopLevel };
     public CameraFocus _focusObject;
+    public CameraFocus _previousFocusObject;
     private Dictionary<CameraFocus, Transform> _parentPoints;
     private Dictionary<CameraFocus, Transform> _lookAtPoints;
     private float _shakeSpeed;
@@ -28,6 +29,8 @@ public class CameraHandler : MonoBehaviour
 
     private float _currentSlerpTime = 0;
     private float _totalSlerpTime;
+    private Vector3 _fromPosition;
+    private Quaternion _fromRotation;
     // ----------------------------
     private List<Vector3> _shakePoints = new List<Vector3>();
 
@@ -40,11 +43,13 @@ public class CameraHandler : MonoBehaviour
         _parentPoints[CameraFocus.Boat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
         _parentPoints[CameraFocus.Ocean] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
         _parentPoints[CameraFocus.Hook] = GameObject.FindGameObjectWithTag("HookCamHolder").transform;
+        _parentPoints[CameraFocus.TopLevel] = _parentPoints[CameraFocus.Ocean];
 
         _lookAtPoints = new Dictionary<CameraFocus, Transform>();
         _lookAtPoints[CameraFocus.Boat] = basic.Boat.transform;
         _lookAtPoints[CameraFocus.Ocean] = basic.Boat.transform;
         _lookAtPoints[CameraFocus.Hook] = basic.Hook.transform;
+        _lookAtPoints[CameraFocus.TopLevel] = _lookAtPoints[CameraFocus.Ocean];
 
         _shakePoints = new List<Vector3>();
         _initialized = true;
@@ -83,17 +88,30 @@ public class CameraHandler : MonoBehaviour
     }
     public void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
     {
+        Debug.Log("Calling camera to set to " + pFocusObject.ToString());
         if (!_initialized)
         {
             Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
             return;
         }
+        _previousFocusObject = _focusObject;
+        if (pFirstTime == true)
+        {
+            _previousFocusObject = pFocusObject;
+        }
         _focusObject = pFocusObject;
+
+        _fromPosition = _camera.transform.position;
+        _fromRotation = _camera.transform.rotation;
+
         _camera.transform.SetParent(_parentPoints[_focusObject]);
         _viewPointReached = false;
         if (pFirstTime)
         {
             _camera.transform.position = _parentPoints[_focusObject].position;
+            _camera.transform.rotation = _parentPoints[_focusObject].rotation;
+            _fromPosition = _camera.transform.position;
+            _fromRotation = _camera.transform.rotation;
             _viewPointReached = true;
         }
         _currentSlerpTime = 0;
@@ -106,14 +124,14 @@ public class CameraHandler : MonoBehaviour
             if (_currentSlerpTime <= _totalSlerpTime)
             {
                 float lerp = _currentSlerpTime / _totalSlerpTime;
-                _camera.transform.position = Vector3.Lerp(_camera.transform.position, _parentPoints[_focusObject].position, lerp);
-                _camera.transform.rotation = Quaternion.Lerp(_camera.transform.rotation, _parentPoints[_focusObject].rotation, lerp);
+                _camera.transform.position = Vector3.Lerp(_fromPosition, _parentPoints[_focusObject].position, lerp);
+                _camera.transform.rotation = Quaternion.Lerp(_fromRotation, _parentPoints[_focusObject].rotation, lerp);
             }
             else
             {
                 _viewPointReached = true;
                 _currentSlerpTime = 0;
-                Debug.Log("Just Reached it");
+             //   Debug.Log("Just Reached it");
             }
         }
     }
@@ -135,6 +153,7 @@ public class CameraHandler : MonoBehaviour
     }
     public void CreateShakePoint()
     {
+        return;
         _shakePoints.Add(Vector3.zero);
         for (int i = 0; i < basic.Gameplayvalues.GetMaxShakePoints(); i++)
         {
