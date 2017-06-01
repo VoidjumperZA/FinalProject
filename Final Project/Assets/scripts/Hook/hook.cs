@@ -33,7 +33,7 @@ public class hook : general
     [SerializeField] private float _downSpeed;
     [SerializeField] private float _fallSpeed;
     [SerializeField] private float _reelSpeed;
-    [SerializeField] private float _xOffsetDamping;
+
 
     private Vector3 _xyOffset;
     private Vector3 _velocity;
@@ -54,9 +54,7 @@ public class hook : general
     //
     public override void Update()
     {
-        _abstractState.Update();
-       
-        // SetCameraAndHookAngle();   
+        _abstractState.Update(); 
     }
     public void SetState(HookState pState)
     {
@@ -69,7 +67,7 @@ public class hook : general
         _stateCache.Clear();
         _stateCache[HookState.None] = new NoneHookState(this);
         _stateCache[HookState.FollowBoat] = new FollowBoatHookState(this, basic.Boat);
-        _stateCache[HookState.Fish] = new FishHookState(this, _sideSpeed, _downSpeed, _xOffsetDamping, _fallSpeed);
+        _stateCache[HookState.Fish] = new FishHookState(this, _sideSpeed, _downSpeed, _fallSpeed);
         _stateCache[HookState.Reel] = new ReelHookState(this, _reelSpeed);
         _stateCache[HookState.SetFree] = new SetFreeHookState(this);
         SetState(_hookState);
@@ -103,7 +101,8 @@ public class hook : general
 
 	private IEnumerator JellyAttackCoroutine()
 	{
-		JellyAttackEffect.gameObject.SetActive (true);
+
+
 
 		yield return new WaitForSeconds (0.95f);
 		JellyAttackEffect.gameObject.SetActive (false);
