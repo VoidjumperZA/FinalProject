@@ -100,11 +100,11 @@ public class hook : general
 	}
 
 	private IEnumerator JellyAttackCoroutine()
-	{
+    {
+        JellyAttackEffect.gameObject.SetActive(true);
 
 
-
-		yield return new WaitForSeconds (0.95f);
+        yield return new WaitForSeconds (0.95f);
 		JellyAttackEffect.gameObject.SetActive (false);
 	}
 }

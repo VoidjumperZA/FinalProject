@@ -216,7 +216,7 @@ public class GlobalUI : MonoBehaviour
         _playExplode.gameObject.SetActive(true);
         
         yield return new WaitForSeconds(0.6f);
-        //gameTimer.BeginCountdown();
+        gameTimer.BeginCountdown();
         _playExplode.gameObject.SetActive(false);
 
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
@@ -234,7 +234,7 @@ public class GlobalUI : MonoBehaviour
         _replayExplode.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(0.6f);
-        //gameTimer.BeginCountdown();
+        gameTimer.BeginCountdown();
 
         _replayExplode.gameObject.SetActive(false);
 
