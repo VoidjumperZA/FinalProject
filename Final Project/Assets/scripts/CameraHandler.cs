@@ -43,13 +43,13 @@ public class CameraHandler : MonoBehaviour
         _parentPoints[CameraFocus.Boat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
         _parentPoints[CameraFocus.Ocean] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
         _parentPoints[CameraFocus.Hook] = GameObject.FindGameObjectWithTag("HookCamHolder").transform;
-        _parentPoints[CameraFocus.TopLevel] = _parentPoints[CameraFocus.Boat];
+        _parentPoints[CameraFocus.TopLevel] = _parentPoints[CameraFocus.Ocean];
 
         _lookAtPoints = new Dictionary<CameraFocus, Transform>();
         _lookAtPoints[CameraFocus.Boat] = basic.Boat.transform;
         _lookAtPoints[CameraFocus.Ocean] = basic.Boat.transform;
         _lookAtPoints[CameraFocus.Hook] = basic.Hook.transform;
-        _lookAtPoints[CameraFocus.TopLevel] = _lookAtPoints[CameraFocus.Boat];
+        _lookAtPoints[CameraFocus.TopLevel] = _lookAtPoints[CameraFocus.Ocean];
 
         _shakePoints = new List<Vector3>();
         _initialized = true;
