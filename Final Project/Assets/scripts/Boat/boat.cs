@@ -62,6 +62,7 @@ public class boat : general
         _stateCache[BoatState.Move] = new MoveBoatState(this, _acceleration, _maxVelocity, _deceleration, _rotationLerpSpeed);
         _stateCache[BoatState.Fish] = new FishBoatState(this);       
         SetState(_boatState);
+        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat, true);
     }
     public void AssignRadar(radar pRadar)
     {
