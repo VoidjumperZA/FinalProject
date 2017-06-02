@@ -15,7 +15,7 @@ public class FollowHookTrashState : AbstractTrashState
     }
     public override void Update()
     {
-        _trash.gameObject.transform.position = basic.Hook.transform.position;
+        _trash.gameObject.transform.position = basic.Hook.HookTip.position;
     }
     public override void Refresh()
     {
