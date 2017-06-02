@@ -21,10 +21,6 @@ public class general : MonoBehaviour
     {
 
     }
-    public string GetTag()
-    {
-        return gameObject.tag;
-    }
     public virtual void ToggleOutliner(bool pBool)
     {
 
@@ -40,5 +36,9 @@ public class general : MonoBehaviour
     public virtual void Hide()
     {
 
+    }
+    public string GetTag()
+    {
+        return gameObject.tag;
     }
 }

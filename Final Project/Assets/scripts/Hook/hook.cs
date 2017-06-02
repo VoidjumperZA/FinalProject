@@ -96,6 +96,10 @@ public class hook : general
     {
         _boat = pBoat;
     }
+    public bool IsInState(HookState pState)
+    {
+        return _abstractState.StateType() == pState;
+    }
 	public void EnableJellyAttackEffect() 
 	{
 		StartCoroutine(JellyAttackCoroutine());
