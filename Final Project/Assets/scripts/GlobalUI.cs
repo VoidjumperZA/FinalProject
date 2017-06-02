@@ -159,14 +159,11 @@ public class GlobalUI : MonoBehaviour
         }
         else
         {
-            //Stop all new fish spawning while we are in this part of the tutorial as the ocean should be empty
-            basic.Tempfishspawn._boatSetUp = false;
             //basic.Tempfishspawn.ClearAllFish(); //gives shit ton of errors
             if (DropHookCompleted)
             {
-                basic.Tempfishspawn._boatSetUp = true;
-                basic.Seafloorspawning.SpawnTrash();
-                basic.Seafloorspawning.SpawnSpecialItems();
+                /*basic.Seafloorspawning.SpawnTrash();
+                basic.Seafloorspawning.SpawnSpecialItems();*/
                 ReelUpHookCompleted = true;
                 ShowHandHookButton(false);
                 WaitForBoatMove();
@@ -245,8 +242,6 @@ public class GlobalUI : MonoBehaviour
 
         _totalScore.SetActive(true);
         _currency.SetActive(true);
-        basic.Seafloorspawning.SpawnTrash();
-        basic.Seafloorspawning.SpawnSpecialItems();
     }
     private IEnumerator ShowThenFadeOceanBar()
     {

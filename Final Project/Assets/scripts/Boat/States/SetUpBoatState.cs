@@ -23,7 +23,7 @@ public class SetUpBoatState : AbstractBoatState
     public override void Start()
     {
         _halfDestination = (_destination - _boat.gameObject.transform.position).magnitude / 2;
-        _boat.gameObject.transform.position = _destination;
+        //_boat.gameObject.transform.position = _destination;
     }
 
     public override void Update()
@@ -42,6 +42,8 @@ public class SetUpBoatState : AbstractBoatState
     }
     public override void Refresh()
     {
+        basic.Seafloorspawning.SpawnTrash();
+        basic.Seafloorspawning.SpawnSpecialItems();
         basic.Tempfishspawn._boatSetUp = true;
         basic.GlobalUI.DeployHookButton(true);
         if (basic.GlobalUI.InTutorial) basic.GlobalUI.ShowHandHookButton(true);
