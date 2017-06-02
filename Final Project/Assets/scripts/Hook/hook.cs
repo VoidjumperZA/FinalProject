@@ -39,8 +39,9 @@ public class hook : general
     private Vector3 _velocity;
     // X Velocity damping
 
-
+    public ParticleSystem JellyAttackEffect2;
     public Transform HookTip;
+	public ParticleSystem JellyAttackEffect;
 
     private bool valid;
     public override void Start()
@@ -68,7 +69,7 @@ public class hook : general
         _stateCache.Clear();
         _stateCache[HookState.None] = new NoneHookState(this);
         _stateCache[HookState.FollowBoat] = new FollowBoatHookState(this, basic.Boat);
-        _stateCache[HookState.Fish] = new FishHookState(this, _sideSpeed, _downSpeed, _xOffsetDamping, _fallSpeed);
+        _stateCache[HookState.Fish] = new FishHookState(this, _sideSpeed, _downSpeed, _fallSpeed);
         _stateCache[HookState.Reel] = new ReelHookState(this, _reelSpeed);
         _stateCache[HookState.SetFree] = new SetFreeHookState(this);
         SetState(_hookState);
@@ -95,4 +96,34 @@ public class hook : general
     {
         _boat = pBoat;
     }
+	public void EnableJellyAttackEffect() 
+	{
+		StartCoroutine(JellyAttackCoroutine());
+        StartCoroutine(JellyAttackCoroutine2());
+    }
+
+	private IEnumerator JellyAttackCoroutine()
+	{
+		JellyAttackEffect.gameObject.SetActive (true);
+        
+
+        yield return new WaitForSeconds (0.95f);
+        
+        JellyAttackEffect.gameObject.SetActive (false);
+        
+
+    }
+    private IEnumerator JellyAttackCoroutine2()
+    {
+        JellyAttackEffect2.gameObject.transform.rotation = Quaternion.LookRotation(Vector3.forward, (basic.Boat.transform.position - JellyAttackEffect2.gameObject.transform.position).normalized);
+        JellyAttackEffect2.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(0.95f);
+
+        
+        JellyAttackEffect2.gameObject.SetActive(false);
+
+    }
+
+
 }

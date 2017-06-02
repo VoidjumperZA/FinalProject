@@ -5,45 +5,25 @@ using UnityEngine;
 
 public class FishHookState : AbstractHookState
 {
-    private counter _speedMultiplier;
-    private int _previousSideDirection = 0;
-
+    private float _fallSpeed;
+    private Vector2 _prevInputVelocity;
+    private Vector3 _totalVelocity;
+    private Vector3 _inputDirection;
     private float _sideSpeed;
     private float _downSpeed;
-    private float _fallSpeed;
-    private Vector3 _xyOffset;
-    private float _xOffsetDamping;
-    private Vector3 _velocity;
 
-    //Screen shake
-    private bool camShaking;
-    private int screenShakeDuration;
-    private int screenShakeCounter;
-
-    // Rotation
-    private float hookRotationAmount;
-    private float maxHookRotation;
-    private float currentHookRotation;
-
-    public FishHookState(hook pHook, float pSideSpeed, float pDownSpeed, float pOffsetDamping, float pFallSpeed) : base(pHook)
+    public FishHookState(hook pHook, float pSideSpeed, float pDownSpeed, float pFallSpeed) : base(pHook)
     {
         _sideSpeed = pSideSpeed;
         _downSpeed = pDownSpeed;
-        _xOffsetDamping = pOffsetDamping;
         _fallSpeed = pFallSpeed;
-
-        _speedMultiplier = new counter(1.0f);
-        _speedMultiplier.Reset();
     }
 
     //
     public override void Start()
     {
-
-        hookRotationAmount = 1.0f;
-        currentHookRotation = 0.0f;
-        maxHookRotation = 25.0f;
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Hook);
+        
     }
 
     //
@@ -51,7 +31,7 @@ public class FishHookState : AbstractHookState
     {
         if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10)
         {
-            ApplyVelocity(_downSpeed);
+            _hook.transform.Translate(-Vector3.up * _downSpeed);
         } 
         else
         {
@@ -62,42 +42,16 @@ public class FishHookState : AbstractHookState
                     basic.GlobalUI.ShowHandSwipe(false);
                     basic.GlobalUI.SwipehandCompleted = true;
                 }
-                SetXYAxisOffset(mouse.GetWorldPoint());
+                ApplyVelocity(-_fallSpeed, true);
             }
-            else _speedMultiplier.Reset();
-            ApplyVelocity(_fallSpeed);
-            DampVelocityOffset();
-        }
-
-    }
-
-    // -------- Movement --------
-    private void SetCameraAndHookAngle()
-    {
-        if (_xyOffset.x < 0)
-        {
-            if (currentHookRotation < maxHookRotation)
-            {
-                currentHookRotation += hookRotationAmount;
-                _hook.gameObject.transform.Rotate(0.0f, 0.0f, currentHookRotation);
-                Camera.main.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
-            }
-        }
-        else if (_xyOffset.x > 0)
-        {
-            if (currentHookRotation > -maxHookRotation)
-            {
-                currentHookRotation -= hookRotationAmount;
-                _hook.gameObject.transform.Rotate(0.0f, 0.0f, -currentHookRotation);
-                Camera.main.transform.Rotate(0.0f, 0.0f, currentHookRotation);
-            }
+            else ApplyVelocity(-_fallSpeed, false);
         }
     }
-
     //
     public override void Refresh()
     {
-        _xyOffset = Vector2.zero;
+        _inputDirection = Vector2.zero;
+        _totalVelocity = Vector3.zero;
     }
 
     //
@@ -105,30 +59,24 @@ public class FishHookState : AbstractHookState
     {
         return hook.HookState.Fish;
     }
-
     //
-    private void SetXYAxisOffset(Vector3 pPosition)
+    private void SetInputDirection(Vector3 pPosition)
     {
-        _xyOffset = new Vector3(pPosition.x - _hook.HookTip.position.x, pPosition.y - _hook.HookTip.position.y, 0);
-        //if ((_previousSideDirection < 0 && _xyOffset.x > 0) || (_previousSideDirection > 0 && _xyOffset.x < 0)) _speedMultiplier.Reset();
-        //_previousSideDirection = (_xyOffset.x < 0) ? -1 : ((_xyOffset.x > 0) ? 1 : 0);
-        _xyOffset.Normalize();
-        //_speedMultiplier.Increase();
-        //_xyOffset *= _speedMultiplier.PercentagePassed();
+        _inputDirection = new Vector3(pPosition.x - _hook.HookTip.position.x, pPosition.y - _hook.HookTip.position.y, 0);
+        _inputDirection.Normalize();
     }
 
     //
-    private void ApplyVelocity(float pFallSpeed)
+    private void ApplyVelocity(float pFallSpeed, bool pSteering)
     {
-        _velocity = new Vector3(_xyOffset.x * _sideSpeed, Mathf.Min(_xyOffset.y * _downSpeed, -pFallSpeed), 0);
-        _hook.gameObject.transform.Translate(_velocity);
-    }
+        if (pSteering) SetInputDirection(mouse.GetWorldPoint());
+        Vector3 acceleration = new Vector3(_inputDirection.x * _sideSpeed, _inputDirection.y * _downSpeed, 0);
 
-    //
-    private void DampVelocityOffset()
-    {
-        if (_xyOffset.magnitude > 0)
-            _xyOffset *= _xOffsetDamping;
+        _totalVelocity.x = (pSteering) ? acceleration.x : _totalVelocity.x * 0.9f;
+        _totalVelocity.y = (pFallSpeed > acceleration.y) ? acceleration.y : pFallSpeed;
+        _totalVelocity.z = acceleration.z;
+        _hook.gameObject.transform.Translate(_totalVelocity);
+        _inputDirection = Vector3.zero;
     }
 
     //
@@ -146,6 +94,7 @@ public class FishHookState : AbstractHookState
             }
             SetState(hook.HookState.Reel);
             basic.combo.ClearPreviousCombo(false);
+			GameObject.Instantiate (basic.HookHit, _hook.HookTip.position, Quaternion.identity);
         } 
         //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
@@ -172,7 +121,7 @@ public class FishHookState : AbstractHookState
         {
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
             if (!theJellyfish) return;
-
+			_hook.EnableJellyAttackEffect ();
             basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty(), true);
 
             basic.Camerahandler.CreateShakePoint();
