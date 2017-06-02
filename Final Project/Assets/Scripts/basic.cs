@@ -75,7 +75,7 @@ public class basic : MonoBehaviour
         Seafloorspawning = GetComponent<SeafloorSpawning>(); if (!Seafloorspawning) Debug.Log("ERROR: Cannot get reference to SeafloorSpawning from Manager object");
 
         Camerahandler.InitializeCameraHandler();
-        Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat, true);
+       
 
         //Find out seaDepth
         floor = GameObject.FindGameObjectWithTag("Floor");
@@ -99,6 +99,7 @@ public class basic : MonoBehaviour
         //_endOfLevel = GameObject.FindGameObjectWithTag("EndOfLevel"); if (!_endOfLevel) Debug.Log("WARNING (Jellyfish uses this): You need to create an empy object, place it at the end of the level (x) and tag it with EndOfLevel");
         //_seaWidth = Vector3.Distance(_docks.transform.position, _endOfLevel.transform.position);
         //
+        
     }
     void Update()
     {
