@@ -29,6 +29,8 @@ public class GlobalUI : MonoBehaviour
     private Animator _deployHookAnim;
     private AnimationClip _deployHookClip;
 
+    [SerializeField] private Sprite _bubbleImage;
+
     [SerializeField]
     private Button _reelUpHook;
 
@@ -101,8 +103,8 @@ public class GlobalUI : MonoBehaviour
 
         _deployHookAnim = _deployHookButton.GetComponent<Animator>();
         if (!_deployHookAnim) Debug.Log("Couldn't find animation in deployHook");
-        _deployHookAnim.enabled = true;
 
+       
         DeployHookButton(false);
         ReelUpHookButton(false);
         _playExplode.gameObject.SetActive(false);
@@ -141,6 +143,7 @@ public class GlobalUI : MonoBehaviour
         basic.Boat.SetState(boat.BoatState.Fish);
         basic.Scorehandler.ToggleHookScoreUI(true);
         _deployHookAnim.enabled = false;
+        _deployHookButton.GetComponent<Image>().sprite = _bubbleImage;
         DeployHookButton(false);
         if (!InTutorial)
         {
@@ -226,11 +229,12 @@ public class GlobalUI : MonoBehaviour
 		
         _playGameButton.gameObject.SetActive(false);
         _playExplode.gameObject.SetActive(true);
-        
+
         yield return new WaitForSeconds(0.6f);
         gameTimer.BeginCountdown();
         _playExplode.gameObject.SetActive(false);
 
+        _deployHookAnim.enabled = true;
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _skipTutorialButton.gameObject.SetActive(false);
@@ -254,7 +258,7 @@ public class GlobalUI : MonoBehaviour
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
-
+        _deployHookAnim.enabled = false;
         _totalScore.SetActive(true);
         basic.Seafloorspawning.SpawnTrash();
         basic.Seafloorspawning.SpawnSpecialItems();
@@ -281,6 +285,9 @@ public class GlobalUI : MonoBehaviour
 
     private IEnumerator ShowHookHand()
     {
+        Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
+        Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + 15, hookPosOnScreen.y - 20, 0.0f);
+        _handSwipe.transform.position = offsetPosition;
         yield return new WaitForSeconds(4);
         if(!SwipehandCompleted) ShowHandSwipe(true);
     }
