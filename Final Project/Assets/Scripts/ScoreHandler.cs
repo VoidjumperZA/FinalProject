@@ -63,7 +63,7 @@ public class ScoreHandler : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
-        CurrentHookScoreActive(basic.Camerahandler.IsAboveWater);
+        CurrentHookScoreActive(!basic.Camerahandler.IsAboveWater);
         if (basic.Hook)
         {
             Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
