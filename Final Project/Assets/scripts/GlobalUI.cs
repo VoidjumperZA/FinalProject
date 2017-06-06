@@ -296,8 +296,8 @@ public class GlobalUI : MonoBehaviour
     {
 
         Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
-        Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + 15, hookPosOnScreen.y - 20, 0.0f);
-        _handSwipe.transform.position = offsetPosition;
+        Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + 33, hookPosOnScreen.y - 20, 0.0f);
+        SetHandSwipePossition(offsetPosition);
         yield return new WaitForSeconds(1);
 
         if(!SwipehandCompleted) ShowHandSwipe(true);
@@ -338,5 +338,10 @@ public class GlobalUI : MonoBehaviour
         //Debug.Log("Returns null");
         return null;
         
+    }
+
+    public void SetHandSwipePossition(Vector3 pos)
+    {
+        _handSwipe.transform.position = pos;
     }
 }
