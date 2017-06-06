@@ -46,6 +46,8 @@ public class SetUpBoatState : AbstractBoatState
         basic.Seafloorspawning.SpawnSpecialItems();
         basic.Tempfishspawn._boatSetUp = true;
         basic.GlobalUI.DeployHookButton(true);
+        basic.GlobalUI.ShowTotalScore(true);
+        basic.GlobalUI.BeginGameTimer();
         if (basic.GlobalUI.InTutorial) basic.GlobalUI.ShowHandHookButton(true);
     }
 

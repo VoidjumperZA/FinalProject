@@ -6,12 +6,15 @@ public class shark : general {
 
     private Dictionary<SharkState, AbstractSharkState> _stateCache = new Dictionary<SharkState, AbstractSharkState>();
     private AbstractSharkState _abstractState = null;
-    public enum SharkState { None, Approach, Hunt }
+    public enum SharkState { None, Approach, Steer, Hunt }
     [SerializeField] private SharkState _sharkState = SharkState.None;
 
     [SerializeField] private Transform _sharkSpawn;
-    [SerializeField] private Vector3 _destinationOffset;
+    [SerializeField] private Transform _approachTransform;
+    [SerializeField] private Transform _steerTransform;
     [SerializeField] private float _approachDuration;
+    [SerializeField] private float _steerDuration;
+    [SerializeField] private float _swimSpeed;
 
 
 
@@ -20,7 +23,7 @@ public class shark : general {
 	}
 	public override void Update () {
         _abstractState.Update();
-        Debug.Log(_abstractState.StateType());
+        //Debug.Log(_abstractState.StateType());
 	}
     public void SetState(SharkState pState)
     {
@@ -32,8 +35,9 @@ public class shark : general {
     {
         _stateCache.Clear();
         _stateCache[SharkState.None] = new NoneSharkState(this);
-        _stateCache[SharkState.Approach] = new ApproachSharkState(this, _sharkSpawn, _destinationOffset, _approachDuration);
-        _stateCache[SharkState.Hunt] = new HuntSharkState(this);
+        _stateCache[SharkState.Approach] = new ApproachSharkState(this, _sharkSpawn, _approachTransform, _approachDuration);
+        _stateCache[SharkState.Steer] = new SteerSharkState(this, _approachTransform, _steerTransform, _steerDuration);
+        _stateCache[SharkState.Hunt] = new HuntSharkState(this, _swimSpeed);
         SetState(_sharkState);
     }
     public void OnTriggerEnter(Collider other)

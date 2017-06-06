@@ -35,8 +35,8 @@ public class GlobalUI : MonoBehaviour
     private Button _reelUpHook;
 
     [Header("Timer")]
-    [SerializeField]
-    private Text gameTimerText;
+    [SerializeField] private GameObject _gameTimerAsset;
+    [SerializeField] private Text gameTimerText;
 
     [HideInInspector]
     public bool InTutorial = true;
@@ -80,16 +80,17 @@ public class GlobalUI : MonoBehaviour
     [SerializeField]
     private float oceanBarMovementSpeed;
 
-    private GameTimer gameTimer;
+    private GameTimer _gameTimer;
 
     [Header("HighScore")]
     [SerializeField] private GameObject _totalScore;
 
     void Start()
     {
+        _gameTimerAsset.SetActive(false);
         _totalScore.SetActive(false);
 
-        gameTimer = GameObject.Find("Manager").GetComponent<GameTimer>();        
+        _gameTimer = GameObject.Find("Manager").GetComponent<GameTimer>();        
         oceanCleanUpProgressBar.GetComponentInChildren<Text>().text = 0 + "%";
         oceanCleanUpBarChildFill.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
         oceanCleanUpBarChildBackground.GetComponent<Image>().CrossFadeAlpha(0.0f, 0.0f, false);
@@ -231,16 +232,14 @@ public class GlobalUI : MonoBehaviour
         _playExplode.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(0.6f);
-        gameTimer.BeginCountdown();
         _playExplode.gameObject.SetActive(false);
 
         _deployHookAnim.enabled = true;
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _skipTutorialButton.gameObject.SetActive(false);
-
-        _totalScore.SetActive(true);
-        gameTimer.BeginCountdown();
+        
+        _gameTimer.BeginCountdown();
     }
 
 
@@ -250,7 +249,6 @@ public class GlobalUI : MonoBehaviour
         _replayExplode.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(0.6f);
-        gameTimer.BeginCountdown();
 
         _replayExplode.gameObject.SetActive(false);
 
@@ -258,10 +256,21 @@ public class GlobalUI : MonoBehaviour
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
         basic.Boat.SetState(boat.BoatState.SetUp);
         _playGameButton.gameObject.SetActive(false);
+
         _deployHookAnim.enabled = false;
-        _totalScore.SetActive(true);
+        
+
         basic.Seafloorspawning.SpawnTrash();
         basic.Seafloorspawning.SpawnSpecialItems();
+    }
+    public void ShowTotalScore(bool pBool)
+    {
+        _totalScore.SetActive(pBool);
+    }
+    public void BeginGameTimer()
+    {
+        _gameTimerAsset.SetActive(true);
+        _gameTimer.BeginCountdown();
     }
     private IEnumerator ShowThenFadeOceanBar()
     {
@@ -285,10 +294,12 @@ public class GlobalUI : MonoBehaviour
 
     private IEnumerator ShowHookHand()
     {
+
         Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
         Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + 15, hookPosOnScreen.y - 20, 0.0f);
         _handSwipe.transform.position = offsetPosition;
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(1);
+
         if(!SwipehandCompleted) ShowHandSwipe(true);
     }
 
@@ -300,7 +311,7 @@ public class GlobalUI : MonoBehaviour
             bool firstTime = basic.Scorehandler.CollectATrashPiece();
             UpdateOceanProgressBar(firstTime);
         }
-        gameTimerText.text = gameTimer.GetFormattedTimeLeftAsString();
+        gameTimerText.text = _gameTimer.GetFormattedTimeLeftAsString();
     }
 
     public float GetOceanBarMovementSpeed()
