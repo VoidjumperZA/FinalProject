@@ -32,10 +32,10 @@ public class ScoreHandler : MonoBehaviour {
     [SerializeField]
     private int trashPercentageModifier;
     [SerializeField]
-    private int jellyfishPenaltyPercentage;
+    private float jellyfishPenaltyPercentage;
     private Transform UIPosition;
-    private int playerCurrentScore;
-    private int bankedScore;
+    private float playerCurrentScore;
+    private float bankedScore;
     private float timeColourHasBeenFlashing;
     private Color originalHookScoreColour;
     private Color originalTotalScoreColour;
@@ -86,7 +86,7 @@ public class ScoreHandler : MonoBehaviour {
         }
     }
 
-    public int GetScore()
+    public float GetScore()
     {
         return playerCurrentScore;
     }
@@ -151,7 +151,7 @@ public class ScoreHandler : MonoBehaviour {
     }
 
     //Instantiate a UI instance
-    private void createScoreUI(int pScore, bool pJellyMinPercent)
+    private void createScoreUI(float pScore, bool pJellyMinPercent)
     {
         GameObject newScoreInstance = Instantiate(scoreUI, UIPosition);
 
@@ -164,7 +164,7 @@ public class ScoreHandler : MonoBehaviour {
         newScoreInstance.GetComponent<ScoreUIAnimation>().SetSpawnParametres(angle, scale);
         if (pJellyMinPercent == true)
         {
-            newScoreInstance.GetComponent<ScoreUIAnimation>().SetScoreText("-" + pScore + "%");
+            newScoreInstance.GetComponent<ScoreUIAnimation>().SetScoreText("-" + pScore);
             newScoreInstance.GetComponent<ScoreUIAnimation>().SetScoreTextColour(Color.red);
         }
         else
@@ -221,7 +221,7 @@ public class ScoreHandler : MonoBehaviour {
         return trashPercentageModifier;
     }
 
-    public int GetJellyfishPenalty()
+    public float GetJellyfishPenalty()
     {
         return jellyfishPenaltyPercentage;
     }
@@ -247,13 +247,14 @@ public class ScoreHandler : MonoBehaviour {
     /// Remove score by a percentage. Percentage will be internally converted to an integer as well as an absolute value.
     /// </summary>
     /// <param name="pPercentage"></param>
-    public void RemoveScore(float pPercentage, bool pCreatUIAnnouncement)
+    public void RemoveScore(bool pCreatUIAnnouncement)
     {
-        int percentageRemoved = playerCurrentScore * (Mathf.Abs((int)pPercentage) / 100);
-        playerCurrentScore -= percentageRemoved;
+        float scoreRemoved = playerCurrentScore * jellyfishPenaltyPercentage;
+        Debug.Log(scoreRemoved + " scoreRemoved");
+        playerCurrentScore -= scoreRemoved;
         if (pCreatUIAnnouncement == true)
         {
-            createScoreUI(percentageRemoved, true);
+            createScoreUI(scoreRemoved, true);
         }
     }
 

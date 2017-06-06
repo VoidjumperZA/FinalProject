@@ -88,7 +88,7 @@ public class CameraHandler : MonoBehaviour
     }
     public void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
     {
-        Debug.Log("Calling camera to set to " + pFocusObject.ToString());
+        //Debug.Log("Calling camera to set to " + pFocusObject.ToString());
         if (!_initialized)
         {
             Debug.Log("CameraHandler: Can not run update, static class was not initialized!");

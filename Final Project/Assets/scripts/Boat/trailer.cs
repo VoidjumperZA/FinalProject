@@ -2,21 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct tempLowPolyFish
-{
-    private fish.FishType _type;
-    public tempLowPolyFish(fish.FishType pType)
-    {
-        _type = pType;
-    }
-}
-
 public class trailer : general
 {
-    [HideInInspector] public List<fish.FishType> _lowPolyFish;
-    [SerializeField]
-    private float _interval = 2.0f;
-    private counter _spawnInterval;
+    [SerializeField] private Transform _container;
+    [SerializeField] private GameObject _caughtFishPrefab;
+    private int _caughtAmount = 0;
     // States
     /*private Dictionary<BoatState, AbstractBoatState> _stateCache = new Dictionary<BoatState, AbstractBoatState>();
     private AbstractBoatState _abstractState = null;*/
@@ -26,32 +16,17 @@ public class trailer : general
     [SerializeField] private Transform[] _storagePoints;*/
     public override void Start()
     {
-        _lowPolyFish = new List<fish.FishType>();
-        _spawnInterval = new counter(_interval);
-        _spawnInterval.SetActive(true);
         //InitializeStateMachine();
     }
     public override void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L)) Instantiate(basic.LowPolyFish, basic.Boat.ContainerSpawner.position, basic.Boat.ContainerSpawner.rotation);
-        if (_lowPolyFish.Count > 0)
-        {
-            _spawnInterval.Count();
-            if (_spawnInterval.Done())
-            {
-                Instantiate(basic.LowPolyFish, basic.Boat.ContainerSpawner.position, basic.Boat.ContainerSpawner.rotation);
 
-                Debug.Log("Spawned: " + basic.LowPolyFish.name);
-                _lowPolyFish.RemoveAt(0);
-                _spawnInterval.Reset();
-            }
-        }
-        //_abstractState.Update();
     }
-    public void Add(fish.FishType pType)
+    public void AddFish()
     {
-        _lowPolyFish.Add(pType);
-        Debug.Log("Added: " + pType);
+        GameObject temp = Instantiate(_caughtFishPrefab, _container.position + new Vector3(0, _caughtAmount, 0), _container.rotation);
+        temp.transform.SetParent(_container);
+        _caughtAmount += 1;
     }
     /*public void SetState(BoatState pState)
     {

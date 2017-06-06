@@ -55,6 +55,7 @@ public class basic : MonoBehaviour
         SpawnBoat(_boatSpawn.position, _boatSetUp.position);
         SpawnHook();
         SpawnRadar();
+        SpawnTrailer();
         
         Boat.AssignRadar(Radar);
         Hook.AssignBoat(Boat);
@@ -126,8 +127,7 @@ public class basic : MonoBehaviour
     }
     private void SpawnTrailer()
     {
-        Trailer = Instantiate(_trailerPrefab, Boat.transform.position + new Vector3(-10,0,0), _trailerPrefab.transform.rotation).GetComponent<trailer>();
-        Trailer.gameObject.transform.SetParent(Boat.gameObject.transform);
+        Trailer = Boat.GetComponent<trailer>();
     }
     private void RenderTrail()
     {
@@ -150,7 +150,7 @@ public class basic : MonoBehaviour
     {
         if (pCollectable is fish) Fish.Remove(pCollectable as fish);
         if (pCollectable is trash) Trash.Remove(pCollectable as trash);
-        else Debug.Log("Trying to remove a general of unknown type.");
+        //else Debug.Log("Trying to remove a general of unknown type.");
     }
     public static float GetSeaDepth()
     {

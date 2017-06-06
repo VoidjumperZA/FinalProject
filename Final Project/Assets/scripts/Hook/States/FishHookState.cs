@@ -122,7 +122,7 @@ public class FishHookState : AbstractHookState
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
             if (!theJellyfish) return;
 			_hook.EnableJellyAttackEffect ();
-            basic.Scorehandler.RemoveScore(basic.Scorehandler.GetJellyfishPenalty(), true);
+            basic.Scorehandler.RemoveScore(true);
 
             basic.Camerahandler.CreateShakePoint();
 
