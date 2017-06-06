@@ -32,7 +32,7 @@ public class ScoreHandler : MonoBehaviour {
     [SerializeField]
     private int trashPercentageModifier;
     [SerializeField]
-    private float jellyfishPenaltyPercentage;
+    private float jellyfishPenaltyPercentage = 0.25f;
     private Transform UIPosition;
     private float playerCurrentScore;
     private float bankedScore;

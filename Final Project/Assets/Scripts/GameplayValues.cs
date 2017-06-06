@@ -10,9 +10,9 @@ public class GameplayValues : MonoBehaviour
     [SerializeField] [Range(1, 10)] private int _maxShakePoints;
     [SerializeField] private float _shakeSpeed;
     [SerializeField] private bool _applyJellyFeel;
-    [SerializeField] private float _menuToOceanDuration;
-    [SerializeField] private float _oceanToHookDuration;
-    [SerializeField] private float _hookToOceanDuration;
+    [SerializeField] private float _menuToOceanDuration = 3;
+    [SerializeField] private float _oceanToHookDuration = 1;
+    [SerializeField] private float _hookToOceanDuration = 1;
 
 
     [Header("Boat Values")]
