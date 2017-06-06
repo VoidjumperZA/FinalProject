@@ -10,8 +10,10 @@ public class GameplayValues : MonoBehaviour
     [SerializeField] [Range(1, 10)] private int _maxShakePoints;
     [SerializeField] private float _shakeSpeed;
     [SerializeField] private bool _applyJellyFeel;
-    [SerializeField] private float _lerpDuration;
-    
+    [SerializeField] private float _menuToOceanDuration;
+    [SerializeField] private float _oceanToHookDuration;
+    [SerializeField] private float _hookToOceanDuration;
+
 
     [Header("Boat Values")]
     [SerializeField]
@@ -68,9 +70,17 @@ public class GameplayValues : MonoBehaviour
     {
         return _maxShakePoints;
     }
-    public float GetLerpDuration()
+    public float MenuToOcean()
     {
-        return _lerpDuration;
+        return _menuToOceanDuration;
+    }
+    public float OceanToHook()
+    {
+        return _oceanToHookDuration;
+    }
+    public float HookToOcean()
+    {
+        return _hookToOceanDuration;
     }
     /*public int GetScreenShakeDuration()
     {

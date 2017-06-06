@@ -37,7 +37,7 @@ public class CameraHandler : MonoBehaviour
     public void InitializeCameraHandler()
     {
         _shakeSpeed = basic.Gameplayvalues.GetShakeSpeed();
-        _totalSlerpTime = basic.Gameplayvalues.GetLerpDuration();
+        _totalSlerpTime = basic.Gameplayvalues.MenuToOcean();
 
         _parentPoints = new Dictionary<CameraFocus, Transform>();
         _parentPoints[CameraFocus.Boat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
@@ -88,12 +88,18 @@ public class CameraHandler : MonoBehaviour
     }
     public void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
     {
-        Debug.Log("Calling camera to set to " + pFocusObject.ToString());
+        //Debug.Log("Calling camera to set to " + pFocusObject.ToString());
         if (!_initialized)
         {
             Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
             return;
         }
+        if (_focusObject == CameraFocus.Boat && pFocusObject == CameraFocus.Ocean) _totalSlerpTime = basic.Gameplayvalues.MenuToOcean();
+        if (_focusObject == CameraFocus.Ocean && pFocusObject == CameraFocus.Hook) _totalSlerpTime = basic.Gameplayvalues.OceanToHook();
+        if (_focusObject == CameraFocus.Hook && pFocusObject == CameraFocus.Ocean) _totalSlerpTime = basic.Gameplayvalues.HookToOcean();
+
+
+
         _previousFocusObject = _focusObject;
         if (pFirstTime == true)
         {

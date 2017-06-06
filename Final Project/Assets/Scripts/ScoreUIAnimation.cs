@@ -67,7 +67,7 @@ public class ScoreUIAnimation : MonoBehaviour {
         originalScale = pScale;
     }
 
-    public void SetScoreText(int pScore)
+    public void SetScoreText(float pScore)
     {
         selfText.text = "+" + pScore + "!";
     }
