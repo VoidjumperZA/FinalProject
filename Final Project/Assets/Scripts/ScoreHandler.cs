@@ -9,8 +9,6 @@ public class ScoreHandler : MonoBehaviour {
     [SerializeField] private Text totalScore; //the counter listing our total score
     [SerializeField] private Text currentHookScore;
     [SerializeField] private GameObject comboScoreUI;
-    [SerializeField] private Text currencyText;
-
 
     [Header("Flashing")]
     [SerializeField] Color flashColour;  //which colour the text flashes when it updates
@@ -37,7 +35,6 @@ public class ScoreHandler : MonoBehaviour {
     private int jellyfishPenaltyPercentage;
     private Transform UIPosition;
     private int playerCurrentScore;
-    private int caughtFishCurrecy;
     private int bankedScore;
     private float timeColourHasBeenFlashing;
     private Color originalHookScoreColour;
@@ -54,11 +51,9 @@ public class ScoreHandler : MonoBehaviour {
         UIPosition = UISpawnPosition.transform;
         playerCurrentScore = 0;
         bankedScore = 0;
-        caughtFishCurrecy = 0;
         currentHookScore.text = playerCurrentScore + "";
         currentHookScore.enabled = false;
         totalScore.text = bankedScore + "";
-        currencyText.text = caughtFishCurrecy + "";
         timeColourHasBeenFlashing = 0.0f;
         originalHookScoreColour = currentHookScore.color;
         originalTotalScoreColour = totalScore.color;
@@ -119,7 +114,7 @@ public class ScoreHandler : MonoBehaviour {
         currentHookScore.text = playerCurrentScore + "";
         if (pCaughtAFish == true)
         {
-            addCurrency();
+
         }
 
         //Briefly switch the colour and start a counter to switch it back for visual feedback
@@ -195,12 +190,6 @@ public class ScoreHandler : MonoBehaviour {
     public int GetComboScoreValue()
     {
         return comboScoreValue;
-    }
-
-    private void addCurrency()
-    {
-        caughtFishCurrecy++;
-        currencyText.text = "" + caughtFishCurrecy;
     }
 
     public void ToggleHookScoreUI(bool pState)

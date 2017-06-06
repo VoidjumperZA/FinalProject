@@ -160,6 +160,7 @@ public class MoveBoatState : AbstractBoatState
             //if moving OR at max velocity
             else if (_velocity > 0 || _velocity >= _maxVelocity /*|| direction != polarity*/)
             {
+                Debug.Log("Decelerate.");
                 //decelerate
                 _velocity -= _deceleration;
                 //if we're at zero check where we're being told to turn around
@@ -183,7 +184,7 @@ public class MoveBoatState : AbstractBoatState
             Debug.Log("In call");
             rotate();
         }
-        return (/*_velocity > 0 || */Input.GetMouseButton(0));
+        return (_velocity > 0 || Input.GetMouseButton(0));
 
     }
 
@@ -199,7 +200,7 @@ public class MoveBoatState : AbstractBoatState
             _boat.gameObject.transform.position = doubleBackDestination;
             isMovingToDoubleBackDestination = false;
             playerControl = true;
-            Debug.Log("Done doubling back.");
+            Debug.Log("Done doubling back. Velocity set to zero.");
         }
         _boat.transform.Translate(differenceVector.normalized * _velocity);
     }

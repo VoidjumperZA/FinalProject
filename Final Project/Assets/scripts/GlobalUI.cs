@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class GlobalUI : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class GlobalUI : MonoBehaviour
     private Image _replayButtonImage;*/
     [SerializeField]
     private Button _deployHookButton;
+    private Animator _deployHookAnim;
+    private AnimationClip _deployHookClip;
+
     [SerializeField]
     private Button _reelUpHook;
 
@@ -78,12 +82,10 @@ public class GlobalUI : MonoBehaviour
 
     [Header("HighScore")]
     [SerializeField] private GameObject _totalScore;
-    [SerializeField] private GameObject _currency;
 
     void Start()
     {
         _totalScore.SetActive(false);
-        _currency.SetActive(false);
 
         gameTimer = GameObject.Find("Manager").GetComponent<GameTimer>();        
         oceanCleanUpProgressBar.GetComponentInChildren<Text>().text = 0 + "%";
@@ -97,14 +99,24 @@ public class GlobalUI : MonoBehaviour
         if (!_deployHookButton) Debug.Log("Warning: You need to assign DeployHookButton to GlobalUI.");
         if (!_reelUpHook) Debug.Log("Warning: You need to assign ReelUpButton to GlobalUI.");
 
+        _deployHookAnim = _deployHookButton.GetComponent<Animator>();
+        if (!_deployHookAnim) Debug.Log("Couldn't find animation in deployHook");
+        _deployHookAnim.enabled = true;
+
         DeployHookButton(false);
         ReelUpHookButton(false);
         _playExplode.gameObject.SetActive(false);
         _replayExplode.gameObject.SetActive(false);
+
+        /*AnimationClip _deployHookClip = GetAnimationClip("BubbleMove", _deployHookAnim);
+        var settings = AnimationUtility.GetAnimationClipSettings(_deployHookClip);
+        settings.loopTime = false;
+        AnimationUtility.SetAnimationClipSettings(_deployHookClip, settings);*/
+
         //_playButtonImage.gameObject.SetActive(true);
         //_replayButtonImage.gameObject.SetActive(true);
-		
-        
+
+
         ShowHandHookButton(false);
         //_handDeployHook.transform.position = new Vector2 (_deployHookButton.transform.position.x + 15, _deployHookButton.transform.position.y - 15);
         
@@ -128,6 +140,7 @@ public class GlobalUI : MonoBehaviour
     {
         basic.Boat.SetState(boat.BoatState.Fish);
         basic.Scorehandler.ToggleHookScoreUI(true);
+        _deployHookAnim.enabled = false;
         DeployHookButton(false);
         if (!InTutorial)
         {
@@ -159,11 +172,14 @@ public class GlobalUI : MonoBehaviour
         }
         else
         {
+            //Stop all new fish spawning while we are in this part of the tutorial as the ocean should be empty
+            basic.Tempfishspawn._boatSetUp = false;
             //basic.Tempfishspawn.ClearAllFish(); //gives shit ton of errors
             if (DropHookCompleted)
             {
-                /*basic.Seafloorspawning.SpawnTrash();
-                basic.Seafloorspawning.SpawnSpecialItems();*/
+                basic.Tempfishspawn._boatSetUp = true;
+                basic.Seafloorspawning.SpawnTrash();
+                basic.Seafloorspawning.SpawnSpecialItems();
                 ReelUpHookCompleted = true;
                 ShowHandHookButton(false);
                 WaitForBoatMove();
@@ -220,7 +236,6 @@ public class GlobalUI : MonoBehaviour
         _skipTutorialButton.gameObject.SetActive(false);
 
         _totalScore.SetActive(true);
-        _currency.SetActive(true);
         gameTimer.BeginCountdown();
     }
 
@@ -241,7 +256,8 @@ public class GlobalUI : MonoBehaviour
         _playGameButton.gameObject.SetActive(false);
 
         _totalScore.SetActive(true);
-        _currency.SetActive(true);
+        basic.Seafloorspawning.SpawnTrash();
+        basic.Seafloorspawning.SpawnSpecialItems();
     }
     private IEnumerator ShowThenFadeOceanBar()
     {
@@ -288,5 +304,21 @@ public class GlobalUI : MonoBehaviour
     public Slider GetOceanCleanUpBar()
     {
         return oceanCleanUpProgressBar;
+    }
+
+    public AnimationClip GetAnimationClip(string name , Animator _animator)
+    {
+        if (!_animator) return null; 
+
+        foreach (AnimationClip clip in _animator.runtimeAnimatorController.animationClips)
+        {
+            if (clip.name == name)
+            {
+                return clip;
+            }
+        }
+        //Debug.Log("Returns null");
+        return null;
+        
     }
 }
