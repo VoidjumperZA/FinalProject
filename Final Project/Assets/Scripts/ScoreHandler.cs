@@ -63,6 +63,7 @@ public class ScoreHandler : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
+        CurrentHookScoreActive(basic.Camerahandler.IsAboveWater);
         if (basic.Hook)
         {
             Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
@@ -128,6 +129,10 @@ public class ScoreHandler : MonoBehaviour {
     public void AddComboScore()
     {
         createComboScoreUI();
+    }
+    public void CurrentHookScoreActive(bool pBool)
+    {
+        currentHookScore.gameObject.SetActive(pBool);
     }
 
     public void BankScore()

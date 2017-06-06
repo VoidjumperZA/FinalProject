@@ -287,7 +287,7 @@ public class GlobalUI : MonoBehaviour
 
     private IEnumerator ShowHookHand()
     {
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(1);
         if(!SwipehandCompleted) ShowHandSwipe(true);
     }
 
