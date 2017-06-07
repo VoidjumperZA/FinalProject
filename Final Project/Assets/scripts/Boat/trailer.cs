@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class trailer : general
 {
-    [SerializeField] private Transform _container;
+    [SerializeField] private Transform[] _pile;
     [SerializeField] private GameObject _caughtFishPrefab;
-    private int _caughtAmount = 0;
+    private int[] _pileAmount = new int[4] { 0, 0, 0, 0 };
     // States
     /*private Dictionary<BoatState, AbstractBoatState> _stateCache = new Dictionary<BoatState, AbstractBoatState>();
     private AbstractBoatState _abstractState = null;*/
@@ -24,9 +24,10 @@ public class trailer : general
     }
     public void AddFish()
     {
-        GameObject temp = Instantiate(_caughtFishPrefab, _container.position + new Vector3(0, _caughtAmount, 0), _container.rotation);
-        temp.transform.SetParent(_container);
-        _caughtAmount += 1;
+        int pileIndex = Random.Range(0, 4);
+        GameObject temp = Instantiate(_caughtFishPrefab, _pile[pileIndex].position + new Vector3(0, _pileAmount[pileIndex], 0), _pile[pileIndex].rotation);
+        temp.transform.SetParent(_pile[pileIndex]);
+        _pileAmount[pileIndex] += 1;
     }
     /*public void SetState(BoatState pState)
     {

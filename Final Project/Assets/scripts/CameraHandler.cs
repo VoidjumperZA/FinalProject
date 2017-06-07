@@ -6,7 +6,7 @@ using UnityEngine.PostProcessing;
 
 public class CameraHandler : MonoBehaviour
 {
-    private bool _isAboveWater = false;
+    private bool _isAboveWater = false; public bool IsAboveWater { get { return _isAboveWater; } }
     [SerializeField] private Transform _seaSurface;
     [SerializeField] private PostProcessingProfile _aboveWaterProfile;
     [SerializeField] private PostProcessingProfile _underWaterProfile;
@@ -37,7 +37,7 @@ public class CameraHandler : MonoBehaviour
     public void InitializeCameraHandler()
     {
         _shakeSpeed = basic.Gameplayvalues.GetShakeSpeed();
-        _totalSlerpTime = basic.Gameplayvalues.GetLerpDuration();
+        _totalSlerpTime = basic.Gameplayvalues.MenuToOcean();
 
         _parentPoints = new Dictionary<CameraFocus, Transform>();
         _parentPoints[CameraFocus.Boat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
@@ -94,6 +94,12 @@ public class CameraHandler : MonoBehaviour
             Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
             return;
         }
+        if (_focusObject == CameraFocus.Boat && pFocusObject == CameraFocus.Ocean) _totalSlerpTime = basic.Gameplayvalues.MenuToOcean();
+        if (_focusObject == CameraFocus.Ocean && pFocusObject == CameraFocus.Hook) _totalSlerpTime = basic.Gameplayvalues.OceanToHook();
+        if (_focusObject == CameraFocus.Hook && pFocusObject == CameraFocus.Ocean) _totalSlerpTime = basic.Gameplayvalues.HookToOcean();
+
+
+
         _previousFocusObject = _focusObject;
         if (pFirstTime == true)
         {

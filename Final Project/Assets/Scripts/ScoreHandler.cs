@@ -32,7 +32,7 @@ public class ScoreHandler : MonoBehaviour {
     [SerializeField]
     private int trashPercentageModifier;
     [SerializeField]
-    private float jellyfishPenaltyPercentage;
+    private float jellyfishPenaltyPercentage = 0.25f;
     private Transform UIPosition;
     private float playerCurrentScore;
     private float bankedScore;
@@ -63,6 +63,7 @@ public class ScoreHandler : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
+        CurrentHookScoreActive(!basic.Camerahandler.IsAboveWater);
         if (basic.Hook)
         {
             Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
@@ -128,6 +129,10 @@ public class ScoreHandler : MonoBehaviour {
     public void AddComboScore()
     {
         createComboScoreUI();
+    }
+    public void CurrentHookScoreActive(bool pBool)
+    {
+        currentHookScore.gameObject.SetActive(pBool);
     }
 
     public void BankScore()
