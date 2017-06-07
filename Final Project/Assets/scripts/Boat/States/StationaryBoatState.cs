@@ -16,9 +16,7 @@ public class StationaryBoatState : AbstractBoatState {
 
         if (basic.GlobalUI.InTutorial && basic.GlobalUI.ReelUpHookCompleted)
         {
-            Vector3 boatPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
-            Vector3 offsetPosition = new Vector3(boatPosOnScreen.x , boatPosOnScreen.y, 0.0f);
-            basic.GlobalUI.SetHandSwipePossition(offsetPosition);
+            basic.GlobalUI.SetHandSwipePosition(basic.Boat.gameObject, new Vector3(30, -20, 0));
             basic.GlobalUI.ShowHandSwipe(true);
         }
     }

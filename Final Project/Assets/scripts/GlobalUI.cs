@@ -294,10 +294,7 @@ public class GlobalUI : MonoBehaviour
 
     private IEnumerator ShowHookHand()
     {
-
-        Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
-        Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + 33, hookPosOnScreen.y - 20, 0.0f);
-        SetHandSwipePossition(offsetPosition);
+        SetHandSwipePosition(basic.Hook.gameObject, new Vector3(30, -20, 0));
         yield return new WaitForSeconds(1);
 
         if(!SwipehandCompleted) ShowHandSwipe(true);
@@ -305,6 +302,9 @@ public class GlobalUI : MonoBehaviour
 
     void Update()
     {
+        SetScreenPosition(_reelUpHook.gameObject, basic.Hook.gameObject, new Vector3(0, 64, 0));
+        SetScreenPosition(_handDeployHook.gameObject, basic.Hook.gameObject, new Vector3(0, 64, 0));
+        SetScreenPosition(_deployHookButton.gameObject, basic.Hook.gameObject, new Vector3(0, 64, 0));
         //temp testing
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -340,8 +340,16 @@ public class GlobalUI : MonoBehaviour
         
     }
 
-    public void SetHandSwipePossition(Vector3 pos)
+    public void SetHandSwipePosition(GameObject pAccordingTo, Vector3 pOffset)
     {
-        _handSwipe.transform.position = pos;
+        Vector3 accordingTo = Camera.main.WorldToScreenPoint(pAccordingTo.transform.position);
+        Vector3 position = accordingTo + pOffset;
+        _handSwipe.transform.position = position;
+    }
+    public void SetScreenPosition(GameObject pTheObject, GameObject pAccordingTo, Vector3 pOffset)
+    {
+        Vector3 accordingTo = Camera.main.WorldToScreenPoint(pAccordingTo.transform.position);
+        Vector3 position = accordingTo + pOffset;
+        pTheObject.transform.position = position;
     }
 }
