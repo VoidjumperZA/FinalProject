@@ -49,7 +49,6 @@ public class ShoppingList : MonoBehaviour {
                 {
                     again = false;
                     chosen.Add(tempType);
-                    Debug.Log(tempType + " Type");
                 }
             }
             _fishInfo[i] = new int[3] { chosen[i], 0, _toCollectPreset[chosen[i], Random.Range(0, 3)] };
