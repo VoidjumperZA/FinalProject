@@ -33,6 +33,11 @@ public class GlobalUI : MonoBehaviour
 
     [SerializeField]
     private Button _reelUpHook;
+    [SerializeField]
+    private Transform _deployHookPositon;
+    [SerializeField]
+    private Transform _reelUpHookPosition;
+
 
     [Header("Timer")]
     [SerializeField] private GameObject _gameTimerAsset;
@@ -303,9 +308,9 @@ public class GlobalUI : MonoBehaviour
 
     void Update()
     {
-        SetScreenPosition(_reelUpHook.gameObject, basic.Hook.gameObject, new Vector3(0, 64, 0));
-        SetScreenPosition(_handDeployHook.gameObject, basic.Hook.gameObject, new Vector3(0, 64, 0));
-        SetScreenPosition(_deployHookButton.gameObject, basic.Hook.gameObject, new Vector3(0, 64, 0));
+        //SetScreenPosition(_reelUpHook.gameObject, _reelUpHookPosition.gameObject, new Vector3(0, 0, 0));
+        //SetScreenPosition(_handDeployHook.gameObject, _deployHookPositon.gameObject, new Vector3(0, 0, 0));
+        //SetScreenPosition(_deployHookButton.gameObject, _deployHookPositon.gameObject, new Vector3(0, 0, 0));
         //temp testing
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -350,7 +355,7 @@ public class GlobalUI : MonoBehaviour
     public void SetScreenPosition(GameObject pTheObject, GameObject pAccordingTo, Vector3 pOffset)
     {
         Vector3 accordingTo = Camera.main.WorldToScreenPoint(pAccordingTo.transform.position);
-        Vector3 position = accordingTo + pOffset;
+        Vector3 position = accordingTo;// + pOffset;
         pTheObject.transform.position = position;
     }
 }
