@@ -21,8 +21,10 @@ public class MoveBoatState : AbstractBoatState
     private int rotSpeed;
     private Quaternion targetQua;
     private GameObject boatModel;
+    private Collider hitLevelBoundary;
 
     private bool playerControl;
+    private bool forceDecel;
     private Vector3 doubleBackDestination;
     private float halfDoubleBackDestination;
     private bool isMovingToDoubleBackDestination;
@@ -35,7 +37,7 @@ public class MoveBoatState : AbstractBoatState
         _maxVelocity = pMaxVelocity;
         _deceleration = pDeceleration;
         _rotationLerpSpeed = pRotationLerpSpeed;
-
+        
         SetUpState();
     }
 
@@ -48,6 +50,7 @@ public class MoveBoatState : AbstractBoatState
         polarity = 0.0f;
         direction = 1.0f;
         turning = false;
+        forceDecel = false;
 
         //Doubling Back
         playerControl = true;
@@ -104,7 +107,11 @@ public class MoveBoatState : AbstractBoatState
     }
     public override void Update()
     {
+        if (forceDecel == false)
+        {
         setPolarity();
+
+        }
 
         //Debug.Log("Direction: " + direction);
         if (!MoveToDestination() && turning == false && playerControl == true)
@@ -115,9 +122,14 @@ public class MoveBoatState : AbstractBoatState
         }
 
             Debug.Log("Polarity: " + polarity + "\t|\tDirection: " + direction);
-        if (turning == false)
+        if (forceDecel == true)
         {
-
+            _velocity -= (_deceleration);
+            if (_velocity <= 0)
+            {
+                forceDecel = false;
+                doubleBackLevelBoundary(hitLevelBoundary);
+            }
         }
 
         if (isMovingToDoubleBackDestination == true)
@@ -192,7 +204,7 @@ public class MoveBoatState : AbstractBoatState
     {
         Vector3 differenceVector = doubleBackDestination - _boat.gameObject.transform.position;
         if (differenceVector.magnitude > halfDoubleBackDestination) _velocity += _acceleration;
-        else _velocity -= _acceleration;
+        else _velocity -= _deceleration;
         if (_velocity > _maxVelocity) _velocity = _maxVelocity;
         if (_velocity < 0 || differenceVector.magnitude <= _velocity)
         {
@@ -250,6 +262,24 @@ public class MoveBoatState : AbstractBoatState
         return boat.BoatState.Move;
     }
 
+    private void doubleBackLevelBoundary(Collider other)
+    {
+        direction = direction == 1.0f ? -1.0f : 1.0f;
+        doubleBackDestination = doubleBackDestinations[0].transform.position;
+        Vector3 distanceApart = Vector3.zero;
+        foreach (GameObject dbd in doubleBackDestinations)
+        {
+            distanceApart = other.gameObject.transform.position - dbd.gameObject.transform.position;
+            if (distanceApart.x < doubleBackDestination.x)
+            {
+                Debug.Log("Replacing Distance.");
+                doubleBackDestination = dbd.transform.position;
+            }
+        }
+        halfDoubleBackDestination = (doubleBackDestination - _boat.gameObject.transform.position).magnitude / 2;
+        ForceRotationWithoutPolarityDirectionMatch();
+    }
+
     public override void OnTriggerEnter(Collider other)
     {
         //Fishing Area
@@ -261,20 +291,8 @@ public class MoveBoatState : AbstractBoatState
         //Level Boundary
         if (other.gameObject.tag == "LevelBoundary")
         {
-            direction = direction == 1.0f ? -1.0f : 1.0f;
-            doubleBackDestination = doubleBackDestinations[0].transform.position;
-            Vector3 distanceApart = Vector3.zero;
-            foreach (GameObject dbd in doubleBackDestinations)
-            {
-                distanceApart = other.gameObject.transform.position - dbd.gameObject.transform.position;
-                if (distanceApart.x < doubleBackDestination.x)
-                {
-                    Debug.Log("Replacing Distance.");
-                    doubleBackDestination = dbd.transform.position;
-                }
-            }
-            halfDoubleBackDestination = (doubleBackDestination - _boat.gameObject.transform.position).magnitude / 2;
-            ForceRotationWithoutPolarityDirectionMatch();
+            hitLevelBoundary = other;
+            forceDecel = true;
         }
         if (other.gameObject.tag == "DoubleBackDestination")
         {
