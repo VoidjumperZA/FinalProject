@@ -225,10 +225,10 @@ public class GlobalUI : MonoBehaviour
 
         //Start a coroutine to disable after a while     
         StartCoroutine(ShowThenFadeOceanBar());        
-        if (pFirstTimeAnim)
+        /*if (pFirstTimeAnim)
         {
             oceanCleanUpProgressBar.GetComponent<OceanCleanUpUIAnimation>().AnimateFirstTimeMovement();
-        }
+        }*/
     }
     private IEnumerator PlayGameAnim()
     {
