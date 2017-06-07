@@ -52,7 +52,7 @@ public class TempFishSpawn : MonoBehaviour
         rightSpawnPos.y += (_verticalSpawnFluctuation);
         _rightSpawn.transform.position = rightSpawnPos;*/
         //Max our time to start
-        timeBetweenSpawns = lowerSpawningRateHigherValue;
+        timeBetweenSpawns = higherSpawningRateLowerValue;
         _timePassed = timeBetweenSpawns;
 
         totalNumberOfSpawnedFish = 0;

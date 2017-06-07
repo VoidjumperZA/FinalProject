@@ -146,6 +146,19 @@ public class basic : MonoBehaviour
     {
 
     }
+
+    public static void ClearFishList(bool pDestroyFish)
+    {
+        if (pDestroyFish == true)
+        {
+            for (int i = 0; i < Fish.Count; i++)
+            {
+                GameObject.Destroy(Fish[i]);
+            }
+        }
+        
+        Fish.Clear();
+    }
     public static void RemoveCollectable(general pCollectable)
     {
         if (pCollectable is fish) Fish.Remove(pCollectable as fish);

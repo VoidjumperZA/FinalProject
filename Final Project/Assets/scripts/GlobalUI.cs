@@ -139,6 +139,15 @@ public class GlobalUI : MonoBehaviour
     public void ShowHandHookButton(bool pBool) { _handDeployHook.gameObject.SetActive(pBool); }
     public void ShowHandSwipe(bool pBool) { _handSwipe.gameObject.SetActive(pBool); }
 
+    public bool GetInTutorial()
+    {
+        return InTutorial;
+    }
+
+    public bool GetReelUpCompleted()
+    {
+        return ReelUpHookCompleted;
+    }
     public void DeployHook()
     {
         basic.Boat.SetState(boat.BoatState.Fish);
@@ -153,6 +162,8 @@ public class GlobalUI : MonoBehaviour
         }
         else
         {
+
+            //DOT
             if (DropHookCompleted)
             {
                 ReelUpHookButton(true);
@@ -176,14 +187,8 @@ public class GlobalUI : MonoBehaviour
         }
         else
         {
-            //Stop all new fish spawning while we are in this part of the tutorial as the ocean should be empty
-            basic.Tempfishspawn._boatSetUp = false;
-            //basic.Tempfishspawn.ClearAllFish(); //gives shit ton of errors
             if (DropHookCompleted)
-            {
-                basic.Tempfishspawn._boatSetUp = true;
-                basic.Seafloorspawning.SpawnTrash();
-                basic.Seafloorspawning.SpawnSpecialItems();
+            {        
                 ReelUpHookCompleted = true;
                 ShowHandHookButton(false);
                 WaitForBoatMove();
@@ -258,10 +263,6 @@ public class GlobalUI : MonoBehaviour
         _playGameButton.gameObject.SetActive(false);
 
         _deployHookAnim.enabled = false;
-        
-
-        basic.Seafloorspawning.SpawnTrash();
-        basic.Seafloorspawning.SpawnSpecialItems();
     }
     public void ShowTotalScore(bool pBool)
     {
