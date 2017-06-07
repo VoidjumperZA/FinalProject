@@ -6,7 +6,7 @@ using UnityEngine.PostProcessing;
 
 public class CameraHandler : MonoBehaviour
 {
-    private bool _isAboveWater = false;
+    private bool _isAboveWater = false; public bool IsAboveWater { get { return _isAboveWater; } }
     [SerializeField] private Transform _seaSurface;
     [SerializeField] private PostProcessingProfile _aboveWaterProfile;
     [SerializeField] private PostProcessingProfile _underWaterProfile;

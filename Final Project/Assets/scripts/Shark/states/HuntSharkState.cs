@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class HuntSharkState : AbstractSharkState
 {
-    public HuntSharkState(shark pShark) : base(pShark)
+    private float _swimSpeed;
+    public HuntSharkState(shark pShark, float pSwimSpeed) : base(pShark)
     {
-
+        _swimSpeed = pSwimSpeed;
     }
     public override void Start()
     {
@@ -14,7 +15,16 @@ public class HuntSharkState : AbstractSharkState
     }
     public override void Update()
     {
-
+        Vector3 differenceVector = basic.Hook.transform.position - _shark.transform.position;
+        if (differenceVector.magnitude >= _swimSpeed)
+        {
+            _shark.transform.Translate(differenceVector.normalized * _swimSpeed);
+        }
+        else
+        {
+            SetState(shark.SharkState.None);
+        }
+        if (!basic.Hook.IsInState(hook.HookState.Fish)) SetState(shark.SharkState.None);
     }
     public override void Refresh()
     {
