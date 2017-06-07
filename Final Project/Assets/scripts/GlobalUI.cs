@@ -33,10 +33,6 @@ public class GlobalUI : MonoBehaviour
 
     [SerializeField]
     private Button _reelUpHook;
-    [SerializeField]
-    private Transform _deployHookPositon;
-    [SerializeField]
-    private Transform _reelUpHookPosition;
 
 
     [Header("Timer")]
