@@ -22,7 +22,7 @@ public class ShoppingList : MonoBehaviour {
 
     void Start () {
         CacheNewCollection();
-        //SetUpImageFields();
+        SetUpImageFields();
         SetUpTextFields();
         Show(false);
     }
@@ -41,7 +41,7 @@ public class ShoppingList : MonoBehaviour {
     private void CacheNewCollection()
     {
         //Debug.Log("Started generating");
-        _fishInfo = new Dictionary<int, int[]>();
+        _fishInfo.Clear();
         List<int> chosen = new List<int>();
 
         int tempType = 0;
@@ -57,9 +57,10 @@ public class ShoppingList : MonoBehaviour {
                     chosen.Add(tempType);
                 }
             }
-            _fishInfo[chosen[i]] = new int[3] { Random.Range(0, 3), 0, _toCollectPreset[chosen[i], Random.Range(0, 3)] };
+            _fishInfo[i] = new int[3] { chosen[i], 0, _toCollectPreset[chosen[i], Random.Range(0, 3)] };
         }
         chosen.Clear();
+        SetUpTextFields();
         //for (int i =0; i < 3; i++) Debug.Log(i + "  " + _fishType[i]);
         
 

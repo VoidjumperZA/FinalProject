@@ -11,6 +11,8 @@ public class SetUpBoatState : AbstractBoatState
     private float _deceleration;
     private Vector3 _destination;
     private float _halfDestination;
+    private GameObject[] levelBoundaries;
+    private GameObject[] doubleBackPoints;
 
     public SetUpBoatState(boat pBoat, float pAcceleration, float pMaxVelocity, float pDeceleration, Vector3 pDestination) : base(pBoat)
     {
@@ -18,6 +20,11 @@ public class SetUpBoatState : AbstractBoatState
         _maxVelocity = pMaxVelocity;
         _deceleration = pDeceleration;
         _destination = pDestination;
+        levelBoundaries = GameObject.FindGameObjectsWithTag("LevelBoundary");
+        doubleBackPoints = GameObject.FindGameObjectsWithTag("DoubleBackDestination");
+        //disble the boundaries and double back points
+        setBoundaryDoubleBackState(false);
+        basic.Tempfishspawn._boatSetUp = true;
     }
 
     public override void Start()
@@ -37,14 +44,23 @@ public class SetUpBoatState : AbstractBoatState
             _velocity = 0;
             _boat.gameObject.transform.position = _destination;
             SetState(boat.BoatState.Stationary);
+            //enable the boundaries and double back points
+            setBoundaryDoubleBackState(true);
         }
         _boat.transform.Translate(differenceVector.normalized * _velocity);
     }
+
+    private void setBoundaryDoubleBackState(bool pState)
+    {
+        for (int i = 0; i < levelBoundaries.Length; i++)
+        {
+            levelBoundaries[i].SetActive(pState);
+            doubleBackPoints[i].SetActive(pState);
+        }
+    }
     public override void Refresh()
     {
-        basic.Seafloorspawning.SpawnTrash();
-        basic.Seafloorspawning.SpawnSpecialItems();
-        basic.Tempfishspawn._boatSetUp = true;
+        
         basic.GlobalUI.DeployHookButton(true);
         basic.GlobalUI.ShowTotalScore(true);
         basic.GlobalUI.BeginGameTimer();

@@ -21,10 +21,8 @@ public class MoveBoatState : AbstractBoatState
     private int rotSpeed;
     private Quaternion targetQua;
     private GameObject boatModel;
-    private Collider hitLevelBoundary;
 
     private bool playerControl;
-    private bool forceDecel;
     private Vector3 doubleBackDestination;
     private float halfDoubleBackDestination;
     private bool isMovingToDoubleBackDestination;
@@ -50,7 +48,6 @@ public class MoveBoatState : AbstractBoatState
         polarity = 0.0f;
         direction = 1.0f;
         turning = false;
-        forceDecel = false;
 
         //Doubling Back
         playerControl = true;
@@ -87,7 +84,7 @@ public class MoveBoatState : AbstractBoatState
         }
         currentRot = 0;
         rotSpeed = GameObject.Find("Manager").GetComponent<GameplayValues>().GetBoatRotationSpeed();
-        Debug.Log("Finished SetUp of MoveBoatState.");
+        //Debug.Log("Finished SetUp of MoveBoatState.");
     }
 
     public override void Start()
@@ -107,11 +104,9 @@ public class MoveBoatState : AbstractBoatState
     }
     public override void Update()
     {
-        if (forceDecel == false)
-        {
         setPolarity();
 
-        }
+        
 
         //Debug.Log("Direction: " + direction);
         if (!MoveToDestination() && turning == false && playerControl == true)
@@ -122,15 +117,6 @@ public class MoveBoatState : AbstractBoatState
         }
 
             Debug.Log("Polarity: " + polarity + "\t|\tDirection: " + direction);
-        if (forceDecel == true)
-        {
-            _velocity -= (_deceleration);
-            if (_velocity <= 0)
-            {
-                forceDecel = false;
-                doubleBackLevelBoundary(hitLevelBoundary);
-            }
-        }
 
         if (isMovingToDoubleBackDestination == true)
         {
@@ -291,8 +277,7 @@ public class MoveBoatState : AbstractBoatState
         //Level Boundary
         if (other.gameObject.tag == "LevelBoundary")
         {
-            hitLevelBoundary = other;
-            forceDecel = true;
+            doubleBackLevelBoundary(other);
         }
         if (other.gameObject.tag == "DoubleBackDestination")
         {

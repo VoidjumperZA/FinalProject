@@ -21,8 +21,9 @@ public class PulseRadarState : AbstractRadarState {
         _radar.Renderer.enabled = true;
 
     }
-	public override void Update () {
-	}
+	public override void Update ()
+    {
+    }
     public override void FixedUpdate()
     {
         VisualiseRadarCone();
