@@ -21,7 +21,7 @@ public class shark : general {
     public override void Start () {
         InitializeStateMachine();
 	}
-	public override void Update () {
+	public override void FixedUpdate () {
         _abstractState.Update();
         //Debug.Log(_abstractState.StateType());
 	}

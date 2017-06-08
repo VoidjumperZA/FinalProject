@@ -28,7 +28,7 @@ public class JellyfishSpawn : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
     {
         if (!basic.GlobalUI.InTutorial)
         {

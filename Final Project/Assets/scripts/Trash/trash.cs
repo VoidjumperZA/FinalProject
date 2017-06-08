@@ -18,7 +18,7 @@ public class trash : general
     {
         InitializeStateMachine();
     }
-    public override void Update()
+    public override void FixedUpdate()
     {
         _abstractState.Update();
     }

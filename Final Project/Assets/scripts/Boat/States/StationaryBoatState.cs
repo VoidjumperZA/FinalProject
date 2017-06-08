@@ -39,7 +39,7 @@ public class StationaryBoatState : AbstractBoatState {
     private bool Dragging()
     {
         if (basic.GlobalUI.InTutorial && !basic.GlobalUI.ReelUpHookCompleted) return false;
-        if ((!Input.GetMouseButton(0) && !mouse.Touching()) || !mouse.GameObjectTagIs("Boat")) return false;
+        if ((!Input.GetMouseButton(0) && !mouse.Touching())) return false;
         Vector3 mouseWorldPoint = mouse.GetWorldPoint();
         return Mathf.Abs(mouseWorldPoint.x - _boat.gameObject.transform.position.x) > 0;
     }

@@ -52,7 +52,7 @@ public class hook : general
     }
 
     //
-    public override void Update()
+    public override void FixedUpdate()
     {
         _abstractState.Update();
        

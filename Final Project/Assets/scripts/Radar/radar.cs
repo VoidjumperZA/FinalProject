@@ -18,9 +18,6 @@ public class radar : general
 	public override void Start() {
         InitializeStateMachine();
 	}
-	public override void Update() {
-        _abstractState.Update();
-    }
     public override void FixedUpdate()
     {
         _abstractState.FixedUpdate();

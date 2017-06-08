@@ -106,11 +106,10 @@ public class basic : MonoBehaviour
     {
         RenderTrail();
         if (Input.GetMouseButton(0) || mouse.Touching()) _inputTimer.ResetClock();
-        Camerahandler.ClassUpdate();
     }
-
-    private void LateUpdate()
+    void FixedUpdate()
     {
+        Camerahandler.ClassUpdate();
     }
     private void SpawnBoat(Vector3 pSpawnPosition, Vector3 pSetUpPosition)
     {
