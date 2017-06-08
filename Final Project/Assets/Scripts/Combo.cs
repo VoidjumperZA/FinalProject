@@ -21,6 +21,8 @@ public class Combo : MonoBehaviour
     private GameObject iconSpawnPosition;
     [Header("Values")]
     [SerializeField]
+    private float iconScalingSize;
+    [SerializeField]
     [Range(0, 500)]
     private float widthBetweenIcons;
     [SerializeField]
@@ -182,6 +184,8 @@ public class Combo : MonoBehaviour
                 //Debug.Log("-> (" + fishTypeIndex + ")" + combo[combo.Count - 1].ToString());
                 Image newComboIconBackground = GameObject.Instantiate(comboBackgroundImageToInstantiate, canvas.transform);
                 Image newComboIconFish = GameObject.Instantiate(comboFishImageToInstantiate, canvas.transform);
+                newComboIconBackground.transform.localScale = new Vector3(iconScalingSize, iconScalingSize, iconScalingSize);
+                newComboIconFish.transform.localScale = new Vector3(iconScalingSize, iconScalingSize, iconScalingSize);
                 newComboIconFish.sprite = comboFishIconSprites[fishTypeIndex];
 
                 if (i == comboLength)

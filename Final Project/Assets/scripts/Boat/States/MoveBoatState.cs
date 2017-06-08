@@ -104,7 +104,11 @@ public class MoveBoatState : AbstractBoatState
     }
     public override void Update()
     {
+        if (turning == false && playerControl == true)
+        {
+
         setPolarity();
+        }
 
         
 
@@ -116,7 +120,7 @@ public class MoveBoatState : AbstractBoatState
             _boat.SetState(boat.BoatState.Stationary);
         }
 
-            Debug.Log("Polarity: " + polarity + "\t|\tDirection: " + direction);
+           // Debug.Log("Polarity: " + polarity + "\t|\tDirection: " + direction);
 
         if (isMovingToDoubleBackDestination == true)
         {

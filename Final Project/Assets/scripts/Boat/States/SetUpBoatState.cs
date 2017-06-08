@@ -64,6 +64,7 @@ public class SetUpBoatState : AbstractBoatState
         basic.GlobalUI.DeployHookButton(true);
         basic.GlobalUI.ShowTotalScore(true);
         basic.GlobalUI.BeginGameTimer();
+        basic.Tempfishspawn.StartFertilityDegradeCoroutine();
 
         //Once in the centre of the ocean, not in the tutorial sequence
         if (basic.GlobalUI.GetInTutorial() == false)
