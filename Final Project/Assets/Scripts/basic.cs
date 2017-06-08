@@ -136,20 +136,20 @@ public class basic : MonoBehaviour
     }
     public static void AddCollectable(fish pFish)
     {
-        Fish.Add(pFish);
+        if (pFish) Fish.Add(pFish);
     }
     public static void AddCollectable(trash pTrash)
     {
-        Trash.Add(pTrash);
+        if (pTrash) Trash.Add(pTrash);
     }
     public static void AddCollectable(Jellyfish pJellyFish)
     {
-
+        //if (pJellyFish) ;
     }
 
     public static void ClearFishList(bool pDestroyFish)
     {
-        if (pDestroyFish == true)
+        if (pDestroyFish)
         {
             for (int i = 0; i < Fish.Count; i++)
             {

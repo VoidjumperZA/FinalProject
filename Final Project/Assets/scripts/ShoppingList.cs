@@ -70,14 +70,14 @@ public class ShoppingList : MonoBehaviour {
     }*/
     private void SetUpTextFields()
     {
-        _listTextfields[0].text = "Small fish color: " + _fishInfo[0][0] + " collected: " + _fishInfo[0][1] + "/" + _fishInfo[0][2];
+        /*_listTextfields[0].text = "Small fish color: " + _fishInfo[0][0] + " collected: " + _fishInfo[0][1] + "/" + _fishInfo[0][2];
         _listTextfields[1].text = "Medium fish color: " + _fishInfo[1][0] + " collected: " + _fishInfo[1][1] + "/" + _fishInfo[1][2];
-        _listTextfields[2].text = "Large fish color: " + _fishInfo[2][0] + " collected: " + _fishInfo[2][1] + "/" + _fishInfo[2][2];
+        _listTextfields[2].text = "Large fish color: " + _fishInfo[2][0] + " collected: " + _fishInfo[2][1] + "/" + _fishInfo[2][2];*/
         
-        /*_listTextfields[0].text = _fishInfo[0][1] + "/" + _fishInfo[0][2];
+        _listTextfields[0].text = _fishInfo[0][1] + "/" + _fishInfo[0][2];
         _listTextfields[1].text = _fishInfo[1][1] + "/" + _fishInfo[1][2];
         _listTextfields[2].text = _fishInfo[2][1] + "/" + _fishInfo[2][2];
-        */
+        
     }
 
     private void SetUpImageFields()
