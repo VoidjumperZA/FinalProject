@@ -91,6 +91,11 @@ public class ScoreHandler : MonoBehaviour {
     {
         return playerCurrentScore;
     }
+
+    public float GetBankedScore()
+    {
+        return bankedScore;
+    }
     /// <summary>
     /// Set score will completely overwrite the current score, not increment it. Please use AddScore() for that.
     /// </summary>

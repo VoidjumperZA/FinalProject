@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
+using UnityEngine.SceneManagement;
 
 public class GlobalUI : MonoBehaviour
 {
@@ -85,11 +86,22 @@ public class GlobalUI : MonoBehaviour
 
     [Header("HighScore")]
     [SerializeField] private GameObject _totalScore;
+    [SerializeField]
+    private GameObject highScoreBoard;
+    [SerializeField]
+    private Image _replayLevelExplode;
+    [SerializeField]
+    private Text rawHighScoreText;
+    [SerializeField]
+    private Text cleanUpScoreText;
+    [SerializeField]
+    private Text sumTotalHighScoreText;
 
     void Start()
     {
         _gameTimerAsset.SetActive(false);
         _totalScore.SetActive(false);
+        highScoreBoard.SetActive(false);
 
         _gameTimer = GameObject.Find("Manager").GetComponent<GameTimer>();        
         oceanCleanUpProgressBar.GetComponentInChildren<Text>().text = 0 + "%";
@@ -265,6 +277,19 @@ public class GlobalUI : MonoBehaviour
 
         _deployHookAnim.enabled = false;
     }
+
+    private IEnumerator ReplayLevelAnim()
+    {
+        _skipTutorialButton.gameObject.SetActive(false);
+        _replayExplode.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(0.6f);
+
+        _replayExplode.gameObject.SetActive(false);
+        SceneManager.LoadScene(1);
+
+    }
+
     public void ShowTotalScore(bool pBool)
     {
         _totalScore.SetActive(pBool);
@@ -314,8 +339,25 @@ public class GlobalUI : MonoBehaviour
             UpdateOceanProgressBar(firstTime);
         }
         gameTimerText.text = _gameTimer.GetFormattedTimeLeftAsString();
+        if (basic.HasGameEnded() == true)
+        {
+            displayHighScoreBoard();
+        }
     }
 
+    public void RestartLevel()
+    {
+        StartCoroutine(ReplayLevelAnim());        
+    }
+    private void displayHighScoreBoard()
+    {
+        rawHighScoreText.text = "" + basic.Scorehandler.GetBankedScore();
+        int percentage = basic.Scorehandler.CalculatePercentageOceanCleaned(true);
+        int cleanUpScore = percentage * basic.Scorehandler.GetTrashScoreModifier();
+        cleanUpScoreText.text = "" + percentage + "% x" + basic.Scorehandler.GetTrashScoreModifier();
+        sumTotalHighScoreText.text = "" + (basic.Scorehandler.GetBankedScore() + cleanUpScore);
+        highScoreBoard.SetActive(true);
+    }
     public float GetOceanBarMovementSpeed()
     {
         return oceanBarMovementSpeed;
