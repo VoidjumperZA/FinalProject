@@ -14,7 +14,6 @@ public class CameraHandler : MonoBehaviour
     private PostEffectsBase _globalFog { get { return _camera.GetComponent<PostEffectsBase>(); } }
 
     private bool _initialized = false;
-    private GameObject _manager { get { return GameObject.Find("Manager"); } }
     private Camera _camera { get { return Camera.main; } }
 
     //Camera zoom levels and focus points
