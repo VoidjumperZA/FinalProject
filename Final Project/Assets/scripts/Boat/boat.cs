@@ -31,10 +31,9 @@ public class boat : general
         InitializeStateMachine();
         basic.Trailer = GetComponent<trailer>();
     }
-    public override void Update()
+    public override void FixedUpdate()
     {
         _abstractState.Update();
-        
     }
 
     public Dictionary<BoatState, AbstractBoatState> GetStateCache()
@@ -60,7 +59,7 @@ public class boat : general
         _stateCache[BoatState.SetUp] = new SetUpBoatState(this, _acceleration, _maxVelocity, _deceleration, _setUpPosition);
         _stateCache[BoatState.Stationary] = new StationaryBoatState(this);
         _stateCache[BoatState.Move] = new MoveBoatState(this, _acceleration, _maxVelocity, _deceleration, _rotationLerpSpeed);
-        _stateCache[BoatState.Fish] = new FishBoatState(this);       
+        _stateCache[BoatState.Fish] = new FishBoatState(this);    
         SetState(_boatState);
         basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat, true);
     }

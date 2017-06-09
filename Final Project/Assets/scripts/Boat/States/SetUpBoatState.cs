@@ -43,7 +43,7 @@ public class SetUpBoatState : AbstractBoatState
         {
             _velocity = 0;
             _boat.gameObject.transform.position = _destination;
-            SetState(boat.BoatState.Stationary);
+            SetState(boat.BoatState.None); //SetState(boat.BoatState.Stationary);
             //enable the boundaries and double back points
             setBoundaryDoubleBackState(true);
         }
