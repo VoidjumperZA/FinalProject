@@ -21,14 +21,14 @@ public class general : MonoBehaviour
     {
 
     }
-    public virtual void ToggleOutliner(bool pBool)
+  /*  public virtual void ToggleOutliner(bool pBool)
     {
 
     }
     public virtual void ToggleRenderer(bool pBool)
     {
         Visible = pBool;
-    }
+    }*/
     public virtual void Reveal(float pFadeOutDuration, int pCollectableStaysVisibleRange)
     {
 
