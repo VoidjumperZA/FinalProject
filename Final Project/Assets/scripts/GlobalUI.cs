@@ -253,8 +253,8 @@ public class GlobalUI : MonoBehaviour
         _playExplode.gameObject.SetActive(false);
 
         _deployHookAnim.enabled = true;
-        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
-        basic.Boat.SetState(boat.BoatState.SetUp);
+        basic.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Ocean);
+        basic.Boat.SetState(boat.BoatState.LeaveScene);
         _skipTutorialButton.gameObject.SetActive(false);
         
         _gameTimer.BeginCountdown();
@@ -271,8 +271,8 @@ public class GlobalUI : MonoBehaviour
         _replayExplode.gameObject.SetActive(false);
 
         InTutorial = false;
-        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
-        basic.Boat.SetState(boat.BoatState.SetUp);
+        basic.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Ocean);
+        basic.Boat.SetState(boat.BoatState.LeaveScene);
         _playGameButton.gameObject.SetActive(false);
 
         _deployHookAnim.enabled = false;

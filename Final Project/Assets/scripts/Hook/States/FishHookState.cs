@@ -18,33 +18,19 @@ public class FishHookState : AbstractHookState
         _downSpeed = pDownSpeed;
         _fallSpeed = pFallSpeed;
     }
-
-    //
     public override void Start()
     {
-        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Hook);
-        
+        GameManager.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Hook);
     }
-
-    //
     public override void Update()
     {
-        if ((_hook.transform.position - basic.Boat.transform.position).magnitude < 10)
+        if ((_hook.transform.position - GameManager.Boat.transform.position).magnitude < 10)
         {
             _hook.transform.Translate(-Vector3.up * _downSpeed);
         } 
         else
         {
-            if (Input.GetMouseButton(0) || mouse.Touching())
-            {
-                if (basic.GlobalUI.InTutorial)
-                {
-                    basic.GlobalUI.ShowHandSwipe(false);
-                    basic.GlobalUI.SwipehandCompleted = true;
-                }
-                ApplyVelocity(-_fallSpeed, true);
-            }
-            else ApplyVelocity(-_fallSpeed, false);
+            ApplyVelocity(-_fallSpeed, mouse.Touching());
         }
     }
     //
@@ -87,14 +73,14 @@ public class FishHookState : AbstractHookState
         if (other.gameObject.CompareTag("Floor"))
         {
             //The game time is out before this condition can be true, I am going to leave it here just in case
-            if (basic.GlobalUI.InTutorial)
+            /*if (basic.GlobalUI.InTutorial)
             {
                 basic.GlobalUI.ShowHandSwipe(false);
                 basic.GlobalUI.SwipehandCompleted = true;
-            }
+            }*/
             SetState(hook.HookState.Reel);
-            basic.combo.ClearPreviousCombo(false);
-			GameObject.Instantiate (basic.HookHit, _hook.HookTip.position, Quaternion.identity);
+            //basic.combo.ClearPreviousCombo(false);
+			//GameObject.Instantiate (basic.HookHit, _hook.HookTip.position, Quaternion.identity);
         } 
         //On contact with a fish
         if (other.gameObject.CompareTag("Fish"))
@@ -103,10 +89,10 @@ public class FishHookState : AbstractHookState
             if (!theFish || !theFish.Visible) return;
             GameObject.Destroy(other.gameObject.GetComponent<Collider>());
             theFish.SetState(fish.FishState.FollowHook);
-            _hook.FishOnHook.Add(theFish);
-            basic.Shoppinglist.AddFish(theFish);
-            basic.Scorehandler.AddScore(basic.Scorehandler.GetFishScore(theFish.fishType), true, true);
-            if (!basic.GlobalUI.InTutorial)
+           // _hook.FishOnHook.Add(theFish);
+            //GameManager.Shoppinglist.AddFish(theFish);
+            //basic.Scorehandler.AddScore(basic.Scorehandler.GetFishScore(theFish.fishType), true, true);
+            /*if (!basic.GlobalUI.InTutorial)
             {
                 basic.combo.CheckComboProgress(theFish.fishType);
             }
@@ -114,20 +100,20 @@ public class FishHookState : AbstractHookState
             {
                 basic.Shoppinglist.Show(true);
                 basic.Shoppinglist.Introduced = true;
-            }
-            basic.Camerahandler.CreateShakePoint();
+            }*/
+            //basic.Camerahandler.CreateShakePoint();
         }
         if (other.gameObject.CompareTag("Jellyfish"))
         {
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
             if (!theJellyfish) return;
-			_hook.EnableJellyAttackEffect ();
-            basic.Scorehandler.RemoveScore(true);
+			//_hook.EnableJellyAttackEffect ();
+            //basic.Scorehandler.RemoveScore(true);
 
-            basic.Camerahandler.CreateShakePoint();
+           // basic.Camerahandler.CreateShakePoint();
 
             SetState(hook.HookState.Reel);
-            basic.combo.ClearPreviousCombo(false);
+            //basic.combo.ClearPreviousCombo(false);
             //Create a new list maybe
             //Change animation for the fish and state
             //Remove fish from list 
@@ -140,21 +126,21 @@ public class FishHookState : AbstractHookState
             if (!theTrash || !theTrash.Visible) return;
 
             theTrash.SetState(trash.TrashState.FollowHook);
-            _hook.TrashOnHook.Add(theTrash);
+            //_hook.TrashOnHook.Add(theTrash);
 
-            bool firstTime = basic.Scorehandler.CollectATrashPiece();
-            basic.GlobalUI.UpdateOceanProgressBar(firstTime);
-            basic.Camerahandler.CreateShakePoint();
+            //bool firstTime = basic.Scorehandler.CollectATrashPiece();
+            //basic.GlobalUI.UpdateOceanProgressBar(firstTime);
+            //basic.Camerahandler.CreateShakePoint();
 
             //The game time is out before this condition can be true, I am going to leave it here just in case
-            if (basic.GlobalUI.InTutorial)
+            /*if (basic.GlobalUI.InTutorial)
             {
                 basic.GlobalUI.ShowHandSwipe(false);
                 basic.GlobalUI.SwipehandCompleted = true;
-            }
+            }*/
             SetState(hook.HookState.Reel);
            
-            basic.combo.ClearPreviousCombo(false);
+            //basic.combo.ClearPreviousCombo(false);
 
         }
 

@@ -27,6 +27,7 @@ public class PulseRadarState : AbstractRadarState {
     public override void FixedUpdate()
     {
         VisualiseRadarCone();
+        DetectCollectables();
     }
     public override void Refresh()
     {
@@ -39,19 +40,18 @@ public class PulseRadarState : AbstractRadarState {
     {
         float offset = Time.time * _scrollSpeed;
         _radar.Renderer.material.mainTextureOffset = new Vector2(0, offset);
-        DetectCollectables();
     }
     private void DetectCollectables()
     {
         if (Time.time % 1.0f != 0) return;
 
-        if (basic.Fish != null)
-            foreach (fish pFish in basic.Fish)
+        if (FishSpawn.SpawnedFish != null)
+            foreach (fish pFish in FishSpawn.SpawnedFish)
                 DoScan(pFish);
 
-        if (basic.Trash != null)
+        /*if (basic.Trash != null)
             foreach (trash pTrash in basic.Trash)
-                DoScan(pTrash);
+                DoScan(pTrash);*/
     }
     private void DoScan(fish pCollectable)
     {

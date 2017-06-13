@@ -23,10 +23,32 @@ public abstract class AbstractBoatState {
     {
         _boat.SetState(pState);
     }
+    public virtual AbstractBoatState GetState(boat.BoatState pState)
+    {
+        return _boat.GetState(pState);
+    }
     public virtual void OnTriggerEnter(Collider other)
     {
 
     }
+    public virtual void SetDestination(Vector3 pDestination)
+    {
 
+    }
+    public virtual void SetVelocity(float pVelocity)
+    {
 
+    }
+    public virtual void LeftOrRight(bool pLeftTrueRightFalse)
+    {
+
+    }
+    public virtual void SetBoundaries(Vector3[] pBoundaries)
+    {
+
+    }
+    public virtual void FinalizeInitialization()
+    {
+
+    }
 }

@@ -11,7 +11,7 @@ public class basic : MonoBehaviour
     [HideInInspector] public static ShoppingList Shoppinglist;
     [HideInInspector] public static Combo combo;
     [HideInInspector] public static GameplayValues Gameplayvalues;
-    [HideInInspector] public static TempFishSpawn Tempfishspawn;
+    [HideInInspector] public static FishSpawn Tempfishspawn;
     [HideInInspector] public static CameraHandler Camerahandler;
     [HideInInspector] public static SeafloorSpawning Seafloorspawning;
 
@@ -71,7 +71,7 @@ public class basic : MonoBehaviour
         Shoppinglist = GetComponent<ShoppingList>(); if (!Shoppinglist) Debug.Log("ERROR: Cannot get reference to ShoppingList from Manager object");
         combo = GetComponent<Combo>(); if (!combo) Debug.Log("ERROR: Cannot get reference to Combo from Manager object");
         Gameplayvalues = GetComponent<GameplayValues>(); if (!Gameplayvalues) Debug.Log("ERROR: Cannot get reference to GameplayValues from Manager object");
-        Tempfishspawn = GetComponent<TempFishSpawn>(); if (!Tempfishspawn) Debug.Log("ERROR: Cannot get reference to TempFishSpawn from Manager object");
+        Tempfishspawn = GetComponent<FishSpawn>(); if (!Tempfishspawn) Debug.Log("ERROR: Cannot get reference to TempFishSpawn from Manager object");
         Camerahandler = GetComponent<CameraHandler>(); if (!Camerahandler) Debug.Log("ERROR: Cannot get reference to CameraHandler from Manager object");
         Seafloorspawning = GetComponent<SeafloorSpawning>(); if (!Seafloorspawning) Debug.Log("ERROR: Cannot get reference to SeafloorSpawning from Manager object");
 

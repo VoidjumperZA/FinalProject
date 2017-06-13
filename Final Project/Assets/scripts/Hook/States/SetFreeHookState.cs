@@ -9,14 +9,19 @@ public class SetFreeHookState : AbstractHookState {
     }
     public override void Start()
     {
-        basic.Scorehandler.BankScore();
-        basic.Scorehandler.ToggleHookScoreUI(false);
-        for (int i = 0; i < _hook.FishOnHook.Count; i++) _hook.FishOnHook[i].SetState(fish.FishState.PiledUp);
-        _hook.FishOnHook.Clear();
-        for (int i = 0; i < _hook.TrashOnHook.Count; i++) _hook.TrashOnHook[i].SetState(trash.TrashState.PiledUp);
-        _hook.TrashOnHook.Clear();
+        Debug.Log("entered setfree state");
+        //basic.Scorehandler.BankScore();
+        //basic.Scorehandler.ToggleHookScoreUI(false);
+        for (int i = 0; i < _hook.FishOnHook.Count; i++)
+        {
 
-        if (basic.GlobalUI.GetInTutorial() == true)
+            GameManager.Fishspawner.QueueFishAgain(_hook.FishOnHook[i], false, true, true); //_hook.FishOnHook[i].SetState(fish.FishState.PiledUp);
+        }
+        _hook.FishOnHook.Clear();
+        /*for (int i = 0; i < _hook.TrashOnHook.Count; i++) _hook.TrashOnHook[i].SetState(trash.TrashState.PiledUp);
+        _hook.TrashOnHook.Clear();*/
+
+        /*if (basic.GlobalUI.GetInTutorial() == true)
         {
             basic.Tempfishspawn._boatSetUp = false;
             basic.ClearFishList(true);
@@ -26,13 +31,15 @@ public class SetFreeHookState : AbstractHookState {
                 basic.Seafloorspawning.SpawnTrash();
                 basic.Seafloorspawning.SpawnSpecialItems();
             }
-        }
+        }*/
 
-        if ((!basic.GlobalUI.MoveBoatCompleted && basic.GlobalUI.DropHookCompleted && !basic.GlobalUI.ReelUpHookCompleted) || basic.GlobalUI.MoveBoatCompleted || !basic.GlobalUI.InTutorial)
+        /*if ((!basic.GlobalUI.MoveBoatCompleted && basic.GlobalUI.DropHookCompleted && !basic.GlobalUI.ReelUpHookCompleted) || basic.GlobalUI.MoveBoatCompleted || !basic.GlobalUI.InTutorial)
         {
             basic.GlobalUI.SwitchHookButtons();
-        }
-        basic.Boat.SetState(boat.BoatState.Stationary);
+        }*/
+        GameManager.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Ocean);
+        GameManager.Boat.SetState(boat.BoatState.Stationary);
+        //GameManager.Radar.SetState(radar.RadarState.Pulse);
         SetState(hook.HookState.None);
     }
     public override void Update()
