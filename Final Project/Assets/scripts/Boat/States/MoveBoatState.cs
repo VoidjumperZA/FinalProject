@@ -5,97 +5,41 @@ using UnityEngine;
 
 public class MoveBoatState : AbstractBoatState
 {
+
     private float _acceleration;
     private float _maxVelocity;
     private float _deceleration;
     private float _velocity;
-    private float _rotationLerpSpeed;
+    private Vector3 _destination;
+    private float _halfDestination;
 
-    private Vector3 lerpTarget;
-    private float polarity;
-    private float direction;
-    private bool turning;
+    private int _prevPolarity = 1;
+    private int _polarity = 1;
+    private bool _rotate = false;
+    private float _direction;
 
-    private int currentRot;
-    private int targetRot;
-    private int rotSpeed;
-    private Quaternion targetQua;
-    private GameObject boatModel;
-
-    private bool playerControl;
-    private Vector3 doubleBackDestination;
-    private float halfDoubleBackDestination;
-    private bool isMovingToDoubleBackDestination;
-    private List<GameObject> doubleBackDestinations;
-    private List<GameObject> levelBoundaries;
-
-    public MoveBoatState(boat pBoat, float pAcceleration, float pMaxVelocity, float pDeceleration, float pRotationLerpSpeed) : base(pBoat)
+    public MoveBoatState(boat pBoat, float pAcceleration, float pMaxVelocity, float pDeceleration) : base(pBoat)
     {
         _acceleration = pAcceleration;
         _maxVelocity = pMaxVelocity;
         _deceleration = pDeceleration;
-        _rotationLerpSpeed = pRotationLerpSpeed;
         
-        SetUpState();
     }
-
-    private void SetUpState()
+    public override void FinalizeInitialization()
     {
-        Debug.Log("Beginning SetUp of MoveBoatState.");
-        boatModel = GameObject.FindGameObjectWithTag("BoatModel");
-        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
-        _velocity = 0.0f;
-        polarity = 0.0f;
-        direction = 1.0f;
-        turning = false;
 
-        //Doubling Back
-        playerControl = true;
-        doubleBackDestination = Vector3.zero;
-        isMovingToDoubleBackDestination = false;
-        halfDoubleBackDestination = 0;
-        //doubleBackDestinations.Clear();
-        doubleBackDestinations = new List<GameObject>(GameObject.FindGameObjectsWithTag("DoubleBackDestination"));
-        if (doubleBackDestinations.Count < 2 || doubleBackDestinations.Count > 2)
-        {
-            Debug.Log("ERROR: There is an incorrect amount of double back locations. There are " + doubleBackDestinations.Count + " instead of the required 2.");
-        }
-        //levelBoundaries.Clear();
-        levelBoundaries = new List<GameObject>(GameObject.FindGameObjectsWithTag("LevelBoundary"));
-        if (levelBoundaries.Count < 2 || levelBoundaries.Count > 2)
-        {
-            Debug.Log("ERROR: There is an incorrect amount of level boundary points. There are " + levelBoundaries.Count + " instead of the required 2.");
-        }
-
-        //rotation
-        if (boatModel.gameObject.transform.rotation == basic.Boat.GetBoatEndRotations(true))
-        {
-            direction = 1.0f;
-            targetRot = 180;
-            targetQua = basic.Boat.GetBoatEndRotations(true);
-            //Debug.Log("Set Up State. Direction: " + direction + "  |  targetQua: Right");
-        }
-        else
-        {
-            direction = -1.0f;
-            targetRot = -180;
-            targetQua = basic.Boat.GetBoatEndRotations(false);
-            //Debug.Log("Set Up State. Direction: " + direction + "  |  targetQua: Left");
-        }
-        currentRot = 0;
-        rotSpeed = GameObject.Find("Manager").GetComponent<GameplayValues>().GetBoatRotationSpeed();
-        //Debug.Log("Finished SetUp of MoveBoatState.");
     }
 
     public override void Start()
     {
-        if (basic.GlobalUI.InTutorial && !basic.GlobalUI.MoveBoatCompleted)
+        GameManager.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Ocean);
+        /*if (basic.GlobalUI.InTutorial && !basic.GlobalUI.MoveBoatCompleted)
         {
             basic.GlobalUI.MoveBoatCompleted = true;
             basic.GlobalUI.ShowHandSwipe(false);
             basic.GlobalUI.SwitchHookButtons();
             basic.GlobalUI.InTutorial = false;
-        }
+        }*/
     }
 
     public float GetBoatVelocity()
@@ -104,188 +48,112 @@ public class MoveBoatState : AbstractBoatState
     }
     public override void Update()
     {
-        if (turning == false && playerControl == true)
+        _direction = (_velocity > 0) ? 1 : ((_velocity < 0) ? -1 : 0);
+        float xDiff = GetXDifference();
+        if (!Accelerate(xDiff)) Decelerate(xDiff);
+        ApplyVelocity();
+
+        if (_velocity == 0)
         {
-
-        setPolarity();
-        }
-
-        
-
-        //Debug.Log("Direction: " + direction);
-        if (!MoveToDestination() && turning == false && playerControl == true)
-        {
-            //Debug.Log("Switching to another state");
-            basic.Hook.SetState(hook.HookState.None);
+            GameManager.Hook.SetState(hook.HookState.None);
             _boat.SetState(boat.BoatState.Stationary);
         }
-
-           // Debug.Log("Polarity: " + polarity + "\t|\tDirection: " + direction);
-
-        if (isMovingToDoubleBackDestination == true)
+    }
+    private float GetXDifference()
+    {
+        float xDifference = 0;
+        if (!mouse.Touching()) return xDifference;
+        xDifference = mouse.GetWorldPoint().x - _boat.transform.position.x;
+        xDifference = Mathf.Clamp(xDifference, -1.0f, 1.0f);
+        return xDifference;
+    }
+    private bool Accelerate(float pXDifference)
+    {
+        DetectRotation(pXDifference);
+        if (pXDifference == 0) return false;
+        _velocity += _acceleration * pXDifference;
+        if (_velocity > _maxVelocity) _velocity = _maxVelocity;
+        return true;
+    }
+    private void Decelerate(float pXDifference)
+    {
+        if (_velocity > 0)
         {
-            moveToDoubleBackDestination();
-        }
-    }
-    private void setPolarity()
-    {
-        polarity = Mathf.Sign(mouse.GetWorldPoint().x - _boat.gameObject.transform.position.x);
-        if (direction != polarity && Input.GetMouseButton(0) == true && _velocity == 0.0f && playerControl == true)
-        {
-            Debug.Log("One.");
-            matchDirectionToPolarity();
-        }
-    }
-
-    private IEnumerator RotateToOppositeDirection()
-    {
-        return null;
-    }
-
-    private void matchDirectionToPolarity()
-    {
-        direction = polarity;
-        prepareToRotate();
-    }
-
-    private bool MoveToDestination()
-    {
-        //don't move the boat while it is turning as it will then traverse along incorrect axes
-        if (turning == false && playerControl == true)
-        {
-            //while clicking, under max velocity and heading where directed 
-            if (Input.GetMouseButton(0) && _velocity < _maxVelocity && direction == polarity)
-            {
-                //accelerate
-                _velocity += _acceleration;
-            }
-            //if moving OR at max velocity
-            else if (_velocity > 0 || _velocity >= _maxVelocity /*|| direction != polarity*/)
-            {
-                Debug.Log("Decelerate.");
-                //decelerate
-                _velocity -= _deceleration;
-                //if we're at zero check where we're being told to turn around
-                if (_velocity <= 0 && direction != polarity)
-                {
-                    Debug.Log("Two.");
-                    matchDirectionToPolarity();
-                }
-            }
-            //if not input or min vel
-            if (!Input.GetMouseButton(0) && _velocity < 0)
+            _velocity -= _deceleration;
+            if (_velocity < 0)
             {
                 _velocity = 0;
             }
-
-            Vector2 m = new Vector3(_velocity * direction, 0.0f, 0.0f);
-            _boat.gameObject.transform.Translate(m);
         }
-        else if (turning == true)
+        else if (_velocity < 0)
         {
-            Debug.Log("In call");
-            rotate();
-        }
-        return (_velocity > 0 || Input.GetMouseButton(0));
-
-    }
-
-    private void moveToDoubleBackDestination()
-    {
-        Vector3 differenceVector = doubleBackDestination - _boat.gameObject.transform.position;
-        if (differenceVector.magnitude > halfDoubleBackDestination) _velocity += _acceleration;
-        else _velocity -= _deceleration;
-        if (_velocity > _maxVelocity) _velocity = _maxVelocity;
-        if (_velocity < 0 || differenceVector.magnitude <= _velocity)
-        {
-            _velocity = 0;
-            _boat.gameObject.transform.position = doubleBackDestination;
-            isMovingToDoubleBackDestination = false;
-            playerControl = true;
-            Debug.Log("Done doubling back. Velocity set to zero.");
-        }
-        _boat.transform.Translate(differenceVector.normalized * _velocity);
-    }
-    //
-    private void rotate()
-    {
-        //Debug.Log("Rotating.");
-        boatModel.gameObject.transform.rotation = Quaternion.RotateTowards(boatModel.gameObject.transform.rotation, targetQua, _rotationLerpSpeed * Time.deltaTime);
-
-        if (boatModel.gameObject.transform.rotation == targetQua)
-        {
-            _velocity = 0;
-            basic.Camerahandler.SetViewPoint(basic.Camerahandler._previousFocusObject);
-            turning = false;
-            Debug.Log("Turning is false");
-            if (playerControl == false)
+            _velocity += _deceleration;
+            if (_velocity > 0)
             {
-                Debug.Log("Initiating move.");
-                isMovingToDoubleBackDestination = true;
+                _velocity = 0;
             }
         }
     }
-
-    public void ForceRotationWithoutPolarityDirectionMatch()
+    private void ApplyVelocity()
     {
-        playerControl = false;
-        prepareToRotate();
+        _boat.gameObject.transform.Translate(new Vector3(_velocity, 0.0f, 0.0f));
     }
-
-    //
-    private void prepareToRotate()
-    {
-        //Debug.Log("Preparing to rotate.");
-        turning = true;
-        targetQua = targetQua == _boat.GetBoatEndRotations(true) ? _boat.GetBoatEndRotations(false) : _boat.GetBoatEndRotations(true);
-        Debug.Log("Calling camera decouple");
-        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.TopLevel);
-    }
-
-
+    
     public override void Refresh()
     {
-        SetUpState();
+        _velocity = 0;
     }
     public override boat.BoatState StateType()
     {
         return boat.BoatState.Move;
     }
 
-    private void doubleBackLevelBoundary(Collider other)
-    {
-        direction = direction == 1.0f ? -1.0f : 1.0f;
-        doubleBackDestination = doubleBackDestinations[0].transform.position;
-        Vector3 distanceApart = Vector3.zero;
-        foreach (GameObject dbd in doubleBackDestinations)
-        {
-            distanceApart = other.gameObject.transform.position - dbd.gameObject.transform.position;
-            if (distanceApart.x < doubleBackDestination.x)
-            {
-                Debug.Log("Replacing Distance.");
-                doubleBackDestination = dbd.transform.position;
-            }
-        }
-        halfDoubleBackDestination = (doubleBackDestination - _boat.gameObject.transform.position).magnitude / 2;
-        ForceRotationWithoutPolarityDirectionMatch();
-    }
-
     public override void OnTriggerEnter(Collider other)
     {
         //Fishing Area
-        if (other.gameObject.tag == "FishingArea")
+        /*if (other.gameObject.tag == "FishingArea")
         {
             GameObject.Find("Manager").GetComponent<TempFishSpawn>().CalculateNewSpawnDensity();
-        }
+        }*/
 
         //Level Boundary
-        if (other.gameObject.tag == "LevelBoundary")
+        if (other.gameObject.tag == "LeftDetector")
         {
-            doubleBackLevelBoundary(other);
+            Debug.Log("Left");
+            _polarity = 1;
+            GetState(boat.BoatState.EnterBoundary).SetVelocity(_velocity);
+            GetState(boat.BoatState.LeaveBoundary).LeftOrRight(true);
+            SetState(boat.BoatState.EnterBoundary);
         }
-        if (other.gameObject.tag == "DoubleBackDestination")
+        if (other.gameObject.tag == "RightDetector")
         {
-
+            Debug.Log("Right");
+            _polarity = -1;
+            GetState(boat.BoatState.EnterBoundary).SetVelocity(_velocity);
+            GetState(boat.BoatState.LeaveBoundary).LeftOrRight(false);
+            SetState(boat.BoatState.EnterBoundary);
+        }
+    }
+    private void DetectRotation(float pXDifference)
+    {
+        if (_polarity > 0 && pXDifference < 0)
+        {
+            _polarity = -1;
+            SetState(boat.BoatState.Rotate);
+        }
+        if (_polarity < 0 && pXDifference > 0)
+        {
+            _polarity = 1;
+            SetState(boat.BoatState.Rotate);
+        }
+    }
+    private void Rotate()
+    {
+        if (_rotate)
+        {
+            _prevPolarity = _polarity;
+            _rotate = false;
+            SetState(boat.BoatState.Rotate);
         }
     }
 }

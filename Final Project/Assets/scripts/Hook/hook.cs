@@ -46,17 +46,18 @@ public class hook : general
     private bool valid;
     public override void Start()
     {
+        DontDestroyOnLoad(gameObject);
         valid = true;
         InitializeStateMachine();
-        basic.GlobalUI.GetOceanCleanUpBar().gameObject.GetComponent<OceanCleanUpUIAnimation>().SetBarPosition();
+        //basic.GlobalUI.GetOceanCleanUpBar().gameObject.GetComponent<OceanCleanUpUIAnimation>().SetBarPosition();
+        //Debug.Log("Hook - Start();");
     }
 
     //
     public override void FixedUpdate()
     {
         _abstractState.Update();
-       
-        // SetCameraAndHookAngle();   
+        //Debug.Log(_abstractState.StateType());
     }
     public void SetState(HookState pState)
     {
@@ -68,9 +69,9 @@ public class hook : general
     {
         _stateCache.Clear();
         _stateCache[HookState.None] = new NoneHookState(this);
-        _stateCache[HookState.FollowBoat] = new FollowBoatHookState(this, basic.Boat);
+        _stateCache[HookState.FollowBoat] = new FollowBoatHookState(this, GameManager.Boat);
         _stateCache[HookState.Fish] = new FishHookState(this, _sideSpeed, _downSpeed, _fallSpeed);
-        _stateCache[HookState.Reel] = new ReelHookState(this, _reelSpeed);
+        _stateCache[HookState.Reel] = new ReelHookState(this, GameManager.Boat, _reelSpeed);
         _stateCache[HookState.SetFree] = new SetFreeHookState(this);
         SetState(_hookState);
     }
@@ -79,7 +80,7 @@ public class hook : general
     private void OnTriggerEnter(Collider other)
     {
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
-        if (_hookState == HookState.Fish)
+        /*if (_hookState == HookState.Fish)
         { 
 
             //On contact with a fish
@@ -90,7 +91,7 @@ public class hook : general
                 float fishAngle = Random.Range(-fishRotationAngle, fishRotationAngle);
                 other.gameObject.transform.Rotate(fishAngle, 0.0f, 0.0f);
             }
-        }
+        }*/
     }
     public void AssignBoat(boat pBoat)
     {
