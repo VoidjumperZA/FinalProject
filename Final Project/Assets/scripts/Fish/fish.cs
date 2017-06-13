@@ -18,7 +18,7 @@ public class fish : general
     [SerializeField] public SkinnedMeshRenderer _renderer;
     [HideInInspector] public Material _material;
     [HideInInspector] public Color _color;
-    [SerializeField] private cakeslice.Outline _outliner;
+   // [SerializeField] private cakeslice.Outline _outliner;
 
     [SerializeField] private ParticleSystem _bubbles;
     [HideInInspector] public Animator Animator;
@@ -72,7 +72,7 @@ public class fish : general
     {
         return fishType;
     }
-    public override void ToggleOutliner(bool pBool)
+    /*public override void ToggleOutliner(bool pBool)
     {
         _outliner.enabled = pBool;
     }
@@ -80,7 +80,7 @@ public class fish : general
     {
         Visible = pBool;
         _renderer.enabled = pBool;
-    }
+    }*/
     public void OnTriggerEnter(Collider other)
     {
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
@@ -92,11 +92,11 @@ public class fish : general
 
         SwimFishState swimFishState = _stateCache[FishState.Swim] as SwimFishState;
         //if (swimFishState is SwimFishState) //Debug.Log("SWIMFISHSTATE !NULL");
-        swimFishState.ResetOutLineCounter(pFadeOutDuration, pCollectableStaysVisibleRange);
+        //swimFishState.ResetOutLineCounter(pFadeOutDuration, pCollectableStaysVisibleRange);
 
         ToggleBubbles(true);
-        ToggleOutliner(true);
-        ToggleRenderer(true);
+        //ToggleOutliner(true);
+        //ToggleRenderer(true);
     }
     public override void Hide()
     {

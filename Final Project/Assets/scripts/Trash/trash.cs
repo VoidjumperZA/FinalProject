@@ -50,16 +50,16 @@ public class trash : general
         //if (floatTrashState is FloatTrashState)) //Debug.Log("FLOATTASHSTATE !NULL);
         floatTrashState.ResetOutLineCounter(pFadeOutDuration, pCollectableStaysVisibleRange);
         
-        ToggleOutliner(true);
-        ToggleRenderer(true);
+        //ToggleOutliner(true);
+        //ToggleRenderer(true);
     }
     public override void Hide()
     {
         Revealed = false;
-        ToggleOutliner(false);
-        ToggleRenderer(false);
+        //ToggleOutliner(false);
+        //ToggleRenderer(false);
     }
-    public override void ToggleOutliner(bool pBool)
+   /* public override void ToggleOutliner(bool pBool)
     {
         _outliner.enabled = pBool;
     }
@@ -67,7 +67,7 @@ public class trash : general
     {
         Visible = pBool;
         _renderer.enabled = pBool;
-    }
+    }*/
     public void OnTriggerEnter(Collider other)
     {
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);

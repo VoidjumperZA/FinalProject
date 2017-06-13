@@ -10,7 +10,7 @@ public class FollowHookTrashState : AbstractTrashState
     }
     public override void Start()
     {
-        _trash.ToggleOutliner(false);
+       // _trash.ToggleOutliner(false);
         _trash.gameObject.GetComponent<BoxCollider>().enabled = false;
     }
     public override void Update()

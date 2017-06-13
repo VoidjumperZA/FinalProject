@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour {
 
     public static boat Boat;
     public static hook Hook;
-    public static radar Radar;
+   // public static radar Radar;
     public static trailer Trailer;
     // Same per Scene
     private static LevelLoader _levelloader;

@@ -22,7 +22,7 @@ public class MenuManager : LevelManager
 
     public override void Start () {
         GameManager.Boat = ReturnBoat();
-        GameManager.Radar = ReturnRadar();
+       // GameManager.Radar = ReturnRadar();
         GameManager.Hook = ReturnHook();
 
         _gameManager.InitializeReferenceInstances();
@@ -40,10 +40,10 @@ public class MenuManager : LevelManager
     {
         return _boat;
     }
-    private radar ReturnRadar()
+    /*private radar ReturnRadar()
     {
         return _radar;
-    }
+    }*/
     private hook ReturnHook()
     {
         return _hook;

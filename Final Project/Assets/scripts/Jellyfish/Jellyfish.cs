@@ -63,7 +63,7 @@ public class Jellyfish : general
         if (other && _abstractState != null) _abstractState.OnTriggerEnter(other);
     }
 
-    public override void ToggleOutliner(bool pBool)
+   /* public override void ToggleOutliner(bool pBool)
     {
         _outliner.enabled = pBool;
     }
@@ -71,7 +71,7 @@ public class Jellyfish : general
     {
         Visible = pBool;
         _renderer.enabled = pBool;
-    }
+    }*/
 
     public override void Reveal(float pRevealDuration, int pCollectableStaysVisibleRange)
     {
