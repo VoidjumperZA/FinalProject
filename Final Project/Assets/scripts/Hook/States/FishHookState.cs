@@ -46,7 +46,6 @@ public class FishHookState : AbstractHookState
             }
             else ApplyVelocity(-_fallSpeed, false);
         }
-        //_hook.transform.Rotate()
     }
     //
     public override void Refresh()
