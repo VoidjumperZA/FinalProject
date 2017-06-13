@@ -1,0 +1,167 @@
+fileFormatVersion: 2
+guid: 8f11fae79887be042b35b041177a97ac
+timeCreated: 1497271869
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: Head
+    100002: Head1_1
+    100004: Head1_2
+    100006: Head1_3
+    100008: Head1_4
+    100010: Head_1
+    100012: Head_2
+    100014: Head_3
+    100016: Head_4
+    100018: Jellyfish
+    100020: //RootNode
+    100022: Jellyfish_Base
+    100024: joint43
+    100026: joint44
+    100028: joint45
+    100030: joint46
+    100032: joint47
+    100034: joint48
+    100036: joint49
+    100038: joint50
+    100040: joint51
+    100042: joint52
+    100044: joint53
+    100046: joint54
+    100048: joint55
+    100050: joint56
+    100052: joint57
+    100054: joint58
+    100056: Spine1_1
+    100058: Spine1_2
+    100060: Spine1_3
+    100062: Spine1_4
+    100064: Spine2_1
+    100066: Spine2_2
+    100068: Spine2_3
+    100070: Spine2_4
+    100072: Spine3_1
+    100074: Spine3_2
+    100076: Spine3_3
+    100078: Spine3_4
+    100080: Spine_1
+    100082: Spine_2
+    100084: Spine_3
+    400000: Head
+    400002: Head1_1
+    400004: Head1_2
+    400006: Head1_3
+    400008: Head1_4
+    400010: Head_1
+    400012: Head_2
+    400014: Head_3
+    400016: Head_4
+    400018: Jellyfish
+    400020: //RootNode
+    400022: Jellyfish_Base
+    400024: joint43
+    400026: joint44
+    400028: joint45
+    400030: joint46
+    400032: joint47
+    400034: joint48
+    400036: joint49
+    400038: joint50
+    400040: joint51
+    400042: joint52
+    400044: joint53
+    400046: joint54
+    400048: joint55
+    400050: joint56
+    400052: joint57
+    400054: joint58
+    400056: Spine1_1
+    400058: Spine1_2
+    400060: Spine1_3
+    400062: Spine1_4
+    400064: Spine2_1
+    400066: Spine2_2
+    400068: Spine2_3
+    400070: Spine2_4
+    400072: Spine3_1
+    400074: Spine3_2
+    400076: Spine3_3
+    400078: Spine3_4
+    400080: Spine_1
+    400082: Spine_2
+    400084: Spine_3
+    4300000: Jellyfish
+    7400000: Take 001
+    9500000: //RootNode
+    13700000: Jellyfish
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
