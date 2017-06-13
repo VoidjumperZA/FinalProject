@@ -23,7 +23,7 @@ public class SwimFishState : AbstractFishState
     public override void Update()
     {
         _fish.gameObject.transform.Translate(Vector3.forward * _speed);
-        if (_fish.Revealed) HandleOutline();
+        //if (_fish.Revealed) HandleOutline();
     }
     public override void Refresh()
     {
@@ -37,14 +37,12 @@ public class SwimFishState : AbstractFishState
     {
         if (other.gameObject.tag == "FishDespawner" || other.gameObject.tag == "Floor")
         {
-            basic.Tempfishspawn.RemoveOneFishFromTracked();
-            basic.RemoveCollectable(_fish);
-            GameObject.Destroy(_fish.gameObject);
+            GameManager.Fishspawner.QueueFishAgain(_fish, true, true, true);
         }
     }
-    private void HandleOutline()
+    /*private void HandleOutline()
     {
-        if (Mathf.Abs(basic.Radar.transform.position.x - _fish.transform.position.x) > _stayVisibleRange)
+        if (Mathf.Abs(GameManager.Radar.transform.position.x - _fish.transform.position.x) > _stayVisibleRange)
         {
             _outlineCounter.Count();
             _fish._color.a = _outlineCounter.PercentageLeft();
@@ -60,5 +58,5 @@ public class SwimFishState : AbstractFishState
     {
         _stayVisibleRange = pStayVisibleRange;
         _outlineCounter.Reset(pRevealDuration);
-    }
+    }*/
 }

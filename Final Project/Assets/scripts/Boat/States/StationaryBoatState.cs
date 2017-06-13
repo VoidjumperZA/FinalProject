@@ -11,22 +11,19 @@ public class StationaryBoatState : AbstractBoatState {
     }
 	public override void Start ()
     {
-        basic.Radar.SetState(radar.RadarState.Pulse);
-        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
+       // GameManager.Radar.SetState(radar.RadarState.Pulse);
+        /*basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
 
         if (basic.GlobalUI.InTutorial && basic.GlobalUI.ReelUpHookCompleted)
         {
             basic.GlobalUI.SetHandSwipePosition(basic.Boat.gameObject, new Vector3(30, -20, 0));
             basic.GlobalUI.ShowHandSwipe(true);
-        }
+        }*/
     }
 	
 	public override void Update ()
     {
-        if (Dragging())
-        {
-            SetState(boat.BoatState.Move);
-        }
+        if (Dragging()) SetState(boat.BoatState.Move);
     }
     public override void Refresh()
     {
@@ -38,7 +35,7 @@ public class StationaryBoatState : AbstractBoatState {
     }
     private bool Dragging()
     {
-        if (basic.GlobalUI.InTutorial && !basic.GlobalUI.ReelUpHookCompleted) return false;
+        //if (basic.GlobalUI.InTutorial && !basic.GlobalUI.ReelUpHookCompleted) return false;
         if ((!Input.GetMouseButton(0) && !mouse.Touching())) return false;
         Vector3 mouseWorldPoint = mouse.GetWorldPoint();
         return Mathf.Abs(mouseWorldPoint.x - _boat.gameObject.transform.position.x) > 0;

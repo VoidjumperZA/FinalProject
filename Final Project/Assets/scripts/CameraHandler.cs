@@ -7,49 +7,80 @@ using UnityEngine.PostProcessing;
 public class CameraHandler : MonoBehaviour
 {
     private bool _isAboveWater = false; public bool IsAboveWater { get { return _isAboveWater; } }
+    [Header("PostProcessingProfiles")]
     [SerializeField] private Transform _seaSurface;
     [SerializeField] private PostProcessingProfile _aboveWaterProfile;
     [SerializeField] private PostProcessingProfile _underWaterProfile;
     private PostProcessingBehaviour _cameraPostProcessing { get { return _camera.GetComponent<PostProcessingBehaviour>(); } }
+    // Scene Transition Camera Holders
+    private Transform _startCamHolder;
+    private Transform _middleCamHolder;
+    private Transform _endCamHolder;
+
+
     private PostEffectsBase _globalFog { get { return _camera.GetComponent<PostEffectsBase>(); } }
 
     private bool _initialized = false;
-    private GameObject _manager { get { return GameObject.Find("Manager"); } }
+    private bool _play = false;
     private Camera _camera { get { return Camera.main; } }
 
     //Camera zoom levels and focus points
-    public enum CameraFocus { Boat, Ocean, Hook, TopLevel };
-    public CameraFocus _focusObject;
-    public CameraFocus _previousFocusObject;
-    private Dictionary<CameraFocus, Transform> _parentPoints;
-    private Dictionary<CameraFocus, Transform> _lookAtPoints;
-    private float _shakeSpeed;
-    private float _currentShakeTime;
-    private bool _viewPointReached = true;
+    public enum FocusPoint { Start, Middle, End, BoatCloseUp, Ocean, Hook, TopLevel };
+    public FocusPoint _focusPoint = FocusPoint.Ocean;
+    public FocusPoint _previousFocusObject;
+    private Dictionary<FocusPoint, Transform> _parentPoints;
+    private Dictionary<FocusPoint, Transform> _lookAtPoints;
+    private bool _focusPointReached = true;
 
-    private float _currentSlerpTime = 0;
-    private float _totalSlerpTime;
-    private Vector3 _fromPosition;
-    private Quaternion _fromRotation;
+    private float _currentLerpTime = 0;
+    private float _totalLerpTime;
+    private Vector3 _fromPointPosition;
+    private Quaternion _fromPointRotation;
     // ----------------------------
     private List<Vector3> _shakePoints = new List<Vector3>();
+    [Header("Screen shake")]
+    [SerializeField]
+    [Range(0.0f, 10.0f)]
+    private float _shakePointDistance;
+    [SerializeField]
+    [Range(1, 10)]
+    private int _maxShakePoints;
+    [SerializeField]
+    private float _shakeSpeed;
+    private float _currentShakeTime;
+    [SerializeField]
+    private bool _applyJellyFeel;
+    [SerializeField]
+    private float _menuToOceanDuration = 3;
+    [SerializeField]
+    private float _oceanToHookDuration = 1;
+    [SerializeField]
+    private float _hookToOceanDuration = 1;
 
+    public void Play()
+    {
+        if (!_play && _initialized) _play = true;
+    }
     public void InitializeCameraHandler()
     {
-        _shakeSpeed = basic.Gameplayvalues.GetShakeSpeed();
-        _totalSlerpTime = basic.Gameplayvalues.MenuToOcean();
+        DontDestroyOnLoad(_camera.gameObject);
+        _totalLerpTime = _menuToOceanDuration;
 
-        _parentPoints = new Dictionary<CameraFocus, Transform>();
-        _parentPoints[CameraFocus.Boat] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
-        _parentPoints[CameraFocus.Ocean] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
-        _parentPoints[CameraFocus.Hook] = GameObject.FindGameObjectWithTag("HookCamHolder").transform;
-        _parentPoints[CameraFocus.TopLevel] = _parentPoints[CameraFocus.Ocean];
+        _parentPoints = new Dictionary<FocusPoint, Transform>();
+        _parentPoints[FocusPoint.Start] = _startCamHolder;
+        _parentPoints[FocusPoint.Middle] = _middleCamHolder;
+        _parentPoints[FocusPoint.End] = _endCamHolder;
+        _parentPoints[FocusPoint.BoatCloseUp] = GameObject.FindGameObjectWithTag("BoatCamHolder").transform;
+        _parentPoints[FocusPoint.Ocean] = GameObject.FindGameObjectWithTag("OceanCamHolder").transform;
+        _parentPoints[FocusPoint.Hook] = GameObject.FindGameObjectWithTag("HookCamHolder").transform;
+        _parentPoints[FocusPoint.TopLevel] = GameObject.FindGameObjectWithTag("TopLevelCamHolder").transform;
+        DontDestroyOnLoad(_parentPoints[FocusPoint.TopLevel].gameObject);  
 
-        _lookAtPoints = new Dictionary<CameraFocus, Transform>();
-        _lookAtPoints[CameraFocus.Boat] = basic.Boat.transform;
-        _lookAtPoints[CameraFocus.Ocean] = basic.Boat.transform;
-        _lookAtPoints[CameraFocus.Hook] = basic.Hook.transform;
-        _lookAtPoints[CameraFocus.TopLevel] = _lookAtPoints[CameraFocus.Ocean];
+        _lookAtPoints = new Dictionary<FocusPoint, Transform>();
+        _lookAtPoints[FocusPoint.BoatCloseUp] = GameManager.Boat.transform;
+        _lookAtPoints[FocusPoint.Ocean] = GameManager.Boat.transform;
+        _lookAtPoints[FocusPoint.Hook] = GameManager.Hook.transform;
+        _lookAtPoints[FocusPoint.TopLevel] = _lookAtPoints[FocusPoint.Ocean];
 
         _shakePoints = new List<Vector3>();
         _initialized = true;
@@ -57,12 +88,13 @@ public class CameraHandler : MonoBehaviour
     }
     public void ClassUpdate()
     {
+        if (!_play) return;
         if (!_initialized)
         {
             Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
             return;
         }
-        ReachViewPoint();
+        ReachFocusPoint();
         ReachShakePoint();
         IfCrossedSurface();
     }
@@ -86,7 +118,7 @@ public class CameraHandler : MonoBehaviour
             _isAboveWater = true;
         }
     }
-    public void SetViewPoint(CameraFocus pFocusObject, bool pFirstTime = false)
+    public void SetViewPoint(FocusPoint pFocusPoint, bool pOverrideTransform = false)
     {
         //Debug.Log("Calling camera to set to " + pFocusObject.ToString());
         if (!_initialized)
@@ -94,65 +126,60 @@ public class CameraHandler : MonoBehaviour
             Debug.Log("CameraHandler: Can not run update, static class was not initialized!");
             return;
         }
-        if (_focusObject == CameraFocus.Boat && pFocusObject == CameraFocus.Ocean) _totalSlerpTime = basic.Gameplayvalues.MenuToOcean();
-        if (_focusObject == CameraFocus.Ocean && pFocusObject == CameraFocus.Hook) _totalSlerpTime = basic.Gameplayvalues.OceanToHook();
-        if (_focusObject == CameraFocus.Hook && pFocusObject == CameraFocus.Ocean) _totalSlerpTime = basic.Gameplayvalues.HookToOcean();
-
-
-
-        _previousFocusObject = _focusObject;
-        if (pFirstTime == true)
+        SetLerpTime(pFocusPoint);
+        if (pFocusPoint == FocusPoint.TopLevel)
         {
-            _previousFocusObject = pFocusObject;
+            _parentPoints[FocusPoint.TopLevel].position = _parentPoints[_focusPoint].position;
+            _parentPoints[FocusPoint.TopLevel].rotation = _parentPoints[_focusPoint].rotation;
         }
-        _focusObject = pFocusObject;
 
-        _fromPosition = _camera.transform.position;
-        _fromRotation = _camera.transform.rotation;
 
-        _camera.transform.SetParent(_parentPoints[_focusObject]);
-        _viewPointReached = false;
-        if (pFirstTime)
+        SetFocusPoint(pFocusPoint);
+        // Set _focusPoint as parent
+        SetCameraParent(_parentPoints[_focusPoint]);
+        // Set _fromPoint
+        SetFromPoint(_camera.transform);
+        _focusPointReached = false;
+        if (pOverrideTransform)
         {
-            _camera.transform.position = _parentPoints[_focusObject].position;
-            _camera.transform.rotation = _parentPoints[_focusObject].rotation;
-            _fromPosition = _camera.transform.position;
-            _fromRotation = _camera.transform.rotation;
-            _viewPointReached = true;
+            _camera.transform.position = _parentPoints[_focusPoint].position;
+            _camera.transform.rotation = _parentPoints[_focusPoint].rotation;
+            SetFromPoint(_camera.transform);
+            _focusPointReached = true;
         }
-        _currentSlerpTime = 0;
+        _currentLerpTime = 0;
     }
-    public void ReachViewPoint()
+    public void ReachFocusPoint()
     {
-        if (!_viewPointReached)
+        if (!_focusPointReached)
         {
-            _currentSlerpTime += Time.deltaTime;
-            if (_currentSlerpTime <= _totalSlerpTime)
+            _currentLerpTime += Time.deltaTime;
+            if (_currentLerpTime <= _totalLerpTime)
             {
-                float lerp = _currentSlerpTime / _totalSlerpTime;
-                _camera.transform.position = Vector3.Lerp(_fromPosition, _parentPoints[_focusObject].position, lerp);
-                _camera.transform.rotation = Quaternion.Lerp(_fromRotation, _parentPoints[_focusObject].rotation, lerp);
+                float lerp = _currentLerpTime / _totalLerpTime;
+                _camera.transform.position = Vector3.Lerp(_fromPointPosition, _parentPoints[_focusPoint].position, lerp);
+                _camera.transform.rotation = Quaternion.Lerp(_fromPointRotation, _parentPoints[_focusPoint].rotation, lerp);
             }
             else
             {
-                _viewPointReached = true;
-                _currentSlerpTime = 0;
+                _focusPointReached = true;
+                _currentLerpTime = 0;
              //   Debug.Log("Just Reached it");
             }
         }
     }
     private void ReachShakePoint()
     {
-        if (_viewPointReached && _shakePoints.Count > 0)
+        if (_focusPointReached && _shakePoints.Count > 0)
         {
-            Vector3 destination = _parentPoints[_focusObject].position + _shakePoints[0];
+            Vector3 destination = _parentPoints[_focusPoint].position + _shakePoints[0];
             Vector3 differenceVector = destination - _camera.transform.position;
             if (differenceVector.magnitude >= _shakeSpeed) _camera.transform.Translate(differenceVector.normalized * _shakeSpeed);
             else
             {
                 _shakePoints.RemoveAt(0);
                 _camera.transform.position = destination;
-                if (_shakePoints.Count == 0) _viewPointReached = false;
+                if (_shakePoints.Count == 0) _focusPointReached = false;
                 Debug.Log(_shakePoints.Count + " PointsAmount");
             }
         }
@@ -161,11 +188,48 @@ public class CameraHandler : MonoBehaviour
     {
         return;
         _shakePoints.Add(Vector3.zero);
-        for (int i = 0; i < basic.Gameplayvalues.GetMaxShakePoints(); i++)
+        for (int i = 0; i < _maxShakePoints; i++)
         {
-            float slider = basic.Gameplayvalues.GetShakePointDistance();
+            float slider = _shakePointDistance;
             Vector3 offset = new Vector3(Random.Range(-slider, slider), Random.Range(-slider, slider), 0);
             _shakePoints.Add(offset);
         }
+    }
+    public void StartMiddleEndCameraHolder(Transform pStart, Transform pMiddle, Transform pEnd)
+    {
+        _startCamHolder = pStart; if (!_startCamHolder) Debug.Log("StartNUll");
+        _middleCamHolder = pMiddle; if (!_middleCamHolder) Debug.Log("MiddleNUll");
+        _endCamHolder = pEnd; if (!_endCamHolder) Debug.Log("EndNUll");
+
+
+
+        _parentPoints[FocusPoint.Start] = _startCamHolder;
+        _parentPoints[FocusPoint.Middle] = _middleCamHolder;
+        _parentPoints[FocusPoint.End] = _endCamHolder;
+    }
+    private void SetFocusPoint(FocusPoint pFocusPoint)
+    {
+        _previousFocusObject = _focusPoint;
+        _focusPoint = pFocusPoint;
+    }
+    private void SetCameraParent(Transform pTransform)
+    {
+        _camera.transform.SetParent(pTransform);
+    }
+    private void SetFromPoint(Transform pTransform)
+    {
+        _fromPointPosition = _camera.transform.position;
+        _fromPointRotation = _camera.transform.rotation;
+    }
+    private void SetLerpTime(FocusPoint pFocusPoint)
+    {
+        // From Start to Ocean
+        if (_focusPoint == FocusPoint.Start && pFocusPoint == FocusPoint.End) _totalLerpTime = _menuToOceanDuration;
+        // From Ocean to Hook
+        if (_focusPoint == FocusPoint.Ocean && pFocusPoint == FocusPoint.Hook) _totalLerpTime = _oceanToHookDuration;
+        // From Hook to Ocean
+        if (_focusPoint == FocusPoint.Hook && pFocusPoint == FocusPoint.Ocean) _totalLerpTime = _hookToOceanDuration;
+        // From Ocean to End
+        if (_focusPoint == FocusPoint.Ocean && pFocusPoint == FocusPoint.End) _totalLerpTime = _menuToOceanDuration;
     }
 }

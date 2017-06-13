@@ -7,14 +7,15 @@ public class boat : general
     // States
     private Dictionary<BoatState, AbstractBoatState> _stateCache = new Dictionary<BoatState, AbstractBoatState>();
     private AbstractBoatState _abstractState = null;
-    public enum BoatState { None, SetUp, Stationary, Move, Fish}
+    public enum BoatState { None, LeaveScene, EnterScene, EnterBoundary, LeaveBoundary, RotateInBoundary, Stationary, Move, Rotate, Fish}
     [SerializeField] private BoatState _boatState = BoatState.None;
     // Radar
     private radar _radar = null;
     [SerializeField] private float _acceleration;
     [SerializeField] private float _deceleration;
     [SerializeField] private float _maxVelocity;
-    [SerializeField] private float _rotationLerpSpeed;
+    [SerializeField] private float _rotationDuration;
+    [SerializeField] private GameObject _boatModel;
     private Vector3 _setUpPosition;
     private Quaternion rightFacingRotation;
     private Quaternion leftFacingRotation;
@@ -23,18 +24,15 @@ public class boat : general
     public Transform ContainerSpawner;
     public override void Start()
     {
-        rightFacingRotation = gameObject.transform.rotation;
-        GameObject goTemp = new GameObject();
-        goTemp.transform.rotation = rightFacingRotation;
-        goTemp.transform.Rotate(0.0f, 180, 0.0f);
-        leftFacingRotation = goTemp.transform.rotation;
+        DontDestroyOnLoad(gameObject);
         InitializeStateMachine();
-        basic.Trailer = GetComponent<trailer>();
+        //basic.Trailer = GetComponent<trailer>();
+        //Debug.Log("Boat - Start();");
     }
     public override void Update()
     {
         _abstractState.Update();
-        
+        //Debug.Log(_abstractState.StateType());
     }
 
     public Dictionary<BoatState, AbstractBoatState> GetStateCache()
@@ -46,7 +44,10 @@ public class boat : general
     {
         return _abstractState;
     }
-
+    public AbstractBoatState GetState(BoatState pState)
+    {
+        return _stateCache[pState];
+    }
     public void SetState(BoatState pState)
     {
         if (_abstractState != null) _abstractState.Refresh();
@@ -57,12 +58,20 @@ public class boat : general
     {
         _stateCache.Clear();
         _stateCache[BoatState.None] = new NoneBoatState(this);
-        _stateCache[BoatState.SetUp] = new SetUpBoatState(this, _acceleration, _maxVelocity, _deceleration, _setUpPosition);
         _stateCache[BoatState.Stationary] = new StationaryBoatState(this);
-        _stateCache[BoatState.Move] = new MoveBoatState(this, _acceleration, _maxVelocity, _deceleration, _rotationLerpSpeed);
-        _stateCache[BoatState.Fish] = new FishBoatState(this);       
+        _stateCache[BoatState.Move] = new MoveBoatState(this, _acceleration, _maxVelocity, _deceleration);
+        _stateCache[BoatState.Rotate] = new RotateBoatState(this, _rotationDuration, _boatModel);
+        _stateCache[BoatState.LeaveScene] = new LeaveSceneBoatState(this, _acceleration, _maxVelocity, _deceleration);
+        _stateCache[BoatState.EnterScene] = new EnterSceneBoatState(this, _acceleration, _maxVelocity, _deceleration);
+        _stateCache[BoatState.EnterBoundary] = new EnterBoundaryBoatState(this, _acceleration, _maxVelocity, _deceleration);
+        _stateCache[BoatState.LeaveBoundary] = new LeaveBoundaryBoatState(this, _acceleration, _maxVelocity, _deceleration);
+        _stateCache[BoatState.RotateInBoundary] = new RotateInBoundaryBoatState(this, _rotationDuration, _boatModel);
+        _stateCache[BoatState.Fish] = new FishBoatState(this);
         SetState(_boatState);
-        basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Boat, true);
+    }
+    public bool CanDropHook()
+    {
+        return (_abstractState is StationaryBoatState || _abstractState is MoveBoatState);
     }
     public void AssignRadar(radar pRadar)
     {
@@ -77,18 +86,21 @@ public class boat : general
     {
         _setUpPosition = pPosition;
     }
-
-    public Quaternion GetBoatEndRotations(bool pTrueRightFalseLeft)
+    
+    public void SetEnterStateDestination(Vector3 pDestination)
     {
-        if (pTrueRightFalseLeft == true)
-        {
-            //Debug.Log("Returning targetQua Right");
-            return rightFacingRotation;
-        }
-        else
-        {
-            //Debug.Log("Returning targetQua Left");
-            return leftFacingRotation;
-        }
+        GetState(BoatState.EnterScene).SetDestination(pDestination);
+    }
+    public void SetLeaveStateDestination(Vector3 pDestination)
+    {
+        GetState(BoatState.LeaveScene).SetDestination(pDestination);
+    }
+    public override void FinalizeInitialization()
+    {
+        GetState(BoatState.Move).FinalizeInitialization();
+    }
+    public void SetMoveBoatStateBoundaries(Vector3[] pBoundaries)
+    {
+        GetState(BoatState.LeaveBoundary).SetBoundaries(pBoundaries);
     }
 }
