@@ -10,19 +10,17 @@ public class FollowHookFishState : AbstractFishState
     }
     public override void Start()
     {
-        GameObject.Destroy(_fish.gameObject.GetComponent<Collider>());
         GameManager.Hook.FishOnHook.Add(_fish);
 
         _fish.Animator.enabled = false;
         //_fish.Animator.SetBool("Death", true);*/
-        _fish.ToggleOutliner(false);
-        ActivateHingeJoints();
+       // _fish.ToggleOutliner(false);
+        HandleJointsRigidBodies();
 
 
     }
     public override void Update()
     {
-        // The Head of fish's skeleton follows the HookTip
         if (_fish.Joints.Length > 0) _fish.Joints[0].gameObject.transform.position = GameManager.Hook.HookTip.position;
     }
     public override void Refresh()
@@ -37,7 +35,7 @@ public class FollowHookFishState : AbstractFishState
     {
 
     }
-    private void ActivateHingeJoints()
+    private void HandleJointsRigidBodies()
     {
         if (_fish.Joints.Length > 0)
         {

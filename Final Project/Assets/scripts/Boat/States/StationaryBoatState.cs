@@ -11,7 +11,7 @@ public class StationaryBoatState : AbstractBoatState {
     }
 	public override void Start ()
     {
-        GameManager.Radar.SetState(radar.RadarState.Pulse);
+       // GameManager.Radar.SetState(radar.RadarState.Pulse);
         /*basic.Camerahandler.SetViewPoint(CameraHandler.CameraFocus.Ocean);
 
         if (basic.GlobalUI.InTutorial && basic.GlobalUI.ReelUpHookCompleted)
