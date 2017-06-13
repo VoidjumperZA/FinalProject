@@ -10,6 +10,10 @@ public class MenuUI : BaseUI {
         SetActiveButtons(true, _playTutorial, _skipTutorial);
         //Debug.Log("MenuUI - Start();");
     }
+    public override void Update()
+    {
+
+    }
     public void OnPlayTutorialClick()
     {
         //Debug.Log("PlayClicked!");

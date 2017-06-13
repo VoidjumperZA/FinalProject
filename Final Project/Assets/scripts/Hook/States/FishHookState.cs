@@ -87,11 +87,9 @@ public class FishHookState : AbstractHookState
         {
             fish theFish = other.gameObject.GetComponent<fish>();
             if (!theFish || !theFish.Visible) return;
-            GameObject.Destroy(other.gameObject.GetComponent<Collider>());
             theFish.SetState(fish.FishState.FollowHook);
-           // _hook.FishOnHook.Add(theFish);
-            //GameManager.Shoppinglist.AddFish(theFish);
-            //basic.Scorehandler.AddScore(basic.Scorehandler.GetFishScore(theFish.fishType), true, true);
+            GameManager.ShopList.CollectFish((int)theFish.GetFishType());
+            GameManager.Scorehandler.AddScore(theFish.GetFishType(), true, true);
             /*if (!basic.GlobalUI.InTutorial)
             {
                 basic.combo.CheckComboProgress(theFish.fishType);
@@ -107,8 +105,8 @@ public class FishHookState : AbstractHookState
         {
             Jellyfish theJellyfish = other.gameObject.GetComponent<Jellyfish>();
             if (!theJellyfish) return;
-			//_hook.EnableJellyAttackEffect ();
-            //basic.Scorehandler.RemoveScore(true);
+			_hook.EnableJellyAttackEffect ();
+            GameManager.Scorehandler.RemoveScore(true);
 
            // basic.Camerahandler.CreateShakePoint();
 

@@ -84,7 +84,14 @@ public class ShoppingList : MonoBehaviour {
         _listImageFields[1].sprite = _listAllFishImages[FishInfo[1][0]];
         _listImageFields[2].sprite = _listAllFishImages[FishInfo[2][0]];
     }
-
+    public void CollectFish(int pFishType)
+    {
+        for (int i = 0; i < FishInfo.Count; i++)
+        {
+            if (FishInfo[i][0] == pFishType) if (FishInfo[i][1] < FishInfo[i][2]) FishInfo[i][1] += 1;
+        }
+        SetUpTextFields();
+    }
     private void FadeIn()
     {
         //_background.CrossFadeAlpha(1.0f, 2, false);
