@@ -21,6 +21,7 @@ public class radar : general
     public override void FixedUpdate()
     {
         _abstractState.FixedUpdate();
+        Debug.Log(_abstractState.StateType());
     }
     public void SetState(RadarState pState)
     {
@@ -37,6 +38,7 @@ public class radar : general
     }
     public float GetRadarAngle()
     {
+        //return Vector3.Dot(gameObject.transform.right, -gameObject.transform.up);
         return Vector3.Dot((_radarAngleSlider.transform.position - gameObject.transform.position).normalized, -gameObject.transform.up);
     }
 }

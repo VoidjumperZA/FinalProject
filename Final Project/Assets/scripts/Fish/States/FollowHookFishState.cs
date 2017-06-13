@@ -10,19 +10,18 @@ public class FollowHookFishState : AbstractFishState
     }
     public override void Start()
     {
-        
-        basic.Tempfishspawn.RemoveOneFishFromTracked();
+        GameManager.Hook.FishOnHook.Add(_fish);
+
         _fish.Animator.enabled = false;
         //_fish.Animator.SetBool("Death", true);*/
         _fish.ToggleOutliner(false);
-        _fish.gameObject.GetComponent<BoxCollider>().enabled = false;
         HandleJointsRigidBodies();
 
 
     }
     public override void Update()
     {
-        if (_fish.Joints.Length > 0) _fish.Joints[0].gameObject.transform.position = basic.Hook.HookTip.position;
+        if (_fish.Joints.Length > 0) _fish.Joints[0].gameObject.transform.position = GameManager.Hook.HookTip.position;
     }
     public override void Refresh()
     {

@@ -41,4 +41,8 @@ public class general : MonoBehaviour
     {
         return gameObject.tag;
     }
+    public virtual void FinalizeInitialization()
+    {
+
+    }
 }

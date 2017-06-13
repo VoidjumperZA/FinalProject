@@ -16,7 +16,7 @@ public class NoneHookState : AbstractHookState
     }
     public override void Update()
     {
-        _hook.gameObject.transform.position = basic.Boat.gameObject.transform.position;
+        _hook.gameObject.transform.position = GameManager.Boat.gameObject.transform.position;
     }
     public override void Refresh()
     {

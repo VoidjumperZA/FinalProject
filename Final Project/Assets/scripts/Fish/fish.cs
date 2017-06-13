@@ -72,11 +72,6 @@ public class fish : general
     {
         return fishType;
     }
-    
-    public void SetDirection(float pPolarity)
-    {
-        _speed *= pPolarity;
-    }
     public override void ToggleOutliner(bool pBool)
     {
         _outliner.enabled = pBool;
@@ -105,9 +100,7 @@ public class fish : general
     }
     public override void Hide()
     {
-        basic.Tempfishspawn.RemoveOneFishFromTracked();
-        basic.RemoveCollectable(this);
-        Destroy(gameObject);
+        GameManager.Fishspawner.QueueFishAgain(this, true, true, true);
     }
     public int GetScore()
     {
@@ -115,7 +108,7 @@ public class fish : general
     }
     private void ToggleBubbles(bool pBool)
     {
-        if (!_bubbles) return;
-        _bubbles.gameObject.SetActive(pBool);
+        /*if (!_bubbles) return;
+        _bubbles.gameObject.SetActive(pBool);*/
     }
 }
