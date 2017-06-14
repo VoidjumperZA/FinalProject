@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour {
     private static LevelLoader _levelloader;
     public static CameraHandler Camerahandler;
     // Different per Scene
+    //public static TutorialManager Tutorialmanager { get; set; }
     public static LevelManager Levelmanager { get; set; }
     public static FishSpawn Fishspawner { get; set; }
 
@@ -59,6 +60,7 @@ public class GameManager : MonoBehaviour {
     }
     public static void UIOnEnterScene()
     {
+        //if(Levelmanager is TutorialManager) { }
         if (Levelmanager) Levelmanager.UIOnEnterScene();
     }
     public static void UIOnLeaveScene()

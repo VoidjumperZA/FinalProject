@@ -13,7 +13,7 @@ public class MenuUI : BaseUI {
     public void OnPlayTutorialClick()
     {
         //Debug.Log("PlayClicked!");
-        GameManager.LoadSceneAsync(2, 4);
+        GameManager.LoadSceneAsync(1, 4);
         GameManager.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.End);
         GameManager.Camerahandler.Play();
         GameManager.Boat.SetState(boat.BoatState.LeaveScene);

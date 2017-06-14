@@ -5,8 +5,8 @@ using UnityEngine;
 public class LevelManager : MonoBehaviour {
 
     [Header("BoatMovementAreaBoundaries")]
-    [SerializeField] private Transform _leftDetector;
-    [SerializeField] private Transform _rightDetector;
+    [SerializeField] private static Transform _leftDetector;
+    [SerializeField] private static Transform _rightDetector;
     [Header("SceneTransitionBoatPoints")]
     [SerializeField] protected Transform _enterBoatPoint;
     [SerializeField] protected Transform _leaveBoatPoint;
@@ -17,7 +17,7 @@ public class LevelManager : MonoBehaviour {
 
     [SerializeField] private BaseUI _levelUI;
     [SerializeField] private ShoppingList _shoppingList;
-    [SerializeField] private FishSpawn _fishSpawner;
+    [SerializeField] private static FishSpawn _fishSpawner;
     public virtual void Start () {
         SetUpCamera();
         SetUpBoat();
@@ -59,4 +59,21 @@ public class LevelManager : MonoBehaviour {
     {
         if (_levelUI) _levelUI.OnLeaveScene();
     }
+
+    public static FishSpawn GetFishSpawn()
+    {
+        return _fishSpawner;
+    }
+
+    public static Transform GetLeftDetector()
+    {
+        return _leftDetector;
+    }
+
+    public static Transform GetRightDetector()
+    {
+        return _rightDetector;
+    }
+
+    
 }
