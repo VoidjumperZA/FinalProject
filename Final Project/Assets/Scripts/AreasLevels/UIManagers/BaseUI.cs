@@ -4,9 +4,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class BaseUI : MonoBehaviour {
+    public Canvas canvas;
 
 	public virtual void Start () {
         //Debug.Log("BaseUI - Start();");
+    }
+    public virtual void Update()
+    {
+
     }
     public virtual void OnEnterScene()
     {

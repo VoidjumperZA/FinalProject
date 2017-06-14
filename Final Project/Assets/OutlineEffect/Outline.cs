@@ -31,8 +31,7 @@ namespace cakeslice
     [RequireComponent(typeof(Renderer))]
     public class Outline : MonoBehaviour
     {
-        public Renderer Renderer { get; private set; }
-
+        public general GeneralScript;
         public int color;
         public bool eraseRenderer;
 
@@ -43,7 +42,6 @@ namespace cakeslice
 
         private void Awake()
         {
-            Renderer = GetComponent<Renderer>();
         }
 
         void OnEnable()

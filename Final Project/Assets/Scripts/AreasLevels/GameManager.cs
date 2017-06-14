@@ -13,9 +13,13 @@ public class GameManager : MonoBehaviour {
     // Same per Scene
     private static LevelLoader _levelloader;
     public static CameraHandler Camerahandler;
+    public static GameTimer Gametimer;
+    public static ScoreHandler Scorehandler;
     // Different per Scene
     public static LevelManager Levelmanager { get; set; }
     public static FishSpawn Fishspawner { get; set; }
+    public static ShoppingList ShopList { get; set; }
+    public static JellyFishSpawn JellyFishSpawner { get; set; }
 
     private void Start () {
         DontDestroyOnLoad(gameObject);
@@ -43,10 +47,13 @@ public class GameManager : MonoBehaviour {
     {
         _levelloader = GetComponent<LevelLoader>(); if (!_levelloader) Debug.Log("GameManager - LevelLoader script = NULL");
         Camerahandler = GetComponent<CameraHandler>(); if (!Camerahandler) Debug.Log("GameManager - CameraHandler script = NULL");
+        Gametimer = GetComponent<GameTimer>(); if (!Gametimer) Debug.Log("GameManager - GameTimer = NULL");
+        Scorehandler = GetComponent<ScoreHandler>(); if (!Scorehandler) Debug.Log("GameManager - ScoreHandler = NULL");
     }
     public void InitializeReferenceInstances()
     {
         Camerahandler.InitializeCameraHandler();
+        
         Instance = this;
     }
     public static void LoadScene(int pIndex)

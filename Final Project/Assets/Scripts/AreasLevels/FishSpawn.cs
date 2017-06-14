@@ -110,8 +110,16 @@ public class FishSpawn : MonoBehaviour
     }
     public void QueueFishAgain(fish pFish, bool pQueueAgain, bool pRemoveFromList, bool pDestroyNow)
     {
+        if (!pFish) return;
+
         int pType = (int)pFish.GetFishType();
-        if (pQueueAgain && _fishPerTypeSpawned[pType] > 0) _fishPerTypeSpawned[pType] -= 1;
+        Debug.Log(_fishPerTypeSpawned[pType] + " Spawned");
+        if (pQueueAgain && _fishPerTypeSpawned[pType] > 0)
+        {
+            _totalSpawned -= 1;
+            _fishPerTypeSpawned[pType] -= 1;
+            Debug.Log(_fishPerTypeSpawned[pType] + " After Requed");
+        }
         if (pRemoveFromList) SpawnedFish.Remove(pFish);
         if (pDestroyNow && pFish.gameObject) Destroy(pFish.gameObject);
     }
@@ -128,29 +136,33 @@ public class FishSpawn : MonoBehaviour
 
         List<int> alreadyChosen = new List<int>();
         int rnd = -1;
-
-        bool again = true;
-        while (again)
+        if (_totalSpawned < _amountToSpawn)
         {
-            rnd = Random.Range(0, _shoppingList.AmountOfTypes);
-            if (!alreadyChosen.Contains(rnd))
+            Debug.Log(_totalSpawned + " / " + _amountToSpawn);
+            bool again = true;
+            while (again)
             {
-                int type = _fishInfo[rnd][FISHTYPE];
-                if (_fishPerTypeSpawned[type] < _fishInfo[rnd][TOCOLLECT])
+                rnd = Random.Range(0, _shoppingList.AmountOfTypes);
+                if (!alreadyChosen.Contains(rnd))
                 {
-                    _totalSpawned += 1;
-                    _fishPerTypeSpawned[type] += 1;
-                    Vector3 spawnPos = (pPolarity == 0) ? _leftSpawner.position : _rightSpawner.position;
-                    spawnPos.y -= Random.Range(0, (pPolarity == 0) ? _rightDespawner.transform.lossyScale.y : _leftDespawner.transform.lossyScale.y);
-                    GameObject newFish = Instantiate(_fishPrefabs[type], spawnPos, Quaternion.LookRotation((pPolarity == 0) ? Vector3.right : -Vector3.right));
-                    again = false;
-                    SpawnedFish.Add(newFish.GetComponent<fish>());
-                }
-                else alreadyChosen.Add(rnd);
+                    int type = _fishInfo[rnd][FISHTYPE];
+                    if (_fishPerTypeSpawned[type] < _fishInfo[rnd][TOCOLLECT])
+                    {
+                        _totalSpawned += 1;
+                        _fishPerTypeSpawned[type] += 1;
+                        Vector3 spawnPos = (pPolarity == 0) ? _leftSpawner.position : _rightSpawner.position;
+                        spawnPos.y -= Random.Range(0, (pPolarity == 0) ? _rightDespawner.transform.lossyScale.y : _leftDespawner.transform.lossyScale.y);
+                        GameObject newFish = Instantiate(_fishPrefabs[type], spawnPos, Quaternion.LookRotation((pPolarity == 0) ? Vector3.right : -Vector3.right));
+                        again = false;
+                        SpawnedFish.Add(newFish.GetComponent<fish>());
+                    }
+                    else alreadyChosen.Add(rnd);
 
+                }
+                else again = (_totalSpawned < _amountToSpawn) ? true : false;
             }
-            else again = (_totalSpawned < _amountToSpawn) ? true : false;
         }
+        
     }
 
     /// <summary>

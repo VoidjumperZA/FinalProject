@@ -120,7 +120,7 @@ public class hook : general
     }
     private IEnumerator JellyAttackCoroutine2()
     {
-        JellyAttackEffect2.gameObject.transform.rotation = Quaternion.LookRotation(Vector3.forward, (basic.Boat.transform.position - JellyAttackEffect2.gameObject.transform.position).normalized);
+        JellyAttackEffect2.gameObject.transform.rotation = Quaternion.LookRotation(Vector3.forward, (GameManager.Boat.transform.position - JellyAttackEffect2.gameObject.transform.position).normalized);
         JellyAttackEffect2.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(0.95f);

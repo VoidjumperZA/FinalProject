@@ -10,7 +10,7 @@ public class SetFreeHookState : AbstractHookState {
     public override void Start()
     {
         Debug.Log("entered setfree state");
-        //basic.Scorehandler.BankScore();
+        GameManager.Scorehandler.BankScore();
         //basic.Scorehandler.ToggleHookScoreUI(false);
         for (int i = 0; i < _hook.FishOnHook.Count; i++)
         {

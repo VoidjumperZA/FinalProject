@@ -16,10 +16,10 @@ public class SwimJellyfishState : AbstractJellyfishState
     private Vector3 _targetPoint;
 
     //Variables for checking that the target point is inside the area 
-    private float _jellyfishZoneLeft;
-    private float _jellyfishZoneRight;
-    private float _jellyfishZoneUp;
-    private float _jellyfishZoneDown;
+    private float _leftBound;
+    private float _rightBound;
+    private float _upperBound;
+    private float _lowerBound;
     private float _jellyfishZoneSizeY;
     
     public SwimJellyfishState(Jellyfish pJellyfish, float pSpeed, float pLerpSpeed, float pRevealDuration) : base(pJellyfish)
@@ -34,13 +34,17 @@ public class SwimJellyfishState : AbstractJellyfishState
     {
         //Debug.Log("Jellyfih created");
         _outlineCounter.Reset();
-        
+
         //Getting the position and size of the zone where the jellyfish can move
-        _jellyfishZoneUp = basic.GetJellyfishZoneUp();
+        _leftBound = GameManager.JellyFishSpawner.LBound;
+        _rightBound = GameManager.JellyFishSpawner.RBound;
+        _upperBound = GameManager.JellyFishSpawner.UBound;
+        _lowerBound = GameManager.JellyFishSpawner.DBound;
+        /*_jellyfishZoneUp = basic.GetJellyfishZoneUp();
         _jellyfishZoneDown = basic.GetJellyfishZoneDown();
         _jellyfishZoneLeft = basic.GetJellyfishZoneLeft();
         _jellyfishZoneRight = basic.GetJellyfishZoneRight();
-        _jellyfishZoneSizeY = basic.GetJellyfishZoneSizeY();
+        _jellyfishZoneSizeY = basic.GetJellyfishZoneSizeY();*/
 
         _distance = 1.5f;
         
@@ -109,7 +113,7 @@ public class SwimJellyfishState : AbstractJellyfishState
 
         //Calculate new point
         //Debug.Log("New point");
-        float distanceToNewPoint = Random.Range(_jellyfishZoneSizeY/2,_jellyfishZoneSizeY);
+        float distanceToNewPoint = 5; //Random.Range(_jellyfishZoneSizeY/2,_jellyfishZoneSizeY);
         
         float x = _targetPoint.x + Mathf.Cos(angle) * distanceToNewPoint;
         float y = _targetPoint.y + Mathf.Sin(angle) * distanceToNewPoint;
@@ -120,22 +124,22 @@ public class SwimJellyfishState : AbstractJellyfishState
         //_jellyfish._point.transform.position = _targetPoint;
 
         //Check if point is inside zone
-        if (_targetPoint.x >  _jellyfishZoneRight)
+        if (_targetPoint.x >  _rightBound)
         {
             createNewPoint('r');
            // Debug.Log("Call create new point from x >: Targetpointx = " + _targetPoint.x);
         }
-        if(_targetPoint.x < _jellyfishZoneLeft)
+        if(_targetPoint.x < _leftBound)
         {
             createNewPoint('l');
             //Debug.Log("Call create new point from x <: Targetpointx = " + _targetPoint.x);
         }
-        if(_targetPoint.y > _jellyfishZoneUp)
+        if(_targetPoint.y > _upperBound)
         {
             createNewPoint('u');
            // Debug.Log("Call create new point from Y >: TargetpointY = " + _targetPoint.y);
         }
-        if (_targetPoint.y < _jellyfishZoneDown)
+        if (_targetPoint.y < _lowerBound)
         {
             createNewPoint('d');
             //Debug.Log("Call create new point from Y <: TargetpointY = " + _targetPoint.y);

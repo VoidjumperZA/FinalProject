@@ -60,7 +60,7 @@ public class ScoreUIAnimation : MonoBehaviour {
     {
         //Rotate and scale the UI
         //Debug.Log("Angle is: " + pAngle);
-        gameObject.transform.localScale = new Vector3(pScale, pScale, pScale);
+        //gameObject.transform.localScale = new Vector3(pScale, pScale, pScale);
         gameObject.transform.Rotate(0.0f, 0.0f, pAngle);
 
         //Save this value to track our shrinkage later

@@ -164,7 +164,6 @@ public class GlobalUI : MonoBehaviour
     public void DeployHook()
     {
         basic.Boat.SetState(boat.BoatState.Fish);
-        basic.Scorehandler.ToggleHookScoreUI(true);
         _deployHookAnim.enabled = false;
         _deployHookButton.GetComponent<Image>().sprite = _bubbleImage;
         DeployHookButton(false);

@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Scannable : MonoBehaviour
 {
+    [SerializeField] private general GeneralScript;
 	//public Animator UIAnim;
     private bool locked;
     private float scanTime;
@@ -16,8 +17,10 @@ public class Scannable : MonoBehaviour
 	public void Ping()
 	{
             Debug.Log("Ping");
-            gameObject.GetComponent<cakeslice.Outline>().enabled = true;
-            gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
+
+            GeneralScript.FishRenderer.enabled = true;
+            GeneralScript.FishOutliner.enabled = true;
+            GeneralScript.Visible = true;
             timeOutTime = scanTime;
             timeLeft = scanTime;
             //StartCoroutine(TimeOutOutline());   
@@ -28,16 +31,18 @@ public class Scannable : MonoBehaviour
         timeLeft -= Time.deltaTime;
         if (timeLeft <= 0)
         {
-            gameObject.GetComponent<cakeslice.Outline>().enabled = false;
-            gameObject.GetComponent<SkinnedMeshRenderer>().enabled = false;
+            GeneralScript.FishRenderer.enabled = false;
+            GeneralScript.FishOutliner.enabled = false;
+            GeneralScript.Visible = false;
         }
     }
 
     IEnumerator TimeOutOutline()
     {
         yield return new WaitForSeconds(scanTime);
-        gameObject.GetComponent<cakeslice.Outline>().enabled = false;
-        gameObject.GetComponent<SkinnedMeshRenderer>().enabled = false;
+        GeneralScript.FishRenderer.enabled = false;
+        GeneralScript.FishOutliner.enabled = false;
+        GeneralScript.Visible = false;
     }
 
     public void SetLockState(bool pState)

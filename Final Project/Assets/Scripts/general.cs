@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class general : MonoBehaviour
 {
+    public Scannable ScannableScript;
+    public cakeslice.Outline FishOutliner;
+    public Renderer FishRenderer;
     [HideInInspector]
     public bool Visible = false;
     [HideInInspector]
@@ -11,7 +14,7 @@ public class general : MonoBehaviour
 
     public virtual void Start()
     {
-
+        FishRenderer = ScannableScript.GetComponent<Renderer>();
     }
     public virtual void Update()
     {

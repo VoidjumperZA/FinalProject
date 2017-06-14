@@ -4,18 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ScoreHandler : MonoBehaviour {
+    [SerializeField] private Canvas _canvas;
+
     [Header("UI Pieces")]
-    [SerializeField] private GameObject scoreUI; //the appearing score ui
-    [SerializeField] private Text totalScore; //the counter listing our total score
-    [SerializeField] private Text currentHookScore;
     [SerializeField] private GameObject comboScoreUI;
 
     [Header("Flashing")]
     [SerializeField] Color flashColour;  //which colour the text flashes when it updates
     [SerializeField] private float colourFlashTime; //how long does it flash that colour
     [Header("Visual Values")]
-    [SerializeField] private GameObject UISpawnPosition; //where are we spawning that ui
-    [SerializeField] private GameObject ConboUISpawnPosition; //where are we spawning the combo notifier ui
+    [SerializeField] private GameObject ComboUISpawnPosition; //where are we spawning the combo notifier ui
     [SerializeField] private float minimumUIScale; //our size is random, what is the minimum bound for scaling
     [SerializeField] private float maximumUIScale; //maximum bound for scaling
     [SerializeField] private float UIRotationAngle; //rotating our ui a little for effect
@@ -33,9 +31,9 @@ public class ScoreHandler : MonoBehaviour {
     private int trashPercentageModifier;
     [SerializeField]
     private float jellyfishPenaltyPercentage = 0.25f;
-    private Transform UIPosition;
-    private float playerCurrentScore;
-    private float bankedScore;
+    private Transform ComboUIPosition;
+    [HideInInspector]public float HookScore;
+    [HideInInspector] public float BankedScore;
     private float timeColourHasBeenFlashing;
     private Color originalHookScoreColour;
     private Color originalTotalScoreColour;
@@ -48,29 +46,22 @@ public class ScoreHandler : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        UIPosition = UISpawnPosition.transform;
-        playerCurrentScore = 0;
-        bankedScore = 0;
-        currentHookScore.text = playerCurrentScore + "";
-        currentHookScore.enabled = false;
-        totalScore.text = bankedScore + "";
-        timeColourHasBeenFlashing = 0.0f;
-        originalHookScoreColour = currentHookScore.color;
-        originalTotalScoreColour = totalScore.color;
-        colourFlashing = false;   
+        ComboUIPosition = ComboUISpawnPosition.transform;
+        HookScore = 0;
+        BankedScore = 0;
+        //timeColourHasBeenFlashing = 0.0f;
+        //originalHookScoreColour = currentHookScore.color;
+        //colourFlashing = false;   
 	}
-	
+	public Vector3 HookScorePosition()
+    {
+        Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(GameManager.Hook.transform.position);
+        Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + hookScoreXOffset, hookPosOnScreen.y + hookScoreYOffset, 0.0f);
+        return offsetPosition;
+    }
 	// Update is called once per frame
 	void Update () 
     {
-        CurrentHookScoreActive(!basic.Camerahandler.IsAboveWater);
-        if (basic.Hook)
-        {
-            Vector3 hookPosOnScreen = Camera.main.WorldToScreenPoint(basic.Hook.transform.position);
-            Vector3 offsetPosition = new Vector3(hookPosOnScreen.x + hookScoreXOffset, hookPosOnScreen.y + hookScoreYOffset, 0.0f);
-            currentHookScore.transform.position = offsetPosition;
-        }
-
         //if our colour is in flash mode
         if (colourFlashing == true)
         {
@@ -89,12 +80,12 @@ public class ScoreHandler : MonoBehaviour {
 
     public float GetScore()
     {
-        return playerCurrentScore;
+        return HookScore;
     }
 
     public float GetBankedScore()
     {
-        return bankedScore;
+        return BankedScore;
     }
     /// <summary>
     /// Set score will completely overwrite the current score, not increment it. Please use AddScore() for that.
@@ -102,68 +93,82 @@ public class ScoreHandler : MonoBehaviour {
     /// <param name="pNewOverridingScore"></param>
     public void SetScore(int pNewOverridingScore)
     {
-        playerCurrentScore = pNewOverridingScore;
+        HookScore = pNewOverridingScore;
     }
 
     /// <summary>
     /// Increments our current score. The boolean controls whether UI appears or not.
     /// </summary>
-    /// <param name="pAddedScore"></param>
+    /// <param name="pFishType"></param>
     /// <param name="pCreatUIAnnouncement"></param>
-    public void AddScore(int pAddedScore, bool pCreatUIAnnouncement, bool pCaughtAFish)
+    public void AddScore(fish.FishType pFishType, bool pCreatUIAnnouncement, bool pCaughtAFish)
     {
-        playerCurrentScore += pAddedScore;
-        if (pCreatUIAnnouncement == true)
+        int pScore = GetFishScore(pFishType);
+        HookScore += pScore;
+        if (pCreatUIAnnouncement)
         {
-            createScoreUI(pAddedScore, false);
+            createScoreUI(pScore, false);
         }
-        currentHookScore.text = playerCurrentScore + "";
         if (pCaughtAFish == true)
         {
 
         }
 
         //Briefly switch the colour and start a counter to switch it back for visual feedback
-        timeColourHasBeenFlashing = colourFlashTime;
-        colourFlashing = true;
-        currentHookScore.color = flashColour;
-        flashTextHolder = currentHookScore;
-        originalColourHolder = originalHookScoreColour;
+        //timeColourHasBeenFlashing = colourFlashTime;
+        //colourFlashing = true;
+        //currentHookScore.color = flashColour;
+        //flashTextHolder = currentHookScore;
+        //originalColourHolder = originalHookScoreColour;
+    }
+    public void AddScore(int pScore, bool pCreatUIAnnouncement, bool pCaughtAFish)
+    {
+        HookScore += pScore;
+        if (pCreatUIAnnouncement == true)
+        {
+            createScoreUI(pScore, false);
+        }
+        if (pCaughtAFish == true)
+        {
+
+        }
+
+        //Briefly switch the colour and start a counter to switch it back for visual feedback
+        //timeColourHasBeenFlashing = colourFlashTime;
+        //colourFlashing = true;
+        //currentHookScore.color = flashColour;
+        //flashTextHolder = currentHookScore;
+        //originalColourHolder = originalHookScoreColour;
     }
 
     public void AddComboScore()
     {
-        createComboScoreUI();
-    }
-    public void CurrentHookScoreActive(bool pBool)
-    {
-        currentHookScore.gameObject.SetActive(pBool);
+        //createComboScoreUI();
     }
 
     public void BankScore()
     {
         //Add our score to the bank
-        bankedScore += playerCurrentScore;
+        BankedScore += HookScore;
 
         //Empty it from the hook
-        playerCurrentScore = 0;
-
-        //Display on the UI
-        currentHookScore.text = playerCurrentScore + "";
-        totalScore.text = bankedScore + "";
+        HookScore = 0;
+        //totalScore.text = BankedScore + "";
 
         //Briefly switch the colour and start a counter to switch it back for visual feedback
-        timeColourHasBeenFlashing = colourFlashTime;
-        colourFlashing = true;
-        totalScore.color = flashColour;
-        flashTextHolder = totalScore;
-        originalColourHolder = originalTotalScoreColour;
+        //timeColourHasBeenFlashing = colourFlashTime;
+        //colourFlashing = true;
+        //totalScore.color = flashColour;
+        //flashTextHolder = totalScore;
+        //originalColourHolder = originalTotalScoreColour;
     }
 
     //Instantiate a UI instance
     private void createScoreUI(float pScore, bool pJellyMinPercent)
     {
-        GameObject newScoreInstance = Instantiate(scoreUI, UIPosition);
+        GameObject newScoreInstance = Instantiate(GameManager.Levelmanager._levelUI.ScoreUI,
+                                                    GameManager.Levelmanager._levelUI.ScoreUIPosition.transform.position, Quaternion.identity);
+        newScoreInstance.transform.SetParent(GameManager.Levelmanager.Canvas().transform);
 
         //Activate it because our instantiated object is in world, but deactivated. 
         newScoreInstance.SetActive(true);
@@ -185,7 +190,7 @@ public class ScoreHandler : MonoBehaviour {
 
     private void createComboScoreUI()
     {
-        GameObject newComboScoreInstance = Instantiate(comboScoreUI, ConboUISpawnPosition.transform);
+        GameObject newComboScoreInstance = Instantiate(comboScoreUI, ComboUIPosition);
 
         //Activate it because our instantiated object is in world, but deactivated. 
         newComboScoreInstance.SetActive(true);
@@ -200,11 +205,6 @@ public class ScoreHandler : MonoBehaviour {
     public int GetComboScoreValue()
     {
         return comboScoreValue;
-    }
-
-    public void ToggleHookScoreUI(bool pState)
-    {
-        currentHookScore.enabled = pState;
     }
 
     public int GetFishScore(fish.FishType pType)
@@ -242,14 +242,14 @@ public class ScoreHandler : MonoBehaviour {
     /// <param name="pHardValue"></param>
     public void RemoveScore(int pHardValue)
     {
-        if (pHardValue >= playerCurrentScore)
+        if (pHardValue >= HookScore)
         {
             Debug.Log("WARNING: The removed score is greater than or equal to the player's current score. Capping the score to zero.");
-            playerCurrentScore = 0;
+            HookScore = 0;
         }
         else
         {
-            playerCurrentScore -= pHardValue;
+            HookScore -= pHardValue;
         }
     }
 
@@ -259,9 +259,9 @@ public class ScoreHandler : MonoBehaviour {
     /// <param name="pPercentage"></param>
     public void RemoveScore(bool pCreatUIAnnouncement)
     {
-        float scoreRemoved = playerCurrentScore * jellyfishPenaltyPercentage;
+        float scoreRemoved = HookScore * jellyfishPenaltyPercentage;
         Debug.Log(scoreRemoved + " scoreRemoved");
-        playerCurrentScore -= scoreRemoved;
+        HookScore -= scoreRemoved;
         if (pCreatUIAnnouncement == true)
         {
             createScoreUI(scoreRemoved, true);
