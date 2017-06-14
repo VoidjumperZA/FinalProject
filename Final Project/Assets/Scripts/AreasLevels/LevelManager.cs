@@ -24,7 +24,7 @@ public class LevelManager : MonoBehaviour
     protected Transform _endCamHolder;
     [Header("References")]
 
-    public LevelUI _levelUI;
+    public BaseUI _baseUI;
     [SerializeField]
     protected FishSpawn _fishSpawner;
 
@@ -68,18 +68,18 @@ public class LevelManager : MonoBehaviour
     }
     public virtual void UIOnEnterScene()
     {
-        if (_levelUI) _levelUI.OnEnterScene();
+        if (_baseUI) _baseUI.OnEnterScene();
         else Debug.Log("LevelUI not assigned to LevelManager script");
     }
     public virtual void UIOnLeaveScene()
     {
-        if (_levelUI) _levelUI.OnLeaveScene();
+        if (_baseUI) _baseUI.OnLeaveScene();
     }
     
 
     public Canvas Canvas()
     {
-        if (_levelUI.canvas) return _levelUI.canvas;
+        if (_baseUI.canvas) return _baseUI.canvas;
         return null;
     }
 }

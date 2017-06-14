@@ -129,7 +129,7 @@ public class CameraHandler : MonoBehaviour
     public void ToggleHookScoreText(bool pBool)
     {
 
-        if (GameManager.Levelmanager._levelUI) GameManager.Levelmanager._levelUI.HookScoreToggle(pBool);
+        if (GameManager.Levelmanager._baseUI) GameManager.Levelmanager._baseUI.HookScoreToggle(pBool);
     }
     public void SetViewPoint(FocusPoint pFocusPoint, bool pOverrideTransform = false)
     {
