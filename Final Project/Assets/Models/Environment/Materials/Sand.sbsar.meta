@@ -1,0 +1,280 @@
+fileFormatVersion: 2
+guid: ab2d2dff009a1fa44b865b1e9d0569cb
+timeCreated: 1497380060
+licenseType: Free
+SubstanceImporter:
+  serializedVersion: 5
+  materialInstances:
+  - serializedVersion: 16
+    name: Desert_Sand
+    prototypeName: Desert_Sand
+    shaderName: 
+    shader: {fileID: 4800000, guid: b3af22f4f780bb8479af52dad1efb19e, type: 3}
+    shaderKeywords: _EMISSION _METALLICGLOSSMAP _NORMALMAP _PARALLAXMAP
+    renderQueue: -1
+    lightmapFlags: 4
+    inputs:
+    - name: Sand_Fine_Offset
+      value:
+        scalar[0]: 0.093
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Waves_Tiling
+      value:
+        scalar[0]: 1
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Waves_Depth
+      value:
+        scalar[0]: 0.232
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: $outputsize
+      value:
+        scalar[0]: 8
+        scalar[1]: 8
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: $randomseed
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Sand_Color
+      value:
+        scalar[0]: 0.65098
+        scalar[1]: 0.512047
+        scalar[2]: 0.3523
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    - name: Sand_moisture
+      value:
+        scalar[0]: 0.94
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Sand_Slopes_On_Off
+      value:
+        scalar[0]: 1
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Sand_Slope_LR
+      value:
+        scalar[0]: 1
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Sand_Soft_Hard
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Secondary_Wind_Intensity
+      value:
+        scalar[0]: 0.35
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Secondary_Wind_Direction
+      value:
+        scalar[0]: 0.349972
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Sand_Fine_Dir_Scale
+      value:
+        scalar[0]: 1.29117
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    - name: No_Stones
+      value:
+        scalar[0]: 1
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Number_of_Stones
+      value:
+        scalar[0]: 1
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Randomize_Stones
+      value:
+        scalar[0]: 0.03
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Stones_Color
+      value:
+        scalar[0]: 0.792157
+        scalar[1]: 0.646799
+        scalar[2]: 0.56228
+        scalar[3]: 1
+        texture: {instanceID: 0}
+    - name: Stones_Depth
+      value:
+        scalar[0]: 0.75
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Stones_height
+      value:
+        scalar[0]: 376.24
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: Stones_width
+      value:
+        scalar[0]: 371.29
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    - name: RT_Normals
+      value:
+        scalar[0]: 0
+        scalar[1]: 0
+        scalar[2]: 0
+        scalar[3]: 0
+        texture: {instanceID: 0}
+    materialInformation:
+      serializedVersion: 5
+      offset: {x: 1.36, y: 0}
+      scale: {x: 6, y: 6}
+      generateMipmaps: 1
+      generateAllOutputs: 0
+      animationUpdateRate: 42
+    materialProperties:
+      serializedVersion: 3
+      texEnvs:
+      - _BumpMap:
+          texture: {instanceID: 0}
+          scale: {x: 6, y: 6}
+          offset: {x: 1.36, y: 0}
+      - _DetailAlbedoMap:
+          texture: {instanceID: 0}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - _DetailMask:
+          texture: {instanceID: 0}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - _DetailNormalMap:
+          texture: {instanceID: 0}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - _EmissionMap:
+          texture: {fileID: 2800000, guid: 4743fc3c84ef6494eb0273516c76c611, type: 3}
+          scale: {x: 6, y: 6}
+          offset: {x: 1.36, y: 0}
+      - _MainTex:
+          texture: {instanceID: 0}
+          scale: {x: 6, y: 6}
+          offset: {x: 1.36, y: 0}
+      - _MetallicGlossMap:
+          texture: {instanceID: 0}
+          scale: {x: 6, y: 6}
+          offset: {x: 1.36, y: 0}
+      - _OcclusionMap:
+          texture: {instanceID: 0}
+          scale: {x: 1, y: 1}
+          offset: {x: 0, y: 0}
+      - _ParallaxMap:
+          texture: {instanceID: 0}
+          scale: {x: 6, y: 6}
+          offset: {x: 1.36, y: 0}
+      floats:
+      - _BumpScale: 1
+      - _CausticsScale: 60
+      - _CausticsShallowFadeDistance: 1
+      - _CausticsStartLevel: 0
+      - _Cutoff: 0.5
+      - _DetailNormalMapScale: 1
+      - _DstBlend: 0
+      - _EmissionScaleUI: 1
+      - _GlossMapScale: 1
+      - _Glossiness: 0.5
+      - _GlossyReflections: 1
+      - _Metallic: 0
+      - _Mode: 0
+      - _OcclusionStrength: 1
+      - _Parallax: 0.02
+      - _SmoothnessTextureChannel: 0
+      - _SpecularHighlights: 1
+      - _SrcBlend: 1
+      - _UVSec: 0
+      - _ZWrite: 1
+      colors:
+      - _CausticsDrift: {r: 0.1, g: 0, b: -0.4, a: 1}
+      - _Color: {r: 1, g: 0.8967216, b: 0.75151384, a: 1}
+      - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
+      - _EmissionColorUI: {r: 1, g: 1, b: 1, a: 1}
+    textureParameters:
+    - name: Desert_Sand_basecolor
+      alphaSource: 6
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Desert_Sand_normal
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Desert_Sand_metallic
+      alphaSource: 7
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    - name: Desert_Sand_displacement
+      alphaSource: 0
+      filterMode: 1
+      aniso: 1
+      wrapMode: 0
+    textureAssignments:
+    - shaderProp: _BumpMap
+      material: {instanceID: 0}
+      baseUID: 2828298483
+    - shaderProp: _MainTex
+      material: {instanceID: 0}
+      baseUID: 2828298481
+    - shaderProp: _MetallicGlossMap
+      material: {instanceID: 0}
+      baseUID: 2828298487
+    - shaderProp: _ParallaxMap
+      material: {instanceID: 0}
+      baseUID: 2836072657
+    buildTargetSettings:
+    - serializedVersion: 2
+      buildTarget: 
+      textureWidth: 512
+      textureHeight: 512
+      textureFormat: 0
+      loadingBehavior: 1
+  deletedPrototypes: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
