@@ -40,7 +40,7 @@ public class fish : general
         _material = _renderer.material;
         _color = _material.color;
 
-        _bubbles.gameObject.SetActive(false);
+       // _bubbles.gameObject.SetActive(false);
         Animator = GetComponent<Animator>();
         InitializeStateMachine();
     }

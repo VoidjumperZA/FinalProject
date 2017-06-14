@@ -51,7 +51,7 @@ public class FishSpawn : MonoBehaviour
     // Use this for initialization
     private void Initialize()
     {
-        foreach (fish pFish in SpawnedFish) Destroy(pFish.gameObject);
+        foreach (fish pFish in SpawnedFish) if (pFish) Destroy(pFish.gameObject);
         SpawnedFish.Clear();
 
         possiblePolarities = PossiblePolarities.Niether;
@@ -148,6 +148,7 @@ public class FishSpawn : MonoBehaviour
                     int type = _fishInfo[rnd][FISHTYPE];
                     if (_fishPerTypeSpawned[type] < _fishInfo[rnd][TOCOLLECT])
                     {
+                       
                         _totalSpawned += 1;
                         _fishPerTypeSpawned[type] += 1;
                         Vector3 spawnPos = (pPolarity == 0) ? _leftSpawner.position : _rightSpawner.position;

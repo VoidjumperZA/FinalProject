@@ -12,6 +12,13 @@ public static class mouse {
         Debug.Log("No RayCastHit Value");
         return Vector3.zero;
     }
+    /* public static Vector2 GetTouch(int pFinger = 0)
+     {
+         if (Touching()) return Input.GetTouch(pFinger).position;
+         return new Vector2(0, 0);
+
+     }
+   */
     public static general GetGeneral()
     {
         if (GetRaycastHit().HasValue)
@@ -21,15 +28,6 @@ public static class mouse {
         }
             return null;
     }
-    /*public static RaycastHit? GetRaycastHit()
-    { 
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out _hitInfo, 1 << 8))
-        {
-            //Debug.Log("RAYCAST HIT SUCCESSFUL");
-            return _hitInfo;
-        }
-        return null;
-    }*/
     public static RaycastHit? GetRaycastHit()
     {
         if (Input.touchCount == 1)

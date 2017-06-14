@@ -35,7 +35,7 @@ public class StationaryBoatState : AbstractBoatState {
 
     private bool mouseAboveHalf()
     {
-        if (Input.mousePosition.y > (Screen.height / 2) || Input.GetTouch(0).position.y > (Screen.height / 2))
+        if (Input.mousePosition.y > (Screen.height / 2)) //|| mouse.GetTouch().y > (Screen.height / 2))
         {
             return true;
         }

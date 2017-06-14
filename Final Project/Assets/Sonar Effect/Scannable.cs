@@ -17,6 +17,7 @@ public class Scannable : MonoBehaviour
     {
         Debug.Log("Ping");
 
+        if (gameObject.transform.parent.gameObject.GetComponent<fish>()) gameObject.transform.parent.gameObject.GetComponent<general>().Visible = true;
         gameObject.GetComponent<cakeslice.Outline>().enabled = true;
         gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
         timeOutTime = scanTime;
