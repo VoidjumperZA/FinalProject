@@ -2,26 +2,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
-{
-
+public class LevelManager : MonoBehaviour {
+    [SerializeField] private GameObject _seaSurface;
     [Header("BoatMovementAreaBoundaries")]
-    [SerializeField]
-    protected Transform _leftDetector;
-    [SerializeField]
-    protected Transform _rightDetector;
+    [SerializeField] private Transform _leftDetector;
+    [SerializeField] private Transform _rightDetector;
     [Header("SceneTransitionBoatPoints")]
-    [SerializeField]
-    protected Transform _enterBoatPoint;
-    [SerializeField]
-    protected Transform _leaveBoatPoint;
+    [SerializeField] protected Transform _enterBoatPoint;
+    [SerializeField] protected Transform _leaveBoatPoint;
     [Header("SceneTransitionCameraHolders")]
-    [SerializeField]
-    protected Transform _startCamHolder;
-    [SerializeField]
-    protected Transform _middleCamHolder;
-    [SerializeField]
-    protected Transform _endCamHolder;
+    [SerializeField] protected Transform _startCamHolder;
+    [SerializeField] protected Transform _middleCamHolder;
+    [SerializeField] protected Transform _endCamHolder;
     [Header("References")]
 
     public BaseUI _baseUI;
@@ -30,6 +22,8 @@ public class LevelManager : MonoBehaviour
 
     [SerializeField]
     protected ShoppingList _shoppingList;
+    [SerializeField]
+    protected JellyFishSpawn _jellyFishSpawn;
     public virtual void Start()
     {
         SetUpCamera();
@@ -38,18 +32,19 @@ public class LevelManager : MonoBehaviour
         GameManager.Fishspawner = _fishSpawner;
         _shoppingList.GenerateShoppingList();
         GameManager.ShopList = _shoppingList;
+        GameManager.JellyFishSpawner = _jellyFishSpawn;
 
 
         GameManager.Levelmanager = this;
         //Debug.Log("LevelManager - Start();");
     }
-    public virtual void Update()
-    {
+	public virtual void Update () {
 
     }
     protected void SetUpCamera()
     {
-
+        GameManager.Camerahandler.SeaSurface = _seaSurface.transform;
+        GameManager.Camerahandler.ToggleBelowWater(false);
         GameManager.Camerahandler.StartMiddleEndCameraHolder(_startCamHolder, _middleCamHolder, _endCamHolder);
         GameManager.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Start, true);
         GameManager.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Middle, false);
@@ -75,8 +70,6 @@ public class LevelManager : MonoBehaviour
     {
         if (_baseUI) _baseUI.OnLeaveScene();
     }
-    
-
     public Canvas Canvas()
     {
         if (_baseUI.canvas) return _baseUI.canvas;
