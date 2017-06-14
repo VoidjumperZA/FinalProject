@@ -36,10 +36,10 @@ public class SwimJellyfishState : AbstractJellyfishState
         _outlineCounter.Reset();
 
         //Getting the position and size of the zone where the jellyfish can move
-        _leftBound = GameManager.JellyFishSpawner.LBound;
+        /*_leftBound = GameManager.JellyFishSpawner.LBound;
         _rightBound = GameManager.JellyFishSpawner.RBound;
         _upperBound = GameManager.JellyFishSpawner.UBound;
-        _lowerBound = GameManager.JellyFishSpawner.DBound;
+        _lowerBound = GameManager.JellyFishSpawner.DBound;*/
         /*_jellyfishZoneUp = basic.GetJellyfishZoneUp();
         _jellyfishZoneDown = basic.GetJellyfishZoneDown();
         _jellyfishZoneLeft = basic.GetJellyfishZoneLeft();
