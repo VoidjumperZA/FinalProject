@@ -19,7 +19,7 @@ public class Scannable : MonoBehaviour
             Debug.Log("Ping");
 
             GeneralScript.FishRenderer.enabled = true;
-            GeneralScript.FishOutliner.enabled = true;
+            if(GeneralScript.FishOutliner) GeneralScript.FishOutliner.enabled = true;
             GeneralScript.Visible = true;
             timeOutTime = scanTime;
             timeLeft = scanTime;
@@ -32,7 +32,7 @@ public class Scannable : MonoBehaviour
         if (timeLeft <= 0)
         {
             GeneralScript.FishRenderer.enabled = false;
-            GeneralScript.FishOutliner.enabled = false;
+            if (GeneralScript.FishOutliner) GeneralScript.FishOutliner.enabled = false;
             GeneralScript.Visible = false;
         }
     }
@@ -41,7 +41,7 @@ public class Scannable : MonoBehaviour
     {
         yield return new WaitForSeconds(scanTime);
         GeneralScript.FishRenderer.enabled = false;
-        GeneralScript.FishOutliner.enabled = false;
+        if (GeneralScript.FishOutliner) GeneralScript.FishOutliner.enabled = false;
         GeneralScript.Visible = false;
     }
 

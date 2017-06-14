@@ -12,7 +12,7 @@ public class FollowHookFishState : AbstractFishState
     {
         GameObject.Destroy(_fish.ScannableScript);
         _fish.FishRenderer.enabled = true;
-        _fish.FishOutliner.enabled = false;
+        if (_fish.FishOutliner) _fish.FishOutliner.enabled = false;
         GameManager.Hook.FishOnHook.Add(_fish);
 
         _fish.Animator.enabled = false;
