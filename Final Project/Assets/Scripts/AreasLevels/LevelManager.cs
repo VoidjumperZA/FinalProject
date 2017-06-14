@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour {
-
+    [SerializeField] private GameObject _seaSurface;
     [Header("BoatMovementAreaBoundaries")]
     [SerializeField] private Transform _leftDetector;
     [SerializeField] private Transform _rightDetector;
@@ -15,15 +15,21 @@ public class LevelManager : MonoBehaviour {
     [SerializeField] protected Transform _middleCamHolder;
     [SerializeField] protected Transform _endCamHolder;
     [Header("References")]
-    public LevelUI _levelUI;
-    [SerializeField] private FishSpawn _fishSpawn;
-    [SerializeField] private ShoppingList _shoppingList;
-    [SerializeField] private JellyFishSpawn _jellyFishSpawn;
-    public virtual void Start () {
+
+    public BaseUI _baseUI;
+    [SerializeField]
+    protected FishSpawn _fishSpawner;
+
+    [SerializeField]
+    protected ShoppingList _shoppingList;
+    [SerializeField]
+    protected JellyFishSpawn _jellyFishSpawn;
+    public virtual void Start()
+    {
         SetUpCamera();
         SetUpBoat();
 
-        GameManager.Fishspawner = _fishSpawn;
+        GameManager.Fishspawner = _fishSpawner;
         _shoppingList.GenerateShoppingList();
         GameManager.ShopList = _shoppingList;
         GameManager.JellyFishSpawner = _jellyFishSpawn;
@@ -37,12 +43,13 @@ public class LevelManager : MonoBehaviour {
     }
     protected void SetUpCamera()
     {
-    
+        GameManager.Camerahandler.SeaSurface = _seaSurface.transform;
+        GameManager.Camerahandler.ToggleBelowWater(false);
         GameManager.Camerahandler.StartMiddleEndCameraHolder(_startCamHolder, _middleCamHolder, _endCamHolder);
         GameManager.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Start, true);
         GameManager.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Middle, false);
     }
-    private void SetUpBoat()
+    protected void SetUpBoat()
     {
         SetEnterLeaveBoatStateDestinations();
         // Set Move state boundaries
@@ -54,18 +61,18 @@ public class LevelManager : MonoBehaviour {
         GameManager.Boat.SetEnterStateDestination(_enterBoatPoint.position);
         GameManager.Boat.SetLeaveStateDestination(_leaveBoatPoint.position);
     }
-    public void UIOnEnterScene()
+    public virtual void UIOnEnterScene()
     {
-        if (_levelUI) _levelUI.OnEnterScene();
+        if (_baseUI) _baseUI.OnEnterScene();
         else Debug.Log("LevelUI not assigned to LevelManager script");
     }
-    public void UIOnLeaveScene()
+    public virtual void UIOnLeaveScene()
     {
-        if (_levelUI) _levelUI.OnLeaveScene();
+        if (_baseUI) _baseUI.OnLeaveScene();
     }
     public Canvas Canvas()
     {
-        if (_levelUI.canvas) return _levelUI.canvas;
+        if (_baseUI.canvas) return _baseUI.canvas;
         return null;
     }
 }

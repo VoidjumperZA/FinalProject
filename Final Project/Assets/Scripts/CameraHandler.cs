@@ -6,9 +6,9 @@ using UnityEngine.PostProcessing;
 
 public class CameraHandler : MonoBehaviour
 {
-    private bool _isAboveWater = false; public bool IsAboveWater { get { return _isAboveWater; } }
+    private bool _isAboveWater = true; public bool IsAboveWater { get { return _isAboveWater; } }
     [Header("PostProcessingProfiles")]
-    [SerializeField] private Transform _seaSurface;
+    public Transform SeaSurface;
     [SerializeField] private PostProcessingProfile _aboveWaterProfile;
     [SerializeField] private PostProcessingProfile _underWaterProfile;
     private PostProcessingBehaviour _cameraPostProcessing { get { return _camera.GetComponent<PostProcessingBehaviour>(); } }
@@ -88,6 +88,7 @@ public class CameraHandler : MonoBehaviour
     }
     public void ClassUpdate()
     {
+        IfCrossedSurface();
         if (!_play) return;
         if (!_initialized)
         {
@@ -96,40 +97,37 @@ public class CameraHandler : MonoBehaviour
         }
         ReachFocusPoint();
         ReachShakePoint();
-        IfCrossedSurface();
     }
     private void IfCrossedSurface()
     {
-        if (!_seaSurface) return;
+        if (!SeaSurface) return;
 
-        float val = _seaSurface.position.y + 0.5f;
+        float val = SeaSurface.position.y + 1.5f;
         if (_isAboveWater && _camera.transform.position.y <= val)
         {
-            // Fog
-            _globalFog.enabled = true;
-            RenderSettings.fog = true;
-            // Color Correction Profile ?
-            if (_underWaterProfile) _cameraPostProcessing.profile = _underWaterProfile;
-            // HookScoreText UI
-            ToggleHookScoreText(false);
-            _isAboveWater = false;
+            ToggleBelowWater(true);
+            ToggleHookScoreText(true);
         }
         else if (!_isAboveWater && _camera.transform.position.y >= val)
         {
-            // Fog
-            _globalFog.enabled = false;
-            RenderSettings.fog = false;
-            // Color Correction Profile ?
-            if (_aboveWaterProfile) _cameraPostProcessing.profile = _aboveWaterProfile;
-            // HookScoreText UI
-            ToggleHookScoreText(true);
-            _isAboveWater = true;
+            ToggleBelowWater(false);
+            ToggleHookScoreText(false);
         }
+    }
+    public void ToggleBelowWater(bool pBool)
+    {
+        // Fog
+        _globalFog.enabled = pBool;
+        RenderSettings.fog = pBool;
+        // Color Correction Profile ?
+        if (_aboveWaterProfile) _cameraPostProcessing.profile = _aboveWaterProfile;
+        // HookScoreText UI
+        _isAboveWater = !pBool;
     }
     public void ToggleHookScoreText(bool pBool)
     {
 
-        if (GameManager.Levelmanager._levelUI) GameManager.Levelmanager._levelUI.HookScoreToggle(pBool);
+        if (GameManager.Levelmanager._baseUI) GameManager.Levelmanager._baseUI.HookScoreToggle(pBool);
     }
     public void SetViewPoint(FocusPoint pFocusPoint, bool pOverrideTransform = false)
     {

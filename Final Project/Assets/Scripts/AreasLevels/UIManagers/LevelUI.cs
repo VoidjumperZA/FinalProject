@@ -16,8 +16,6 @@ public class LevelUI : BaseUI {
     [SerializeField] private Image _totalScoreBoard;
     [SerializeField] private Text _totalScoreText;
     [SerializeField] private Text _hookScoreText;
-    public GameObject ScoreUI; //the appearing score ui
-    public GameObject ScoreUIPosition; //where are we spawning that ui
     [Header("Shopping List")]
     [SerializeField] private Image _shoppingList;
 
@@ -96,9 +94,9 @@ public class LevelUI : BaseUI {
 
         _onEnterScene = false;
     }
-
-    public void HookScoreToggle(bool pBool)
+    public override void HookScoreToggle(bool pBool)
     {
         _hookScoreText.gameObject.SetActive(pBool);
     }
+
 }

@@ -23,7 +23,26 @@ public class StationaryBoatState : AbstractBoatState {
 	
 	public override void Update ()
     {
-        if (Dragging()) SetState(boat.BoatState.Move);
+
+        if (Dragging() && mouseAboveHalf() == true) SetState(boat.BoatState.Move);
+
+        if (Dragging())
+        {
+            if (TutorialUI.GetTouchedReelUp()) SetState(boat.BoatState.Move);
+        }
+
+    }
+
+    private bool mouseAboveHalf()
+    {
+        if (Input.mousePosition.y > (Screen.height / 2) || Input.GetTouch(0).position.y > (Screen.height / 2))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     public override void Refresh()
     {
