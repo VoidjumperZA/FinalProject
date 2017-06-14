@@ -22,7 +22,8 @@ public class Sonar : MonoBehaviour
 
     void Start()
     {
-        pingLock = false;   
+        pingLock = false;
+        Debug.Log("Scanning = " + _scanning);
     }
 
     void Update()
@@ -53,23 +54,30 @@ public class Sonar : MonoBehaviour
                 }
 
             }
-            if (Vector3.Distance(ScannerOrigin.position, ScannerBoundary.transform.position) <= ScanDistance)
+            if (IsInput() == true && Vector3.Distance(ScannerOrigin.position, ScannerBoundary.transform.position) <= ScanDistance)
             {
                 FirePulse();
             }
-            
+           
         }
 
+
+        if (IsInput() == true && _scanning == false)
+        {
+            FirePulse();
+        }
         //test expand from origin
         if (Input.GetKeyDown(KeyCode.C))
         {
+            FirePulse();
+            /*
             _scanning = true;
             ScanDistance = 0;
             foreach (Scannable objects in _scannables)
             {
                 objects.SetLockState(false);
                 objects.SetScanTime(outlinerVisableTimeAsSeconds);
-            }
+            }*/
         }
 
         //scan from ray click
@@ -89,6 +97,17 @@ public class Sonar : MonoBehaviour
         }*/
     }
 
+    private bool IsInput()
+    {
+        if (Input.GetMouseButton(0) || mouse.Touching())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     private void checkOrigin()
     {
         Vector3 position;

@@ -8,28 +8,36 @@ public class fish : general
     private Dictionary<FishState, AbstractFishState> _stateCache = new Dictionary<FishState, AbstractFishState>();
     private AbstractFishState _abstractState = null;
     public enum FishState { None, Swim, FollowHook, PiledUp }
-    [SerializeField] private FishState _fishState = FishState.None;
+    [SerializeField]
+    private FishState _fishState = FishState.None;
     // Fish type related
-    [SerializeField] private int _score;
-    [SerializeField] private float _speed;
-    public enum FishType { Small, Medium, Large};
+    [SerializeField]
+    private int _score;
+    [SerializeField]
+    private float _speed;
+    public enum FishType { Small, Medium, Large };
     public FishType fishType;
     // Radar related
-    //[SerializeField] public SkinnedMeshRenderer _renderer;
-    [HideInInspector] public Material _material;
-    [HideInInspector] public Color _color;
-   // [SerializeField] private cakeslice.Outline _outliner;
+    [SerializeField] public SkinnedMeshRenderer _renderer;
+    [HideInInspector]
+    public Material _material;
+    [HideInInspector]
+    public Color _color;
+    // [SerializeField] private cakeslice.Outline _outliner;
 
-    [SerializeField] private ParticleSystem _bubbles;
-    [HideInInspector] public Animator Animator;
-    [SerializeField] public GameObject[] Joints;
+    [SerializeField]
+    private ParticleSystem _bubbles;
+    [HideInInspector]
+    public Animator Animator;
+    [SerializeField]
+    public GameObject[] Joints;
 
     private float _revealDuration;
 
     // Use this for initialization
     public override void Start()
     {
-        _material = FishRenderer.material;
+        _material = _renderer.material;
         _color = _material.color;
 
         _bubbles.gameObject.SetActive(false);
