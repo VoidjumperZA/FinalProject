@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UnityEngine.SceneManagement;
 [ExecuteInEditMode]
 public class Sonar : MonoBehaviour
 {
@@ -128,13 +128,17 @@ public class Sonar : MonoBehaviour
     /// <param name="pPulseOrigin"></param>
     public void FirePulse(/*Vector3 pPulseOrigin*/)
     {
-        foreach (Scannable objects in _scannables)
+        if (SceneManager.GetActiveScene().buildIndex != 0)
         {
-            objects.SetLockState(false);
-            objects.SetScanTime(outlinerVisableTimeAsSeconds);
+            foreach (Scannable objects in _scannables)
+            {
+                objects.SetLockState(false);
+                objects.SetScanTime(outlinerVisableTimeAsSeconds);
+            }
+            _scanning = true;
+            ScanDistance = 0;
         }
-        _scanning = true;
-        ScanDistance = 0;
+      
        // ScannerOrigin.position = pPulseOrigin;
        
     }
