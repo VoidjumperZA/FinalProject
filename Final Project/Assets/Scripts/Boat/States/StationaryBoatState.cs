@@ -23,7 +23,7 @@ public class StationaryBoatState : AbstractBoatState {
 	
 	public override void Update ()
     {
-        if (Dragging()) SetState(boat.BoatState.Move);
+        if (Dragging() && Input.mousePosition.y > (Screen.height / 2)) SetState(boat.BoatState.Move);
     }
     public override void Refresh()
     {
