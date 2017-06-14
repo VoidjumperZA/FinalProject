@@ -138,7 +138,7 @@ public class FishSpawn : MonoBehaviour
         int rnd = -1;
         if (_totalSpawned < _amountToSpawn)
         {
-            Debug.Log(_totalSpawned + " / " + _amountToSpawn);
+            //Debug.Log(_totalSpawned + " / " + _amountToSpawn);
             bool again = true;
             while (again)
             {

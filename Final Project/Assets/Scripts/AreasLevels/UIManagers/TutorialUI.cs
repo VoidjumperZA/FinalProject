@@ -15,6 +15,8 @@ public class TutorialUI : BaseUI
     private Image _arrows;
     [SerializeField]
     private Image _handMove;
+    [SerializeField]
+    private Image _handClickNoDrops;
 
     [Header("Controls")]
     [SerializeField]
@@ -43,7 +45,8 @@ public class TutorialUI : BaseUI
     //Conditions for showing UI in order
     private bool touchedScreen = true;
     private bool touchedDeployHook = false;
-    private bool touchedReelUpHook = false;
+    private bool firstTimeReelUp = true;
+    private static bool touchedReelUpHook = false;
     private bool movedBoat = false;
 
     public override void Start()
@@ -57,9 +60,8 @@ public class TutorialUI : BaseUI
         // Shopping List
         SetActive(false, _shoppingList.gameObject);
         //Animations
-        SetActive(false, _handMove.gameObject);
-        SetActive(false, _arrows.gameObject);
-        SetActive(false, _handClick.gameObject);
+        SetActive(false, _handMove.gameObject,_handClick.gameObject, _arrows.gameObject,_handClickNoDrops.gameObject);
+       
         //Debug.Log("TutorialUI - Start();");
     }
     public override void Update()
@@ -76,19 +78,27 @@ public class TutorialUI : BaseUI
         if (touchedScreen && (!touchedDeployHook))
         {
             Debug.Log("Step 2");
+            SetActive(false, _handClickNoDrops.gameObject);
             SetActive(true, _dropHook.gameObject);
             _handClick.transform.position = _dropHook.transform.position + new Vector3(10,-10,0);
+            SetActive(true, _handClick.gameObject);
     
+        }
+        else if (firstTimeReelUp)
+        {
+            Debug.Log("Step 3");
+            SetActive(false, _handClick.gameObject);
         }
         else if (!touchedReelUpHook)
         {
-            Debug.Log("Step 3");
+            Debug.Log("Step 4");
+            SetActive(true, _handClick.gameObject);
         }
     }
     public void OnDropHook()
     {
         if (!GameManager.Boat.CanDropHook()) return;
-        if (!touchedDeployHook)touchedDeployHook = true;
+        touchedDeployHook = true;
 
         SetActive(false, _dropHook.gameObject);
         SetActive(true, _reelHook.gameObject);
@@ -96,7 +106,9 @@ public class TutorialUI : BaseUI
     }
     public void OnReelHook()
     {
-        if (!touchedReelUpHook) touchedReelUpHook = true;
+        if (!firstTimeReelUp) { firstTimeReelUp = false; }
+        else { touchedReelUpHook = true; }
+            
         SetActive(true, _dropHook.gameObject);
         SetActive(false, _reelHook.gameObject);
         GameManager.Hook.SetState(hook.HookState.Reel);
@@ -110,8 +122,8 @@ public class TutorialUI : BaseUI
             return;
         }
         //Show hand for activating the radar
-        SetScreenPosition(_handClick.gameObject, GameManager.Boat.gameObject, new Vector3(0, 0, 0));
-        SetActive(true, _handClick.gameObject);
+        SetScreenPosition(_handClickNoDrops.gameObject, GameManager.Boat.gameObject, new Vector3(0, 0, 0));
+        SetActive(true, _handClickNoDrops.gameObject);
 
         // Game Time
         GameManager.Gametimer.BeginCountdown();
@@ -151,5 +163,10 @@ public class TutorialUI : BaseUI
         Vector3 accordingTo = Camera.main.WorldToScreenPoint(pAccordingTo.transform.position);
         Vector3 position = accordingTo;// + pOffset;
         pTheObject.transform.position = position;
+    }
+
+    public static bool GetTouchedReelUp()
+    {
+        return touchedReelUpHook;
     }
 }

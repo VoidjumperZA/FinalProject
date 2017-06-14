@@ -23,7 +23,10 @@ public class StationaryBoatState : AbstractBoatState {
 	
 	public override void Update ()
     {
-        if (Dragging()) SetState(boat.BoatState.Move);
+        if (Dragging())
+        {
+            if (TutorialUI.GetTouchedReelUp()) SetState(boat.BoatState.Move);
+        }
     }
     public override void Refresh()
     {
