@@ -9,7 +9,7 @@ public class TutorialManager : LevelManager
     {
         SetUpCamera();
         SetUpBoat();
-        GameManager.Fishspawner = _fishSpawner;
+        GameManager.Fishspawner = _fishSpawn;
         _shoppingList.GenerateShoppingList();
         GameManager.ShopList = _shoppingList;
         //GameManager.JellyFishSpawner = _jellyFishSpawn;

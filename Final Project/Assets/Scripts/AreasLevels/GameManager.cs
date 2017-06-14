@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour {
     public static LevelManager Levelmanager { get; set; }
     public static FishSpawn Fishspawner { get; set; }
     public static ShoppingList ShopList { get; set; }
-    //public static JellyfishSpawn JellyFishSpawner { get; set; }
+    public static JellyFishSpawn JellyFishSpawner { get; set; }
 
     private void Start () {
         DontDestroyOnLoad(gameObject);
