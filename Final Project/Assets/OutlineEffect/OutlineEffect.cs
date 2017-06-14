@@ -174,19 +174,19 @@ namespace cakeslice
 
                     if(outline != null && l == (l | (1 << outline.originalLayer)))
                     {
-                        outline.originalMaterials = outline.Renderer.sharedMaterials;
+                        outline.originalMaterials = outline.GeneralScript.FishRenderer.sharedMaterials;
 
                         outline.originalLayer = outline.gameObject.layer;
 
 						if(outline.eraseRenderer)
-							outline.Renderer.sharedMaterials = eraseMaterialBuffer;
+							outline.GeneralScript.FishRenderer.sharedMaterials = eraseMaterialBuffer;
                         else
-							outline.Renderer.sharedMaterials = GetMaterialBufferFromID(outline.color);
+							outline.GeneralScript.FishRenderer.sharedMaterials = GetMaterialBufferFromID(outline.color);
 
 						for(int m = 0; m < outline.originalMaterials.Length; m++)
                         {
-							if(outline.Renderer is MeshRenderer)
-								outline.Renderer.sharedMaterials[m].mainTexture = outline.originalMaterials[m].mainTexture;
+							if(outline.GeneralScript.FishRenderer is MeshRenderer)
+								outline.GeneralScript.FishRenderer.sharedMaterials[m].mainTexture = outline.originalMaterials[m].mainTexture;
                         }
 
                         outline.gameObject.layer = outlineLayer;
@@ -203,15 +203,15 @@ namespace cakeslice
                     LayerMask l = sourceCamera.cullingMask;
                     if(outline != null && l == (l | (1 << outline.originalLayer)))
                     {
-                        for(int m = 0; m < outline.Renderer.sharedMaterials.Length; m++)
+                        for(int m = 0; m < outline.GeneralScript.FishRenderer.sharedMaterials.Length; m++)
                         {
-                            if(outline.Renderer is MeshRenderer)
+                            if(outline.GeneralScript.FishRenderer is MeshRenderer)
                             {
-                                outline.Renderer.sharedMaterials[m].mainTexture = null;
+                                outline.GeneralScript.FishRenderer.sharedMaterials[m].mainTexture = null;
                             }
                         }
 
-                        outline.Renderer.sharedMaterials = outline.originalMaterials;
+                        outline.GeneralScript.FishRenderer.sharedMaterials = outline.originalMaterials;
 
                         outline.gameObject.layer = outline.originalLayer;
                     }
