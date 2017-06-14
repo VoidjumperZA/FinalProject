@@ -21,7 +21,7 @@ public class radar : general
     public override void FixedUpdate()
     {
         _abstractState.FixedUpdate();
-        Debug.Log(_abstractState.StateType());
+        //Debug.Log(_abstractState.StateType());
     }
     public void SetState(RadarState pState)
     {
