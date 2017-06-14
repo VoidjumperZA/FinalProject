@@ -29,7 +29,7 @@ public class Sonar : MonoBehaviour
     void Update()
     {
         _scannables = FindObjectsOfType<Scannable>();
-        Debug.Log("Scannable Size: " + _scannables.Length);
+        //Debug.Log("Scannable Size: " + _scannables.Length);
         if (_scanning)
         {
             checkOrigin();

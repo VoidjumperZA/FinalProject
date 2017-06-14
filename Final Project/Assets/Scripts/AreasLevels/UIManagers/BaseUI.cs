@@ -5,8 +5,10 @@ using UnityEngine.UI;
 
 public class BaseUI : MonoBehaviour {
     public Canvas canvas;
+    public GameObject ScoreUI; //the appearing score ui
+    public GameObject ScoreUIPosition; //where are we spawning that ui
 
-	public virtual void Start () {
+    public virtual void Start () {
         //Debug.Log("BaseUI - Start();");
     }
     public virtual void Update()
@@ -28,5 +30,9 @@ public class BaseUI : MonoBehaviour {
     public void SetActiveButtons(bool pBool, params Button[] pButtons)
     {
         foreach (Button button in pButtons) button.gameObject.SetActive(pBool);
+    }
+    public virtual void HookScoreToggle(bool pBool)
+    {
+
     }
 }

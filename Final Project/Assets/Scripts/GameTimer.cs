@@ -50,7 +50,7 @@ public class GameTimer : MonoBehaviour
             componentBreaker = ":0";
         }
         string str = GetFormattedTimeLeftAsVec2().x + componentBreaker + GetFormattedTimeLeftAsVec2().y;
-        Debug.Log(str);
+        //Debug.Log(str);
         return str;
     }
 
