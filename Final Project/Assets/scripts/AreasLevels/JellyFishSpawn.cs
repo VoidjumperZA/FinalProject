@@ -37,7 +37,7 @@ public class JellyFishSpawn : MonoBehaviour {
         //if (!basic.GlobalUI.InTutorial)
         //{
             //Debug.Log("Hello jellyfish");
-            if(_numJellyfish < _maxNumJellyfish)
+            /*if(_numJellyfish < _maxNumJellyfish)
             {
                 _spawnCounter += Time.deltaTime;
 
@@ -50,7 +50,7 @@ public class JellyFishSpawn : MonoBehaviour {
                     Jellyfish theJellyFish = Instantiate(_jellyFishPrefab, spawnPos, gameObject.transform.rotation).GetComponent<Jellyfish>();
                     SpawnedJellyFish.Add(theJellyFish);
                 }
-            }
+            }*/
         //}
     }
 }
