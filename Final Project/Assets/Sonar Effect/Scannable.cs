@@ -3,8 +3,7 @@ using System.Collections;
 
 public class Scannable : MonoBehaviour
 {
-    [SerializeField] private general GeneralScript;
-	//public Animator UIAnim;
+    //public Animator UIAnim;
     private bool locked;
     private float scanTime;
     private float timeLeft;
@@ -14,16 +13,15 @@ public class Scannable : MonoBehaviour
         locked = true;
     }
 
-	public void Ping()
-	{
-            Debug.Log("Ping");
+    public void Ping()
+    {
+        Debug.Log("Ping");
 
-            GeneralScript.FishRenderer.enabled = true;
-            if(GeneralScript.FishOutliner) GeneralScript.FishOutliner.enabled = true;
-            GeneralScript.Visible = true;
-            timeOutTime = scanTime;
-            timeLeft = scanTime;
-            //StartCoroutine(TimeOutOutline());   
+        gameObject.GetComponent<cakeslice.Outline>().enabled = true;
+        gameObject.GetComponent<SkinnedMeshRenderer>().enabled = true;
+        timeOutTime = scanTime;
+        timeLeft = scanTime;
+        //StartCoroutine(TimeOutOutline());   
     }
 
     void Update()
@@ -31,18 +29,16 @@ public class Scannable : MonoBehaviour
         timeLeft -= Time.deltaTime;
         if (timeLeft <= 0)
         {
-            GeneralScript.FishRenderer.enabled = false;
-            if (GeneralScript.FishOutliner) GeneralScript.FishOutliner.enabled = false;
-            GeneralScript.Visible = false;
+            gameObject.GetComponent<cakeslice.Outline>().enabled = false;
+            gameObject.GetComponent<SkinnedMeshRenderer>().enabled = false;
         }
     }
 
     IEnumerator TimeOutOutline()
     {
         yield return new WaitForSeconds(scanTime);
-        GeneralScript.FishRenderer.enabled = false;
-        if (GeneralScript.FishOutliner) GeneralScript.FishOutliner.enabled = false;
-        GeneralScript.Visible = false;
+        gameObject.GetComponent<cakeslice.Outline>().enabled = false;
+        gameObject.GetComponent<SkinnedMeshRenderer>().enabled = false;
     }
 
     public void SetLockState(bool pState)
