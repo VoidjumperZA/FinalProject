@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelManager : MonoBehaviour {
-
+    [SerializeField] private GameObject _seaSurface;
     [Header("BoatMovementAreaBoundaries")]
     [SerializeField] private Transform _leftDetector;
     [SerializeField] private Transform _rightDetector;
@@ -37,7 +37,8 @@ public class LevelManager : MonoBehaviour {
     }
     protected void SetUpCamera()
     {
-    
+        GameManager.Camerahandler.SeaSurface = _seaSurface.transform;
+        GameManager.Camerahandler.ToggleBelowWater(false);
         GameManager.Camerahandler.StartMiddleEndCameraHolder(_startCamHolder, _middleCamHolder, _endCamHolder);
         GameManager.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Start, true);
         GameManager.Camerahandler.SetViewPoint(CameraHandler.FocusPoint.Middle, false);
