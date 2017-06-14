@@ -113,7 +113,13 @@ public class FishSpawn : MonoBehaviour
         if (!pFish) return;
 
         int pType = (int)pFish.GetFishType();
-        if (pQueueAgain && _fishPerTypeSpawned[pType] > 0) _fishPerTypeSpawned[pType] -= 1;
+        Debug.Log(_fishPerTypeSpawned[pType] + " Spawned");
+        if (pQueueAgain && _fishPerTypeSpawned[pType] > 0)
+        {
+            _totalSpawned -= 1;
+            _fishPerTypeSpawned[pType] -= 1;
+            Debug.Log(_fishPerTypeSpawned[pType] + " After Requed");
+        }
         if (pRemoveFromList) SpawnedFish.Remove(pFish);
         if (pDestroyNow && pFish.gameObject) Destroy(pFish.gameObject);
     }
@@ -132,6 +138,7 @@ public class FishSpawn : MonoBehaviour
         int rnd = -1;
         if (_totalSpawned < _amountToSpawn)
         {
+            Debug.Log(_totalSpawned + " / " + _amountToSpawn);
             bool again = true;
             while (again)
             {

@@ -105,18 +105,31 @@ public class CameraHandler : MonoBehaviour
         float val = _seaSurface.position.y + 0.5f;
         if (_isAboveWater && _camera.transform.position.y <= val)
         {
+            // Fog
             _globalFog.enabled = true;
             RenderSettings.fog = true;
+            // Color Correction Profile ?
             if (_underWaterProfile) _cameraPostProcessing.profile = _underWaterProfile;
+            // HookScoreText UI
+            ToggleHookScoreText(false);
             _isAboveWater = false;
         }
         else if (!_isAboveWater && _camera.transform.position.y >= val)
         {
+            // Fog
             _globalFog.enabled = false;
             RenderSettings.fog = false;
+            // Color Correction Profile ?
             if (_aboveWaterProfile) _cameraPostProcessing.profile = _aboveWaterProfile;
+            // HookScoreText UI
+            ToggleHookScoreText(true);
             _isAboveWater = true;
         }
+    }
+    public void ToggleHookScoreText(bool pBool)
+    {
+
+        if (GameManager.Levelmanager._levelUI) GameManager.Levelmanager._levelUI.HookScoreToggle(pBool);
     }
     public void SetViewPoint(FocusPoint pFocusPoint, bool pOverrideTransform = false)
     {

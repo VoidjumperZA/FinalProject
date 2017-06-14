@@ -121,7 +121,7 @@ public class Sonar : MonoBehaviour
     }
     void OnEnable()
     {
-        _camera = GetComponent<Camera>();
+        _camera = Camera.main;
         _camera.depthTextureMode = DepthTextureMode.Depth;
     }
 

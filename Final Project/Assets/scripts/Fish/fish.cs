@@ -15,7 +15,7 @@ public class fish : general
     public enum FishType { Small, Medium, Large};
     public FishType fishType;
     // Radar related
-    [SerializeField] public SkinnedMeshRenderer _renderer;
+    //[SerializeField] public SkinnedMeshRenderer _renderer;
     [HideInInspector] public Material _material;
     [HideInInspector] public Color _color;
    // [SerializeField] private cakeslice.Outline _outliner;
@@ -29,7 +29,7 @@ public class fish : general
     // Use this for initialization
     public override void Start()
     {
-        _material = _renderer.material;
+        _material = FishRenderer.material;
         _color = _material.color;
 
         _bubbles.gameObject.SetActive(false);

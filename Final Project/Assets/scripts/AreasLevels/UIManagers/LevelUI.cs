@@ -96,4 +96,9 @@ public class LevelUI : BaseUI {
 
         _onEnterScene = false;
     }
+
+    public void HookScoreToggle(bool pBool)
+    {
+        _hookScoreText.gameObject.SetActive(pBool);
+    }
 }
