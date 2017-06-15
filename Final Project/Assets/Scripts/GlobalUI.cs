@@ -170,7 +170,7 @@ public class GlobalUI : MonoBehaviour
         if (!InTutorial)
         {
             ReelUpHookButton(true);
-            //GameObject.Find("Manager").GetComponent<Combo>()./CreateNewCombo();
+            GameObject.Find("Manager").GetComponent<Combo>().CreateNewCombo();
         }
         else
         {
@@ -195,7 +195,7 @@ public class GlobalUI : MonoBehaviour
         basic.Hook.SetState(hook.HookState.Reel);
         if (!InTutorial)
         {
-            //basic.combo.ClearPreviousCombo(false);
+            basic.combo.ClearPreviousCombo(false);
         }
         else
         {
