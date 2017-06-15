@@ -166,8 +166,8 @@ public class ScoreHandler : MonoBehaviour {
     //Instantiate a UI instance
     private void createScoreUI(float pScore, bool pJellyMinPercent)
     {
-        GameObject newScoreInstance = Instantiate(GameManager.Levelmanager._baseUI.ScoreUI,
-                                                    GameManager.Levelmanager._baseUI.ScoreUIPosition.transform.position, Quaternion.identity);
+        GameObject newScoreInstance = Instantiate(GameManager.Levelmanager._levelUI.ScoreUI,
+                                                    GameManager.Levelmanager._levelUI.ScoreUIPosition.transform.position, Quaternion.identity);
         newScoreInstance.transform.SetParent(GameManager.Levelmanager.Canvas().transform);
 
         //Activate it because our instantiated object is in world, but deactivated. 

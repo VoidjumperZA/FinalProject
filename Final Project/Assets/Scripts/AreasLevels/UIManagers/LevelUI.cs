@@ -16,8 +16,15 @@ public class LevelUI : BaseUI {
     [SerializeField] private Image _totalScoreBoard;
     [SerializeField] private Text _totalScoreText;
     [SerializeField] private Text _hookScoreText;
+    public GameObject ScoreUI; //the appearing score ui
+    public GameObject ScoreUIPosition; //where are we spawning that ui
     [Header("Shopping List")]
     [SerializeField] private Image _shoppingList;
+    [Header("Combo")]
+    public GameObject ComboUI;
+    public Image ComboBackGround;
+    public List<Image> ComboFillStages;
+    public List<Image> ComboIconHolders;
 
     public override void Start () {
         // Controls
@@ -94,9 +101,9 @@ public class LevelUI : BaseUI {
 
         _onEnterScene = false;
     }
-    public override void HookScoreToggle(bool pBool)
+
+    public void HookScoreToggle(bool pBool)
     {
         _hookScoreText.gameObject.SetActive(pBool);
     }
-
 }

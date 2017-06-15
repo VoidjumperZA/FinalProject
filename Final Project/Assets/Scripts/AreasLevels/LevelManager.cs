@@ -15,21 +15,15 @@ public class LevelManager : MonoBehaviour {
     [SerializeField] protected Transform _middleCamHolder;
     [SerializeField] protected Transform _endCamHolder;
     [Header("References")]
-
-    public BaseUI _baseUI;
-    [SerializeField]
-    protected FishSpawn _fishSpawner;
-
-    [SerializeField]
-    protected ShoppingList _shoppingList;
-    [SerializeField]
-    protected JellyFishSpawn _jellyFishSpawn;
-    public virtual void Start()
-    {
+    public LevelUI _levelUI;
+    [SerializeField] protected FishSpawn _fishSpawn;
+    [SerializeField] protected ShoppingList _shoppingList;
+    [SerializeField] protected JellyFishSpawn _jellyFishSpawn;
+    public virtual void Start () {
         SetUpCamera();
         SetUpBoat();
 
-        GameManager.Fishspawner = _fishSpawner;
+        GameManager.Fishspawner = _fishSpawn;
         _shoppingList.GenerateShoppingList();
         GameManager.ShopList = _shoppingList;
         GameManager.JellyFishSpawner = _jellyFishSpawn;
@@ -63,16 +57,16 @@ public class LevelManager : MonoBehaviour {
     }
     public virtual void UIOnEnterScene()
     {
-        if (_baseUI) _baseUI.OnEnterScene();
+        if (_levelUI) _levelUI.OnEnterScene();
         else Debug.Log("LevelUI not assigned to LevelManager script");
     }
     public virtual void UIOnLeaveScene()
     {
-        if (_baseUI) _baseUI.OnLeaveScene();
+        if (_levelUI) _levelUI.OnLeaveScene();
     }
     public Canvas Canvas()
     {
-        if (_baseUI.canvas) return _baseUI.canvas;
+        if (_levelUI.canvas) return _levelUI.canvas;
         return null;
     }
 }

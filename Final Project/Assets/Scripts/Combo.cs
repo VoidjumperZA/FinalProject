@@ -5,108 +5,92 @@ using UnityEngine.UI;
 
 public class Combo : MonoBehaviour
 {
-
-    [Header("Combo Pieces")]
-    [SerializeField]
-    private Image comboBackgroundImageToInstantiate;
-    [SerializeField]
-    private Image comboFishImageToInstantiate;
-    [SerializeField]
-    private Sprite[] comboBackgroundIconSprites;
-    [SerializeField]
-    private Sprite[] comboBrokenIconSprites;
-    [SerializeField]
-    private Sprite[] comboFishIconSprites;
-    [SerializeField]
-    private GameObject iconSpawnPosition;
-    [Header("Values")]
-    [SerializeField]
-    private float iconScalingSize;
-    [SerializeField]
-    [Range(0, 500)]
-    private float widthBetweenIcons;
-    [SerializeField]
-    private float iconSlideDistance;
-    [SerializeField]
-    private float iconSlideSpeed;
-    [SerializeField]
-    private int minComboSize;
-    [SerializeField]
-    private int maxComboSize;
-    [SerializeField]
-    private float comboScoreUIMovementSpeed;
-    [SerializeField]
-    private float comboScoreUIAlphaFade;
-    [Header("Canvas")]
-    [SerializeField]
-    private Canvas canvas;
-    private bool animatingComboBreak;
-    private int iconsFinishedSliding;
-
-    private GameplayValues gameplayValues;
-    private int comboLength;
-    private int comboIndex;
-    private List<fish.FishType> combo;
-    private List<Image> iconBackgroundsList;
-    private List<Image> iconFishList;
-    private List<float> iconSlideDistancesList;
-    private List<float> iconSlideCounterList;
-    private bool comboCanBeGenerated;
-
-    private enum IconBackgroundStates { Standard, Next, Completed, Broken };
-    private IconBackgroundStates iconBackgroundStates;
-    // Use this for initialization
-    void Start()
+    private bool _initialized = false;
+    [SerializeField] private List<Sprite> _beforeCollectPrefab;
+    [SerializeField] private List<Sprite> _afterCollectPrefab;
+    private Dictionary<int, Sprite> _beforeCollect = new Dictionary<int, Sprite>();
+    private Dictionary<int, Sprite> _afterCollect = new Dictionary<int, Sprite>();
+    private List<List<int>> _fishInfo = new List<List<int>>();
+    private List<int> _currentTypes = new List<int>();
+    private int _currentToCollect = 0;
+    private int _comboSize = 0;
+    public void Initialize()
     {
-        combo = new List<fish.FishType>();
-        iconBackgroundsList = new List<Image>();
-        iconFishList = new List<Image>();
-        iconSlideDistancesList = new List<float>();
-        iconSlideCounterList = new List<float>();
-        gameplayValues = GameObject.Find("Manager").GetComponent<GameplayValues>();
-        animatingComboBreak = false;
-        iconsFinishedSliding = 0;
-        comboCanBeGenerated = true;
+        if (_initialized) return;
+        _fishInfo = GameManager.ShopList.FishInfo;
+        // Cache sprites
+        for (int i = 0; i < _beforeCollectPrefab.Count; i++) _beforeCollect[i] = _beforeCollectPrefab[i];
+        for (int i = 0; i < _afterCollectPrefab.Count; i++) _afterCollect[i] = _afterCollectPrefab[i];
+        GenerateCombo();
+        _initialized = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            CreateNewCombo();
-        }
-        if (animatingComboBreak == true)
-        {
-            if (iconsFinishedSliding < iconBackgroundsList.Count)
-            {
-                Vector3 iconSpeedVector = new Vector3(0.0f, iconSlideSpeed);
-                for (int i = 0; i < iconBackgroundsList.Count; i++)
-                {
-                    if (iconSlideCounterList[i] < Mathf.Abs(iconSlideDistancesList[i]))
-                    {
-                        iconBackgroundsList[i].transform.Translate(iconSpeedVector * Mathf.Sign(iconSlideDistancesList[i]));
-                        iconFishList[i].transform.Translate(iconSpeedVector * Mathf.Sign(iconSlideDistancesList[i]));
-                        iconSlideCounterList[i] += iconSlideSpeed;
-                    }
-                    else
-                    {
-                        iconsFinishedSliding++;
-                        //Debug.Log("" + iconsFinishedSliding + " finished sliding.");
-                    }
-                }
-            }
-            else
-            {
-                animatingComboBreak = false;
-                iconsFinishedSliding = 0;
-                CreateNewCombo();
-            }
-        }
+        if (!_initialized) return;
+        if (Input.GetKeyDown(KeyCode.P)) GenerateCombo();
+        if (Input.GetKeyDown(KeyCode.L)) Collect(_currentTypes[_currentToCollect]);
 
     }
+    public void GenerateCombo()
+    {
+        _comboSize = Random.Range(3, 6);
+        // Generate Combo
+        GameManager.Levelmanager._levelUI.ComboUI.SetActive(true);
+        // Generate Combo (Assing Sprites)
+        _currentTypes.Clear();
+        _currentToCollect = 0;
+        // Combo Fillstages
+        for (int i = 0; i < 5; i++) GameManager.Levelmanager._levelUI.ComboFillStages[i].gameObject.SetActive(false);
+        // Combo Icons
+        for (int i = 0; i < 5; i++) GameManager.Levelmanager._levelUI.ComboIconHolders[i].gameObject.SetActive(false);
+        for (int i = 0; i < _comboSize; i++)
+        {
+            int rnd = Random.Range(0,  _fishInfo.Count);
+            int type = _fishInfo[rnd][0];
+            _currentTypes.Add(type);
+            Debug.Log(rnd + "ComboRNDCount");
+            ReAssign(_beforeCollect, i, type, _comboSize);
+        }
+    }
+    public void Collect(int pFishType)
+    {
+        // Combo Icons
+        if (_currentToCollect < _currentTypes.Count)
+        {
+            int type = _currentTypes[_currentToCollect];
+            if (type == pFishType)
+            {
+                ReAssign(_afterCollect, _currentToCollect, type, _currentTypes.Count);
+                _currentToCollect += 1;
+            }
+        }
+        // Combo FillStages
+        foreach (Image img in GameManager.Levelmanager._levelUI.ComboFillStages) img.gameObject.SetActive(false);
+        if (_comboSize == 5) GameManager.Levelmanager._levelUI.ComboFillStages[_currentToCollect - 1].gameObject.SetActive(true);
+        if (_comboSize == 4) GameManager.Levelmanager._levelUI.ComboFillStages[_currentToCollect].gameObject.SetActive(true);
+        if (_comboSize == 3) GameManager.Levelmanager._levelUI.ComboFillStages[_currentToCollect + 1].gameObject.SetActive(true);
 
-    public void CheckComboProgress(fish.FishType pFishType)
+        /*for (int i = 0; i < _currentTypes.Count; i++)
+        {
+            GameManager.Levelmanager._levelUI.ComboFillStages[i].gameObject.SetActive(i == _currentToCollect-1);
+        }*/
+        if (_currentToCollect >= _currentTypes.Count)
+        {
+            GenerateCombo();
+        }
+    }
+    private void ReAssign(Dictionary<int, Sprite> pDictionary, int pDictionaryIndex , int pType, int pComboSize)
+    {
+        float newX = ((-pComboSize * 100) + 100) + (pDictionaryIndex * 200);
+        GameManager.Levelmanager._levelUI.ComboIconHolders[pDictionaryIndex].rectTransform.localPosition = new Vector3(newX, 0, 0);
+        GameManager.Levelmanager._levelUI.ComboIconHolders[pDictionaryIndex].rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, pDictionary[pType].rect.width);
+        GameManager.Levelmanager._levelUI.ComboIconHolders[pDictionaryIndex].rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, pDictionary[pType].rect.height);
+        GameManager.Levelmanager._levelUI.ComboIconHolders[pDictionaryIndex].sprite = pDictionary[pType];
+        GameManager.Levelmanager._levelUI.ComboIconHolders[pDictionaryIndex].gameObject.SetActive(true);
+    }
+    /*public void CheckComboProgress(fish.FishType pFishType)
     {
         //Debug.Log("Checking Combo Progress. Combo Index: " + comboIndex);
         if (animatingComboBreak == false && pFishType == combo[comboIndex])
@@ -219,5 +203,5 @@ public class Combo : MonoBehaviour
     public float GetComboScoreUIAlphaFade()
     {
         return comboScoreUIAlphaFade;
-    }
+    }*/
 }

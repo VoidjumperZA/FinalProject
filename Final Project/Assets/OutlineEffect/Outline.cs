@@ -31,8 +31,7 @@ namespace cakeslice
     [RequireComponent(typeof(Renderer))]
     public class Outline : MonoBehaviour
     {
-        public Renderer Renderer { get; private set; }
-
+        public general GeneralScript;
         public int color;
         public bool eraseRenderer;
 
@@ -43,17 +42,16 @@ namespace cakeslice
 
         private void Awake()
         {
-            Renderer = GetComponent<Renderer>();
         }
 
         void OnEnable()
         {
 
-            IEnumerable<OutlineEffect> effects = Camera.allCameras.AsEnumerable()
-                .Select(c => c.GetComponent<OutlineEffect>())
-                .Where(e => e != null);
+			IEnumerable<OutlineEffect> effects = Camera.allCameras.AsEnumerable()
+				.Select(c => c.GetComponent<OutlineEffect>())
+				.Where(e => e != null);
 
-            foreach (OutlineEffect effect in effects)
+			foreach (OutlineEffect effect in effects)
             {
                 effect.AddOutline(this);
             }
@@ -63,11 +61,11 @@ namespace cakeslice
         void OnDisable()
         {
 
-            IEnumerable<OutlineEffect> effects = Camera.allCameras.AsEnumerable()
-                .Select(c => c.GetComponent<OutlineEffect>())
-                .Where(e => e != null);
+			IEnumerable<OutlineEffect> effects = Camera.allCameras.AsEnumerable()
+				.Select(c => c.GetComponent<OutlineEffect>())
+				.Where(e => e != null);
 
-            foreach (OutlineEffect effect in effects)
+			foreach (OutlineEffect effect in effects)
             {
                 effect.RemoveOutline(this);
             }
